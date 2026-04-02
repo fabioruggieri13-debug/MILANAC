@@ -3,119 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MILANAC - FC26 Hub</title>
+    <title>MILANAC - Tactical Hub</title>
     <style>
-        :root { --neon: #ff0000; --bg: #050505; --card: #141414; --field: #0a2e18; --text: #ffffff; --sub: #888; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; user-select: none; padding-bottom: 80px; }
-        
-        /* Header & Nav */
-        .header { text-align: center; border-bottom: 2px solid var(--neon); padding-bottom: 10px; margin-bottom: 20px; }
-        .header h1 { margin: 0; letter-spacing: 5px; font-size: 2rem; text-shadow: 0 0 10px var(--neon); }
-        .nav { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; }
-        .nav-btn { background: #222; color: var(--sub); padding: 8px 15px; border-radius: 20px; font-size: 12px; cursor: pointer; text-transform: uppercase; border: 1px solid #333;}
-        .nav-btn.active { background: var(--neon); color: white; border-color: var(--neon); box-shadow: 0 0 10px rgba(255,0,0,0.5); }
-
-        /* Main Content */
-        .page { display: none; }
-        .page.active { display: block; }
+        :root { --neon: #ff0000; --bg: #050505; --card: #141414; --field: #0a2e18; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; padding: 15px; overflow-x: hidden; touch-action: manipulation; }
         .card { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid #222; }
-        h2 { color: var(--neon); text-transform: uppercase; font-size: 0.9rem; margin-top: 0; margin-bottom: 10px; }
-
-        /* Almanacco Rosa */
-        .roster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; }
-        .player-card { background: #1a1a1a; border-radius: 10px; overflow: hidden; text-align: center; border: 1px solid #333; transition: 0.3s; position: relative;}
-        .player-card:hover { border-color: var(--neon); transform: translateY(-3px); }
-        .player-face { width: 100%; height: 100px; object-fit: cover; background: #333; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #555; font-weight: bold;}
-        .player-info { padding: 8px; }
-        .player-name { font-weight: bold; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .player-role-badge { font-size: 10px; color: var(--neon); text-transform: uppercase; font-weight: bold; margin-top: 2px;}
+        h1 { color: var(--neon); text-align: center; letter-spacing: 3px; font-size: 1.5rem; text-shadow: 0 0 10px var(--neon); }
         
-        /* Tactical Field & Tokens */
-        #tacticalField { width: 100%; height: 320px; background: var(--field); border-radius: 8px; position: relative; border: 1px solid rgba(255,255,255,0.3); overflow: hidden; background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png'), radial-gradient(circle at 50% 50%, transparent 15%, rgba(255,255,255,0.1) 16%, transparent 17%); }
-        .player-token { width: 42px; height: 42px; background: var(--neon); color: white; border-radius: 50%; position: absolute; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; cursor: move; touch-action: none; box-shadow: 0 4px 10px rgba(0,0,0,0.8); z-index: 10; border: 2px solid white; text-transform: uppercase; }
+        /* CAMPO TATTICO */
+        #tacticalField { 
+            width: 100%; height: 380px; background: var(--field); border-radius: 8px; position: relative; 
+            border: 2px solid rgba(255,255,255,0.2); overflow: hidden; touch-action: none;
+            background-image: radial-gradient(circle at 50% 50%, transparent 18%, rgba(255,255,255,0.1) 19%, transparent 20%), 
+                              linear-gradient(to bottom, transparent 49%, rgba(255,255,255,0.1) 50%, transparent 51%);
+        }
+        .player-token { 
+            width: 45px; height: 45px; background: var(--neon); color: white; border-radius: 50%; 
+            position: absolute; display: flex; align-items: center; justify-content: center; 
+            font-size: 11px; font-weight: bold; cursor: move; touch-action: none; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.6); z-index: 100; border: 2px solid white;
+        }
 
-        /* General UI */
-        input, select, button, textarea { width: 100%; padding: 12px; margin: 5px 0; border-radius: 6px; border: none; box-sizing: border-box; font-size: 14px; background: #222; color: white; }
-        button { background: var(--neon); color: white; font-weight: bold; text-transform: uppercase; cursor: pointer; }
-        .btn-status { width: auto; padding: 5px 15px; font-size: 11px; background: #333; }
-        .active-in { background: var(--neon); }
-        .player-item { background: #1a1a1a; padding: 10px; margin: 5px 0; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
-        .present { border-right: 4px solid var(--neon); }
+        /* UI GENERALE */
+        input, select, button { width: 100%; padding: 12px; margin: 5px 0; border-radius: 6px; border: none; box-sizing: border-box; font-size: 14px; background: #222; color: white; }
+        button { background: var(--neon); color: white; font-weight: bold; cursor: pointer; }
+        .player-item { background: #1a1a1a; padding: 10px; margin: 5px 0; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #444; }
+        .present { border-left-color: var(--neon); background: #1f1111; }
+        .btn-s { width: auto; padding: 6px 12px; font-size: 11px; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>MILANAC</h1>
-        <small style="color:#666">FC26 COMMAND CENTER</small>
+    <h1>MILANAC</h1>
+
+    <div class="card">
+        <h2 style="font-size: 14px; color: var(--neon);">LAVAGNA TATTICA (Trascina i Player)</h2>
+        <div id="tacticalField"></div>
+        <button onclick="location.reload()" style="background:#333; margin-top:10px; font-size:10px;">RESET POSIZIONI</button>
     </div>
 
-    <div class="nav">
-        <div class="nav-btn active" onclick="showPage('hub')">Hub</div>
-        <div class="nav-btn" onclick="showPage('rosa')">Rosa</div>
-        <div class="nav-btn" onclick="showPage('admin')">Admin</div>
+    <div class="card">
+        <h2 style="font-size: 14px;">CONVOCATI</h2>
+        <div id="playerList"></div>
     </div>
 
-    <div id="page-hub" class="page active">
-        <div class="card">
-            <h2>LAVAGNA TATTICA</h2>
-            <div id="tacticalField"></div>
-            <button onclick="renderField()" style="background:#333; font-size:10px; margin-top:8px;">Resetta Posizioni</button>
-        </div>
-        <div class="card">
-            <h2>CONVOCATI <button class="btn-status" onclick="copyInvites()" style="background:#0055ff">COPIA ID</button></h2>
-            <div id="playerList"></div>
-        </div>
-    </div>
-
-    <div id="page-rosa" class="page">
-        <div class="card">
-            <h2>ALMANACCO ROSSONERO</h2>
-            <div id="rosterGrid" class="roster-grid">
-                </div>
-        </div>
-    </div>
-
-    <div id="page-admin" class="page">
-        <div class="card">
-            <h2>AGGIUNGI PLAYER</h2>
-            <input type="text" id="playerName" placeholder="Gamertag / PSN">
-            <select id="role">
-                <option value="ATT">ATT</option><option value="CC">CENTRO</option><option value="DIFESA">DIFESA</option><option value="POR">POR</option>
-            </select>
-            <button onclick="addPlayer()">CONFERMA ACQUISTO</button>
-        </div>
+    <div class="card">
+        <h2 style="font-size: 14px;">AGGIUNGI PLAYER</h2>
+        <input type="text" id="playerName" placeholder="Gamertag">
+        <select id="role">
+            <option value="ATT">ATT</option><option value="CC">CC</option><option value="DIF">DIF</option><option value="POR">POR</option>
+        </select>
+        <button onclick="addPlayer()">AGGIUNGI</button>
     </div>
 
     <script>
-        // Carica dati
         let players = JSON.parse(localStorage.getItem('milanac_players') || "[]");
-        
-        // --- Sostituisci questo link con le foto vere dei tuoi amici ---
-        const placeholderFace = "https://via.placeholder.com/150/333333/ff0000?text=FACCE"; 
 
         function save() { 
             localStorage.setItem('milanac_players', JSON.stringify(players)); 
             render(); 
         }
 
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('page-' + pageId).classList.add('active');
-            event.target.classList.add('active');
-            if(pageId === 'rosa') renderRoster();
-            if(pageId === 'hub') renderField();
-        }
-
         function addPlayer() {
             const name = document.getElementById('playerName').value;
             if (!name) return;
-            // Aggiungiamo il campo 'faceUrl' che potrai modificare manualmente nel localStorage se vuoi
-            players.push({ id: Date.now(), name, role: document.getElementById('role').value, present: false, faceUrl: placeholderFace });
+            players.push({ id: Date.now(), name, role: document.getElementById('role').value, present: false });
             document.getElementById('playerName').value = "";
             save();
-            alert(name + " aggiunto alla rosa!");
         }
 
         function togglePresence(id) {
@@ -124,78 +78,74 @@
             save();
         }
 
-        function copyInvites() {
-            const list = players.filter(p => p.present).map(p => p.name).join(", ");
-            if(!list) return alert("Nessun player online!");
-            navigator.clipboard.writeText(list).then(() => alert("ID copiati negli appunti!"));
-        }
-
-        // Renderizza la lista convocati (Hub)
-        function renderList() {
+        function render() {
+            // Render Lista
             const container = document.getElementById('playerList');
             container.innerHTML = players.map(p => `
                 <div class="player-item ${p.present ? 'present' : ''}">
-                    <div><strong>${p.name}</strong> <small style="color:var(--neon)">${p.role}</small></div>
-                    <button class="btn-status ${p.present ? 'active-in' : ''}" onclick="togglePresence(${p.id})">${p.present ? 'IN LOBBY' : 'OFFLINE'}</button>
+                    <div><strong>${p.name}</strong> <small>(${p.role})</small></div>
+                    <button class="btn-s" style="background:${p.present ? 'var(--neon)':'#444'}" onclick="togglePresence(${p.id})">${p.present ? 'IN':'OUT'}</button>
                 </div>
             `).join('');
-        }
 
-        // Renderizza la Lavagna Tattica (Hub)
-        function renderField() {
+            // Render Tokens sul Campo
             const field = document.getElementById('tacticalField');
             field.innerHTML = '';
             players.filter(p => p.present).forEach((p, index) => {
                 const token = document.createElement('div');
                 token.className = 'player-token';
                 token.innerText = p.name.substring(0, 3).toUpperCase();
-                token.style.left = (10 + (index * 5)) + 'px';
-                token.style.top = (index * 45 + 10) + 'px';
+                token.style.left = '20px';
+                token.style.top = (index * 50 + 20) + 'px';
                 makeDraggable(token);
                 field.appendChild(token);
             });
         }
 
-        // Renderizza l'Almanacco Fotografico (Rosa)
-        function renderRoster() {
-            const grid = document.getElementById('rosterGrid');
-            if(players.length === 0) { grid.innerHTML = "<p style='color:#666; font-size:12px; text-align:center;'>Nessun giocatore in rosa.</p>"; return; }
-            
-            grid.innerHTML = players.map(p => `
-                <div class="player-card">
-                    <img src="${placeholderFace}" alt="${p.name}" class="player-face">
-                    <div class="player-info">
-                        <div class="player-name">${p.name}</div>
-                        <div class="player-role-badge">${p.role}</div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Drag & Drop
         function makeDraggable(el) {
-            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-            el.onmousedown = dragStart;
-            el.ontouchstart = dragStart;
-            function dragStart(e) {
-                const cx = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
-                const cy = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
-                pos3 = cx; pos4 = cy;
-                document.onmouseup = dragEnd; document.ontouchend = dragEnd;
-                document.onmousemove = dragMove; document.ontouchmove = dragMove;
-            }
-            function dragMove(e) {
-                const cx = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
-                const cy = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
-                pos1 = pos3 - cx; pos2 = pos4 - cy;
-                pos3 = cx; pos4 = cy;
-                el.style.top = (el.offsetTop - pos2) + "px"; el.style.left = (el.offsetLeft - pos1) + "px";
-            }
-            function dragEnd() { document.onmouseup = null; document.onmousemove = null; document.ontouchend = null; document.ontouchmove = null; }
+            let active = false;
+            let currentX, currentY, initialX, initialY, xOffset = 0, yOffset = 0;
+
+            const dragStart = (e) => {
+                const clientX = e.type === "touchstart" ? e.touches[0].clientX : e.clientX;
+                const clientY = e.type === "touchstart" ? e.touches[0].clientY : e.clientY;
+                initialX = clientX - xOffset;
+                initialY = clientY - yOffset;
+                if (e.target === el) active = true;
+            };
+
+            const dragEnd = () => {
+                initialX = currentX;
+                initialY = currentY;
+                active = false;
+            };
+
+            const drag = (e) => {
+                if (active) {
+                    e.preventDefault();
+                    const clientX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
+                    const clientY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
+                    currentX = clientX - initialX;
+                    currentY = clientY - initialY;
+                    xOffset = currentX;
+                    yOffset = currentY;
+                    setTranslate(currentX, currentY, el);
+                }
+            };
+
+            const setTranslate = (xPos, yPos, el) => {
+                el.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0)";
+            };
+
+            document.addEventListener("touchstart", dragStart, false);
+            document.addEventListener("touchend", dragEnd, false);
+            document.addEventListener("touchmove", drag, { passive: false });
+            document.addEventListener("mousedown", dragStart, false);
+            document.addEventListener("mouseup", dragEnd, false);
+            document.addEventListener("mousemove", drag, false);
         }
 
-        function render() { renderList(); }
-        window.onload = function() { render(); renderField(); };
+        window.onload = render;
     </script>
 </body>
 </html>
