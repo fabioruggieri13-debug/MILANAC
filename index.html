@@ -3,149 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MILANAC - Tactical Hub</title>
+    <title>MILANAC Pro Hub</title>
     <style>
-        :root { --neon: #ff0000; --bg: #050505; --card: #141414; --field: #0a2e18; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; padding: 15px; overflow-x: hidden; touch-action: manipulation; }
-        .card { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid #222; }
-        h1 { color: var(--neon); text-align: center; letter-spacing: 3px; font-size: 1.5rem; text-shadow: 0 0 10px var(--neon); }
+        :root { --neon: #ff0000; --bg: #0a0a0a; --card: #161616; --field: #0e351d; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; padding: 0; overflow: hidden; }
         
-        /* CAMPO TATTICO */
-        #tacticalField { 
-            width: 100%; height: 380px; background: var(--field); border-radius: 8px; position: relative; 
-            border: 2px solid rgba(255,255,255,0.2); overflow: hidden; touch-action: none;
-            background-image: radial-gradient(circle at 50% 50%, transparent 18%, rgba(255,255,255,0.1) 19%, transparent 20%), 
-                              linear-gradient(to bottom, transparent 49%, rgba(255,255,255,0.1) 50%, transparent 51%);
-        }
-        .player-token { 
-            width: 45px; height: 45px; background: var(--neon); color: white; border-radius: 50%; 
-            position: absolute; display: flex; align-items: center; justify-content: center; 
-            font-size: 11px; font-weight: bold; cursor: move; touch-action: none; 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.6); z-index: 100; border: 2px solid white;
-        }
+        /* Navigazione Inferiore */
+        .tab-bar { position: fixed; bottom: 0; width: 100%; background: #111; display: flex; border-top: 1px solid #333; height: 65px; z-index: 1000; }
+        .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; color: #666; text-transform: uppercase; font-weight: bold; }
+        .tab-item.active { color: var(--neon); }
+        .tab-icon { font-size: 20px; margin-bottom: 2px; }
 
-        /* UI GENERALE */
-        input, select, button { width: 100%; padding: 12px; margin: 5px 0; border-radius: 6px; border: none; box-sizing: border-box; font-size: 14px; background: #222; color: white; }
-        button { background: var(--neon); color: white; font-weight: bold; cursor: pointer; }
-        .player-item { background: #1a1a1a; padding: 10px; margin: 5px 0; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #444; }
-        .present { border-left-color: var(--neon); background: #1f1111; }
-        .btn-s { width: auto; padding: 6px 12px; font-size: 11px; }
+        /* Pagine */
+        .page { display: none; height: calc(100vh - 65px); overflow-y: auto; padding: 20px; box-sizing: border-box; }
+        .page.active { display: block; }
+
+        /* Componenti */
+        .card { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid #222; }
+        h1 { color: var(--neon); text-align: center; margin: 0 0 15px 0; font-size: 1.8rem; text-shadow: 0 0 8px var(--neon); }
+        button { background: var(--neon); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; width: 100%; margin: 5px 0; }
+        
+        /* Lavagna Tattica */
+        #tacticalField { width: 100%; height: 75vh; background: var(--field); border-radius: 10px; position: relative; border: 2px solid white; overflow: hidden; touch-action: none; background-image: radial-gradient(circle at 50% 50%, transparent 15%, rgba(255,255,255,0.1) 16%, transparent 17%); }
+        .player-token { width: 45px; height: 45px; background: var(--neon); color: white; border-radius: 50%; position: absolute; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index: 10; touch-action: none; }
+
+        /* Lista e Rosa */
+        .player-row { display: flex; justify-content: space-between; align-items: center; background: #1e1e1e; padding: 10px; border-radius: 8px; margin-bottom: 5px; }
+        .roster-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .roster-card { background: #1a1a1a; border-radius: 10px; text-align: center; padding: 10px; border: 1px solid #333; }
+        .face-placeholder { width: 60px; height: 60px; background: #333; border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; color: var(--neon); font-size: 20px; }
     </style>
 </head>
 <body>
 
-    <h1>MILANAC</h1>
+    <div id="hub" class="page active">
+        <h1>MILANAC</h1>
+        <div class="card">
+            <h2 style="font-size: 14px;">SESSIONE ATTIVA</h2>
+            <div id="activeList"></div>
+        </div>
+    </div>
 
-    <div class="card">
-        <h2 style="font-size: 14px; color: var(--neon);">LAVAGNA TATTICA (Trascina i Player)</h2>
+    <div id="tactic" class="page" style="padding: 10px;">
         <div id="tacticalField"></div>
-        <button onclick="location.reload()" style="background:#333; margin-top:10px; font-size:10px;">RESET POSIZIONI</button>
+        <button onclick="location.reload()" style="background:#333; margin-top:5px; font-size:10px;">RESET POSIZIONI</button>
     </div>
 
-    <div class="card">
-        <h2 style="font-size: 14px;">CONVOCATI</h2>
-        <div id="playerList"></div>
+    <div id="rosa" class="page">
+        <h2>ALMANACCO</h2>
+        <div id="rosterGrid" class="roster-grid"></div>
     </div>
 
-    <div class="card">
-        <h2 style="font-size: 14px;">AGGIUNGI PLAYER</h2>
-        <input type="text" id="playerName" placeholder="Gamertag">
-        <select id="role">
-            <option value="ATT">ATT</option><option value="CC">CC</option><option value="DIF">DIF</option><option value="POR">POR</option>
-        </select>
-        <button onclick="addPlayer()">AGGIUNGI</button>
+    <div id="admin" class="page">
+        <h2>GESTIONE CLUB</h2>
+        <div class="card">
+            <input type="text" id="pName" placeholder="Gamertag">
+            <select id="pRole">
+                <option value="ATT">ATT</option><option value="CC">CC</option><option value="DIF">DIF</option><option value="POR">POR</option>
+            </select>
+            <button onclick="addPlayer()">AGGIUNGI PLAYER</button>
+        </div>
+        <div id="fullListAdmin"></div>
     </div>
-
-    <script>
-        let players = JSON.parse(localStorage.getItem('milanac_players') || "[]");
-
-        function save() { 
-            localStorage.setItem('milanac_players', JSON.stringify(players)); 
-            render(); 
-        }
-
-        function addPlayer() {
-            const name = document.getElementById('playerName').value;
-            if (!name) return;
-            players.push({ id: Date.now(), name, role: document.getElementById('role').value, present: false });
-            document.getElementById('playerName').value = "";
-            save();
-        }
-
-        function togglePresence(id) {
-            const p = players.find(x => x.id === id);
-            p.present = !p.present;
-            save();
-        }
-
-        function render() {
-            // Render Lista
-            const container = document.getElementById('playerList');
-            container.innerHTML = players.map(p => `
-                <div class="player-item ${p.present ? 'present' : ''}">
-                    <div><strong>${p.name}</strong> <small>(${p.role})</small></div>
-                    <button class="btn-s" style="background:${p.present ? 'var(--neon)':'#444'}" onclick="togglePresence(${p.id})">${p.present ? 'IN':'OUT'}</button>
-                </div>
-            `).join('');
-
-            // Render Tokens sul Campo
-            const field = document.getElementById('tacticalField');
-            field.innerHTML = '';
-            players.filter(p => p.present).forEach((p, index) => {
-                const token = document.createElement('div');
-                token.className = 'player-token';
-                token.innerText = p.name.substring(0, 3).toUpperCase();
-                token.style.left = '20px';
-                token.style.top = (index * 50 + 20) + 'px';
-                makeDraggable(token);
-                field.appendChild(token);
-            });
-        }
-
-        function makeDraggable(el) {
-            let active = false;
-            let currentX, currentY, initialX, initialY, xOffset = 0, yOffset = 0;
-
-            const dragStart = (e) => {
-                const clientX = e.type === "touchstart" ? e.touches[0].clientX : e.clientX;
-                const clientY = e.type === "touchstart" ? e.touches[0].clientY : e.clientY;
-                initialX = clientX - xOffset;
-                initialY = clientY - yOffset;
-                if (e.target === el) active = true;
-            };
-
-            const dragEnd = () => {
-                initialX = currentX;
-                initialY = currentY;
-                active = false;
-            };
-
-            const drag = (e) => {
-                if (active) {
-                    e.preventDefault();
-                    const clientX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
-                    const clientY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
-                    currentX = clientX - initialX;
-                    currentY = clientY - initialY;
-                    xOffset = currentX;
-                    yOffset = currentY;
-                    setTranslate(currentX, currentY, el);
-                }
-            };
-
-            const setTranslate = (xPos, yPos, el) => {
-                el.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0)";
-            };
-
-            document.addEventListener("touchstart", dragStart, false);
-            document.addEventListener("touchend", dragEnd, false);
-            document.addEventListener("touchmove", drag, { passive: false });
-            document.addEventListener("mousedown", dragStart, false);
-            document.addEventListener("mouseup", dragEnd, false);
-            document.addEventListener("mousemove", drag, false);
-        }
-
-        window.onload = render;
-    </script>
-</body>
-</html>
