@@ -3,204 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MILANAC</title>
+    <title>MILANAC V22</title>
     <style>
-        :root { --red: #ff0000; --bg: #000; --card: #121212; }
-        body, html { margin: 0; padding: 0; background: #000; color: white; font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; }
+        :root { --red: #ff0000; --bg: #000; --field: #1a431e; }
+        body, html { margin: 0; padding: 0; background: var(--bg); color: var(--red); font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; }
 
-        /* SCHERMATA INTRO */
-        #intro { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: #000; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; z-index: 10000; text-align: center;
-        }
-        .intro-btn { 
-            background: var(--red); color: white; border: none; padding: 20px 30px; 
-            font-size: 1.2rem; font-weight: 900; border-radius: 50px; cursor: pointer;
-            box-shadow: 0 0 20px var(--red); text-transform: uppercase;
-        }
+        /* INTRO */
+        #intro { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; }
+        .intro-btn { background: var(--red); color: black; border: none; padding: 20px; font-size: 1.1rem; font-weight: 900; border-radius: 50px; cursor: pointer; box-shadow: 0 0 20px var(--red); text-transform: uppercase; }
 
-        /* HEADER E MENÙ A TENDINA */
-        header { 
-            height: 60px; background: #0a0a0a; border-bottom: 2px solid var(--red); 
-            display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
-        }
+        header { height: 60px; background: #0a0a0a; border-bottom: 2px solid var(--red); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+        header div { font-weight: 900; color: var(--red); letter-spacing: 2px; }
         .burger { font-size: 28px; cursor: pointer; color: var(--red); }
-        .dropdown { 
-            position: absolute; top: 60px; right: 0; background: #111; width: 200px; 
-            display: none; flex-direction: column; border: 1px solid var(--red); z-index: 5000;
-        }
-        .dropdown button { 
-            background: none; border: none; color: white; padding: 15px; 
-            text-align: left; border-bottom: 1px solid #222; font-size: 16px; 
-        }
+        
+        .dropdown { position: absolute; top: 60px; right: 0; background: #000; width: 200px; display: none; flex-direction: column; border: 1px solid var(--red); z-index: 5000; }
+        .dropdown button { background: none; border: none; color: var(--red); padding: 15px; text-align: left; border-bottom: 1px solid #222; font-weight: bold; }
 
-        /* CONTENUTO */
         .content { height: calc(100vh - 60px); overflow-y: auto; padding: 15px; }
         .page { display: none; } .page.active { display: block; }
 
-        /* CAMPO DA CALCIO */
+        /* LAVAGNA TATTICA */
         #campo-container { 
-            width: 100%; height: 400px; background: #1e4d2b; border: 3px solid white; 
+            width: 100%; height: 450px; background: var(--field); border: 2px solid var(--red); 
             border-radius: 10px; position: relative; overflow: hidden; touch-action: none;
-            background-image: linear-gradient(rgba(255,255,255,0.1) 2px, transparent 2px); background-size: 100% 40px;
+            background-image: repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(0,0,0,0.1) 40px, rgba(0,0,0,0.1) 80px);
         }
-        .player-name-tag { 
-            position: absolute; background: var(--red); color: white; padding: 5px 10px; 
-            border-radius: 5px; font-size: 10px; font-weight: bold; border: 1px solid white;
-            white-space: nowrap; z-index: 100;
+        .linea-meta { position: absolute; top: 50%; width: 100%; height: 2px; background: var(--red); opacity: 0.5; }
+        .cerchio-meta { position: absolute; top: 50%; left: 50%; width: 70px; height: 70px; border: 2px solid var(--red); border-radius: 50%; transform: translate(-50%, -50%); opacity: 0.5; }
+        .area { position: absolute; left: 20%; width: 60%; height: 50px; border: 2px solid var(--red); opacity: 0.5; }
+        .area.top { top: 0; border-top: none; } .area.bottom { bottom: 0; border-bottom: none; }
+        .porta { position: absolute; left: 35%; width: 30%; height: 5px; background: var(--red); }
+        .porta.top { top: 0; } .porta.bottom { bottom: 0; }
+
+        .tag-player { 
+            position: absolute; background: #000; color: var(--red); padding: 5px 10px; 
+            border-radius: 4px; font-size: 11px; font-weight: 900; border: 1px solid var(--red);
+            white-space: nowrap; z-index: 100; box-shadow: 0 0 10px rgba(255,0,0,0.3);
         }
 
-        /* NOTIZIE */
-        .news-box { background: #1a1a1a; padding: 15px; border-radius: 10px; border-left: 4px solid var(--red); margin-bottom: 10px; }
-        .news-date { color: var(--red); font-size: 12px; font-weight: bold; }
-
-        /* CARTA FC26 */
-        .fc-card {
-            width: 260px; height: 350px; margin: 10px auto; background: linear-gradient(135deg, #000 0%, #ff0000 50%, #000 100%);
-            clip-path: polygon(10% 0, 90% 0, 100% 15%, 100% 85%, 50% 100%, 0 85%, 0 15%);
-            position: relative; padding: 2px;
-        }
-        .fc-inner { background: #000; height: 100%; width: 100%; clip-path: inherit; position: relative; text-align: center; }
-
-        .card-ui { background: #111; border-radius: 12px; padding: 15px; margin-bottom: 10px; border: 1px solid #222; }
-        button.action { background: var(--red); color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; font-weight: bold; }
-        input, select { width: 100%; padding: 12px; background: #1a1a1a; border: 1px solid #333; color: #fff; border-radius: 8px; margin-bottom: 8px; box-sizing: border-box; }
+        /* UI COMPONENTI */
+        .card-ui { background: #080808; border-radius: 12px; padding: 15px; margin-bottom: 10px; border: 1px solid #1a1a1a; color: var(--red); }
+        h1, h3, h4 { color: var(--red); text-align: center; text-transform: uppercase; margin-top: 0; }
+        button.primary { background: var(--red); color: black; border: none; padding: 12px; border-radius: 8px; width: 100%; font-weight: 900; text-transform: uppercase; cursor: pointer; }
+        input, select { width: 100%; padding: 12px; background: #000; border: 1px solid var(--red); color: var(--red); border-radius: 8px; margin-bottom: 8px; box-sizing: border-box; }
+        
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center; font-size: 13px; margin-top: 10px; border-top: 1px solid #222; padding-top: 10px; }
+        .voto-badge { border: 1px solid var(--red); color: var(--red); padding: 2px 8px; border-radius: 20px; font-weight: bold; font-size: 12px; }
+        
+        label { font-size: 12px; font-weight: bold; display: block; margin-bottom: 3px; }
     </style>
 </head>
 <body>
 
     <div id="intro">
-        <h1 style="color:var(--red); font-size: 3rem; margin-bottom: 10px;">MILANAC</h1>
+        <h1 style="font-size: 3.5rem; margin-bottom: 20px;">MILANAC</h1>
         <button class="intro-btn" onclick="closeIntro()">MILANAC la web app dei giocatori</button>
     </div>
 
     <header>
-        <div style="font-weight: 900; color: var(--red); letter-spacing: 2px;">MILANAC</div>
+        <div>MILANAC</div>
         <div class="burger" onclick="toggleMenu()">☰</div>
         <div class="dropdown" id="menu">
             <button onclick="tab('h')">GIOCATORI</button>
-            <button onclick="tab('t')">CAMPO TATTICO</button>
+            <button onclick="tab('t')">LAVAGNA TATTICA</button>
             <button onclick="tab('n')">NOTIZIE</button>
-            <button onclick="tab('p')">LA MIA CARTA</button>
             <button onclick="tab('s')">STATISTICHE</button>
             <button onclick="tab('a')">ADMIN</button>
         </div>
     </header>
 
     <div class="content">
-        <div id="pg-n" class="page">
-            <h1>NEWS DEL CLUB</h1>
-            <div id="news-list">
-                <div class="news-box">
-                    <span class="news-date">OGGI</span>
-                    <h3>Aggiornamento App V19</h3>
-                    <p>Intro personalizzata e nuovo menù a tendina attivato!</p>
-                </div>
-            </div>
-        </div>
-
         <div id="pg-h" class="page active">
-            <h1>LISTA GIOCATORI</h1>
+            <h1>SQUADRA</h1>
             <div id="list-h"></div>
         </div>
 
         <div id="pg-t" class="page">
-            <h1>CAMPO TATTICO</h1>
-            <div id="campo-container"><div id="nomi-campo"></div></div>
-            <button class="action" onclick="render()" style="margin-top:10px; background:#222;">RESET POSIZIONI</button>
+            <h1>LAVAGNA TATTICA</h1>
+            <div id="campo-container">
+                <div class="porta top"></div>
+                <div class="area top"></div>
+                <div class="linea-meta"></div>
+                <div class="cerchio-meta"></div>
+                <div class="area bottom"></div>
+                <div class="porta bottom"></div>
+                <div id="nomi-campo"></div>
+            </div>
+            <button class="primary" onclick="render()" style="background:#111; color: var(--red); border: 1px solid var(--red); margin-top:10px;">RESET POSIZIONI</button>
         </div>
 
-        <div id="pg-p" class="page">
-            <h1>LA MIA CARTA</h1>
-            <div class="fc-card"><div class="fc-inner">
-                <div id="c-ovr" style="font-size:50px; color:red; font-weight:900; position:absolute; top:30px; left:25px;">--</div>
-                <div id="c-name" style="margin-top:170px; font-size:24px; font-weight:900; border-bottom:2px solid red; display:inline-block; width:80%;">PLAYER</div>
-                <div style="display:flex; justify-content:center; gap:20px; margin-top:20px;">
-                    <div><div id="c-gol" style="color:red; font-size:20px; font-weight:bold;">0</div>GOL</div>
-                    <div><div id="c-match" style="color:red; font-size:20px; font-weight:bold;">0</div>GARE</div>
-                </div>
-            </div></div>
-            <button class="action" onclick="setUser()" style="margin-top:15px;">CHI SEI?</button>
+        <div id="pg-n" class="page">
+            <h1>NOTIZIE</h1>
+            <div id="news-list">
+                <div class="card-ui"><b>STILE AGGIORNATO:</b> Ora l'interfaccia è 100% Rossonera con testo rosso su sfondo nero.</div>
+            </div>
         </div>
 
         <div id="pg-s" class="page">
-            <h1>STATISTICHE</h1>
-            <div class="card-ui">MVP: <span id="club-potm" style="color:gold;">---</span></div>
-            <div class="card-ui">GOL TOTALI: <span id="club-gol">0</span></div>
+            <h1>CLASSIFICHE</h1>
+            <div id="list-stats"></div>
         </div>
 
         <div id="pg-a" class="page">
-            <h1>ADMIN</h1>
-            <input type="password" id="pw" placeholder="Password"><button class="action" onclick="auth()">ENTRA</button>
-            <div id="adm-ui" style="display:none; margin-top:15px;">
-                <input type="text" id="add-n" placeholder="Nome">
-                <button class="action" onclick="add()">AGGIUNGI GIOCATORE</button>
-                <div id="list-adm" style="margin-top:15px;"></div>
+            <h1>ADMIN PANEL</h1>
+            <input type="password" id="pw" placeholder="Inserisci Password">
+            <button class="primary" onclick="auth()">ENTRA</button>
+            
+            <div id="adm-ui" style="display:none; margin-top:20px;">
+                <div class="card-ui">
+                    <h3>NUOVO GIOCATORE</h3>
+                    <input type="text" id="add-n" placeholder="Nome Giocatore">
+                    <button class="primary" onclick="add()">SALVA NELLA ROSA</button>
+                </div>
+                <div id="adm-list-players"></div>
             </div>
         </div>
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('m_v19') || '{"players":[], "potm":"---", "gol":0}');
+        let db = JSON.parse(localStorage.getItem('m_v22') || '{"players":[]}');
 
         function closeIntro() { document.getElementById('intro').style.display = 'none'; render(); }
         function toggleMenu() { let m = document.getElementById('menu'); m.style.display = m.style.display === 'flex' ? 'none' : 'flex'; }
-
         function tab(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById('pg-'+id).classList.add('active');
-            toggleMenu();
-            render();
+            toggleMenu(); render();
         }
 
         function auth() { if(document.getElementById('pw').value === "milan") document.getElementById('adm-ui').style.display='block'; }
         function add() {
             const n = document.getElementById('add-n').value;
-            if(n) db.players.push({id: Date.now(), n, in: false, g:0, m:0});
+            if(n) db.players.push({id: Date.now(), n, in: false, g:0, a:0, m:0, mvp:0, voti:[]});
             save();
         }
-        function toggle(id) {
-            const p = db.players.find(x => x.id === id); p.in = !p.in;
-            if(p.in) p.m++; save();
+        function editStat(id, key, val) {
+            const p = db.players.find(x => x.id === id);
+            p[key] = parseInt(val) || 0; save();
         }
-        function setUser() {
-            const n = prompt("Tuo Nome:");
-            const p = db.players.find(x => x.n.toLowerCase() === n.toLowerCase());
-            if(p) { localStorage.setItem('my_id', p.id); render(); }
+        function addVoto(id) {
+            const v = prompt("Voto partita:");
+            if(v) { const p = db.players.find(x => x.id === id); p.voti.push(parseFloat(v)); save(); }
         }
-        function save() { localStorage.setItem('m_v19', JSON.stringify(db)); render(); }
+        function toggle(id) { const p = db.players.find(x=>x.id===id); p.in = !p.in; save(); }
+        function save() { localStorage.setItem('m_v22', JSON.stringify(db)); render(); }
 
         function render() {
-            document.getElementById('list-h').innerHTML = db.players.map(p => `
-                <div class="card-ui" style="display:flex; justify-content:space-between; align-items:center;">
-                    <span>${p.n.toUpperCase()}</span>
-                    <button onclick="toggle(${p.id})" style="width:auto; padding:10px; background:${p.in?'red':'#333'}; color:white; border:none; border-radius:5px;">${p.in?'IN':'OUT'}</button>
-                </div>
-            `).join('');
+            // Home Lista
+            document.getElementById('list-h').innerHTML = db.players.map(p => {
+                const media = p.voti.length ? (p.voti.reduce((a,b)=>a+b,0)/p.voti.length).toFixed(2) : "N.V.";
+                return `
+                <div class="card-ui" style="border-color: ${p.in?'var(--red)':'#1a1a1a'}">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:18px; font-weight:900;">${p.n.toUpperCase()}</span>
+                        <span class="voto-badge">MEDIA: ${media}</span>
+                    </div>
+                    <div class="stat-grid">
+                        <span>GOL: ${p.g}</span><span>ASSIST: ${p.a || 0}</span>
+                        <span>GARE: ${p.m}</span><span>MVP: ${p.mvp}</span>
+                    </div>
+                    <button class="primary" onclick="toggle(${p.id})" style="margin-top:10px; background:${p.in?'var(--red)':'#111'}; color:${p.in?'black':'var(--red)'}; border:1px solid var(--red)">${p.in?'CONVOCATO':'NON CONVOCATO'}</button>
+                </div>`;
+            }).join('');
 
+            // Lavagna
             const campo = document.getElementById('nomi-campo'); campo.innerHTML = '';
             db.players.filter(p => p.in).forEach((p, i) => {
-                const d = document.createElement('div'); d.className = 'player-name-tag'; d.innerText = p.n.toUpperCase();
-                d.style.left = '20px'; d.style.top = (i * 35 + 10) + 'px'; campo.appendChild(d);
+                const d = document.createElement('div'); d.className = 'tag-player'; d.innerText = p.n.toUpperCase();
+                d.style.left = '30px'; d.style.top = (i * 40 + 70) + 'px'; campo.appendChild(d);
                 d.addEventListener('touchmove', e => {
                     e.preventDefault(); let t = e.touches[0]; let r = document.getElementById('campo-container').getBoundingClientRect();
-                    d.style.left = (t.pageX - r.left - 30) + 'px'; d.style.top = (t.pageY - r.top - 15) + 'px';
+                    d.style.left = (t.pageX - r.left - 40) + 'px'; d.style.top = (t.pageY - r.top - 15) + 'px';
                 });
             });
 
-            const me = db.players.find(x => x.id == localStorage.getItem('my_id'));
-            if(me) {
-                document.getElementById('c-name').innerText = me.n;
-                document.getElementById('c-gol').innerText = me.g;
-                document.getElementById('c-match').innerText = me.m;
-                document.getElementById('c-ovr').innerText = 70 + me.m;
-            }
-            document.getElementById('club-potm').innerText = db.potm;
-            document.getElementById('club-gol').innerText = db.gol;
-            document.getElementById('list-adm').innerHTML = db.players.map(p => `
-                <div class="card-ui">${p.n} <button onclick="db.players=db.players.filter(x=>x.id!=${p.id});save()" style="float:right; background:red; color:white; border:none;">X</button></div>
+            // Admin
+            document.getElementById('adm-list-players').innerHTML = db.players.map(p => `
+                <div class="card-ui">
+                    <h4>MODIFICA ${p.n.toUpperCase()}</h4>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                        <label>GOL <input type="number" onchange="editStat(${p.id},'g',this.value)" value="${p.g}"></label>
+                        <label>ASSIST <input type="number" onchange="editStat(${p.id},'a',this.value)" value="${p.a || 0}"></label>
+                        <label>GARE <input type="number" onchange="editStat(${p.id},'m',this.value)" value="${p.m}"></label>
+                        <label>MVP <input type="number" onchange="editStat(${p.id},'mvp',this.value)" value="${p.mvp}"></label>
+                    </div>
+                    <button class="primary" onclick="addVoto(${p.id})" style="background:none; color:var(--red); border:1px solid var(--red); margin: 10px 0;">+ AGGIUNGI VOTO</button>
+                    <button class="primary" onclick="db.players=db.players.filter(x=>x.id!=${p.id});save()" style="background:#200; color:var(--red); font-size:10px;">ELIMINA GIOCATORE</button>
+                </div>
             `).join('');
+
+            // Statistiche
+            document.getElementById('list-stats').innerHTML = [...db.players]
+                .sort((a,b) => (b.g + (b.a||0)) - (a.g + (a.a||0)))
+                .map(p => `<div class="card-ui" style="display:flex; justify-content:space-between;"><span>${p.n.toUpperCase()}</span> <b>${p.g} G / ${p.a || 0} A</b></div>`).join('');
         }
     </script>
 </body>
