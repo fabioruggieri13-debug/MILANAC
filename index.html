@@ -65,3 +65,99 @@
         </div>
         <div id="fullListAdmin"></div>
     </div>
+
+    <div class="tab-bar">
+        <div class="tab-item active" onclick="switchPage('hub', this)"><span>🏠</span>HUB</div>
+        <div class="tab-item" onclick="switchPage('tactic', this)"><span>📋</span>TACTIC</div>
+        <div class="tab-item" onclick="switchPage('rosa', this)"><span>👤</span>ROSA</div>
+        <div class="tab-item" onclick="switchPage('admin', this)"><span>⚙️</span>ADMIN</div>
+    </div>
+
+    <script>
+        let players = JSON.parse(localStorage.getItem('milanac_v2') || "[]");
+
+        function switchPage(pageId, el) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            el.classList.add('active');
+            render();
+        }
+
+        function addPlayer() {
+            const name = document.getElementById('pName').value;
+            if(!name) return;
+            players.push({ id: Date.now(), name, role: document.getElementById('pRole').value, present: false });
+            document.getElementById('pName').value = "";
+            save();
+        }
+
+        function toggle(id) {
+            const p = players.find(x => x.id === id);
+            p.present = !p.present;
+            save();
+        }
+
+        function remove(id) {
+            players = players.filter(x => x.id !== id);
+            save();
+        }
+
+        function save() {
+            localStorage.setItem('milanac_v2', JSON.stringify(players));
+            render();
+        }
+
+        function render() {
+            // Render Hub
+            document.getElementById('activeList').innerHTML = players.map(p => `
+                <div class="player-row">
+                    <span>${p.name} <small>(${p.role})</small></span>
+                    <button class="tab-icon" style="width:auto; padding:5px; background:${p.present?'var(--neon)':'#333'}" onclick="toggle(${p.id})">${p.present?'✅':'❌'}</button>
+                </div>
+            `).join('');
+
+            // Render Tactic
+            const field = document.getElementById('tacticalField');
+            field.innerHTML = '';
+            players.filter(p => p.present).forEach((p, index) => {
+                const token = document.createElement('div');
+                token.className = 'player-token';
+                token.innerText = p.name.substring(0, 3).toUpperCase();
+                token.style.left = '20px';
+                token.style.top = (index * 55 + 20) + 'px';
+                makeDraggable(token);
+                field.appendChild(token);
+            });
+
+            // Render Rosa
+            document.getElementById('rosterGrid').innerHTML = players.map(p => `
+                <div class="roster-card">
+                    <div class="face-placeholder">⚽</div>
+                    <b>${p.name}</b><br><small>${p.role}</small>
+                </div>
+            `).join('');
+
+            // Render Admin
+            document.getElementById('fullListAdmin').innerHTML = players.map(p => `
+                <div class="player-row">
+                    <span>${p.name}</span>
+                    <button onclick="remove(${p.id})" style="width:auto; background:grey; padding:5px 10px;">ELIMINA</button>
+                </div>
+            `).join('');
+        }
+
+        function makeDraggable(el) {
+            let x = 0, y = 0;
+            el.ontouchmove = e => {
+                e.preventDefault();
+                let touch = e.touches[0];
+                el.style.left = (touch.pageX - 22) + 'px';
+                el.style.top = (touch.pageY - 22) + 'px';
+            }
+        }
+
+        window.onload = render;
+    </script>
+</body>
+</html>
