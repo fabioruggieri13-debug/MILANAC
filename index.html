@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MILANAC PROCLUB V74</title>
+    <title>MILANAC PROCLUB V77</title>
     <style>
         :root { --rosso: #C61C23; --nero: #000; --scuro: #121212; --oro: #D4AF37; --ciano: #00e5ff; --erba: #2e7d32; --erba-scura: #1b5e20; }
         body, html { margin: 0; padding: 0; background: var(--nero); color: white; font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; }
@@ -38,8 +38,8 @@
         .tag-premio { font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 900; text-transform: uppercase; margin-right: 5px; }
         .potm { background: var(--oro); color: black; } .mvp { background: var(--ciano); color: black; }
 
-        /* --- CAMPO TATTICO RIPRISTINATO --- */
-        .pitch-box { width: 100%; display: flex; justify-content: center; padding: 10px 0; }
+        /* --- CAMPO TATTICO --- */
+        .pitch-box { width: 100%; display: flex; flex-direction: column; align-items: center; padding: 10px 0; }
         #pitch { 
             width: 90vw; height: 130vw; max-height: 520px; background: var(--erba); border: 3px solid #fff; border-radius: 5px; position: relative; overflow: hidden; touch-action: none;
             background-image: repeating-linear-gradient(0deg, var(--erba), var(--erba) 45px, var(--erba-scura) 45px, var(--erba-scura) 90px);
@@ -47,12 +47,16 @@
         .linea-metà { position: absolute; top: 50%; width: 100%; height: 2px; background: #fff; opacity: 0.7; }
         .cerchio-centrale { position: absolute; top: 50%; left: 50%; width: 80px; height: 80px; border: 2px solid #fff; border-radius: 50%; transform: translate(-50%, -50%); opacity: 0.7; }
         .area-r { position: absolute; width: 55%; height: 16%; border: 2px solid #fff; left: 22.5%; }
-        .area-t { top: -2px; border-top: none; } 
-        .area-b { bottom: -2px; border-bottom: none; }
+        .area-t { top: -2px; border-top: none; } .area-b { bottom: -2px; border-bottom: none; }
 
-        .pedina { position: absolute; width: 55px; text-align: center; z-index: 100; cursor: move; }
+        .pedina { position: absolute; width: 55px; text-align: center; z-index: 100; transition: left 0.5s ease, top 0.5s ease; }
         .maglia { width: 40px; height: 40px; background: #000; border: 2px solid var(--rosso); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin: 0 auto; box-shadow: 0 4px 8px rgba(0,0,0,0.5); font-size: 14px; }
         .nome-p { background: rgba(0,0,0,0.8); font-size: 9px; padding: 2px 5px; border-radius: 3px; margin-top: 3px; display: inline-block; font-weight: bold; white-space: nowrap; }
+
+        /* --- MODULI RAPIDI (NELLA LAVAGNA) --- */
+        .box-moduli-lavagna { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 15px; justify-content: center; width: 100%; }
+        .btn-modulo { background: #333; color: white; border: 1px solid var(--rosso); padding: 8px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
+        .btn-modulo:active { background: var(--rosso); }
 
         input, textarea { width: 100%; padding: 12px; background: #0a0a0a; border: 1px solid #333; color: white; margin-bottom: 10px; border-radius: 6px; }
         .btn-milanac { background: var(--rosso); color: white; border: none; padding: 14px; border-radius: 8px; width: 100%; font-weight: 900; text-transform: uppercase; cursor: pointer; }
@@ -88,6 +92,13 @@
 
         <div id="p-tattica" class="pagina">
             <h2 style="text-align:center">LAVAGNA</h2>
+            <div class="box-moduli-lavagna">
+                <button class="btn-modulo" onclick="setModulo('442')">4-4-2</button>
+                <button class="btn-modulo" onclick="setModulo('4222')">4-2-2-2</button>
+                <button class="btn-modulo" onclick="setModulo('433')">4-3-3</button>
+                <button class="btn-modulo" onclick="setModulo('4231')">4-2-3-1</button>
+                <button class="btn-modulo" onclick="setModulo('352')">3-5-2</button>
+            </div>
             <div class="pitch-box">
                 <div id="pitch">
                     <div class="area-r area-t"></div>
@@ -134,16 +145,29 @@
 
     <script>
         let db = { ps: [], ns: [] };
-        function load() { const saved = localStorage.getItem('milanac_v74'); if(saved) db = JSON.parse(saved); }
+        function load() { const saved = localStorage.getItem('milanac_v77'); if(saved) db = JSON.parse(saved); }
         function entra() { document.getElementById('intro').style.display='none'; render(); }
         function toggleNav() { const n = document.getElementById('nav'); n.style.display = (n.style.display==='flex')?'none':'flex'; }
         function vai(p) { document.querySelectorAll('.pagina').forEach(x=>x.classList.remove('attiva')); document.getElementById('p-'+p).classList.add('attiva'); toggleNav(); render(); }
         function login() { if(document.getElementById('pass-admin').value === 'milan') document.getElementById('box-admin').style.display='block'; }
-        function save() { localStorage.setItem('milanac_v74', JSON.stringify(db)); render(); }
+        function save() { localStorage.setItem('milanac_v77', JSON.stringify(db)); render(); }
 
         function addP() { const n = document.getElementById('n-nome').value, m = document.getElementById('n-maglia').value; if(n && m) { db.ps.push({id:Date.now(), n, m, p:0, g:0, a:0, v:[], potm:0, mvp:0, in:false}); save(); } }
         function addN() { const t = document.getElementById('n-tit').value, c = document.getElementById('n-cor').value; if(t && c) { db.ns.unshift({t, c, d: new Date().toLocaleDateString()}); save(); } }
         function getV(p) { let b = 10 + (p.g*5) + (p.a*3) + (p.p*1) + (p.potm*10) + (p.mvp*15); if(p.v.length > 0) b *= ((p.v.reduce((a,b)=>a+b,0)/p.v.length)/6); return b.toFixed(1); }
+
+        function setModulo(m) {
+            const convocati = document.querySelectorAll('.pedina');
+            if (convocati.length < 11) { alert("Convocane 11 per il modulo completo."); }
+            const coords = {
+                '442': [{x:45,y:85},{x:15,y:70},{x:35,y:72},{x:55,y:72},{x:75,y:70},{x:15,y:45},{x:35,y:48},{x:55,y:48},{x:75,y:45},{x:35,y:20},{x:55,y:20}],
+                '4222': [{x:45,y:85},{x:15,y:70},{x:35,y:72},{x:55,y:72},{x:75,y:70},{x:30,y:52},{x:60,y:52},{x:30,y:40},{x:60,y:40},{x:35,y:20},{x:55,y:20}],
+                '433': [{x:45,y:85},{x:15,y:70},{x:35,y:72},{x:55,y:72},{x:75,y:70},{x:25,y:50},{x:45,y:55},{x:65,y:50},{x:15,y:25},{x:45,y:15},{x:75,y:25}],
+                '4231': [{x:45,y:85},{x:15,y:70},{x:35,y:72},{x:55,y:72},{x:75,y:70},{x:35,y:55},{x:55,y:55},{x:20,y:38},{x:45,y:38},{x:70,y:38},{x:45,y:18}],
+                '352': [{x:45,y:85},{x:25,y:72},{x:45,y:72},{x:65,y:72},{x:10,y:48},{x:30,y:52},{x:45,y:55},{x:60,y:52},{x:80,y:48},{x:35,y:20},{x:55,y:20}]
+            };
+            convocati.forEach((p, i) => { if(coords[m] && coords[m][i]) { p.style.left = coords[m][i].x + '%'; p.style.top = coords[m][i].y + '%'; } });
+        }
 
         function render() {
             document.getElementById('lista-rosa').innerHTML = db.ps.map(p => `
@@ -162,7 +186,7 @@
 
             const campo = document.getElementById('pedine-campo'); campo.innerHTML = '';
             db.ps.filter(p=>p.in).forEach((p,i)=>{
-                const t = document.createElement('div'); t.className='pedina'; t.style.left='20px'; t['style'].top=(i*55+20)+'px';
+                const t = document.createElement('div'); t.className='pedina'; t.style.left='5%'; t.style.top=(i*8+5)+'%';
                 t.innerHTML=`<div class="maglia">${p.m}</div><div class="nome-p">${p.n}</div>`; campo.appendChild(t);
                 t.ontouchmove = e => { e.preventDefault(); let x=e.touches[0], r=document.getElementById('pitch').getBoundingClientRect(); t.style.left=(x.pageX-r.left-27)+'px'; t.style.top=(x.pageY-r.top-20)+'px'; };
             });
