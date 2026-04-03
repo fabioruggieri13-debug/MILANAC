@@ -3,102 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MILANAC PRO CLUB V80 - CLOUD</title>
+    <title>MILANAC PRO V80 CLOUD</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <style>
-        :root { --rosso: #C61C23; --nero: #000; --oro: #D4AF37; --erba: #2e7d32; --erba-scura: #1b5e20; }
-        body { margin: 0; background: var(--nero); color: white; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
+        :root { --rosso: #C61C23; --nero: #000; --oro: #D4AF37; --erba-chiara: #2e7d32; --erba-scura: #1b5e20; }
+        body { margin: 0; background: var(--nero); color: white; font-family: 'Segoe UI', sans-serif; overflow: hidden; height: 100vh; }
         
-        /* Intro Pulsante Richiesta */
+        /* INTRO ORIGINALE V80 */
         #intro { 
-            position: fixed; inset: 0; background: radial-gradient(circle, #200 0%, #000 100%); z-index: 10000; 
+            position: fixed; inset: 0; background: #000; z-index: 10000; 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            animation: pulseBg 2s infinite alternate;
         }
-        @keyframes pulseBg { from { opacity: 0.9; } to { opacity: 1; transform: scale(1.01); } }
+        .milanac-title { color: var(--oro); font-size: 3.5rem; font-weight: 900; text-align: center; line-height: 1; margin-bottom: 20px; text-transform: uppercase; }
         
-        header { height: 60px; border-bottom: 2px solid var(--rosso); display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: #080808; position: sticky; top: 0; z-index: 2000; }
+        header { height: 60px; border-bottom: 2px solid var(--rosso); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; background: #000; }
         .burger { font-size: 30px; color: var(--rosso); cursor: pointer; }
         
-        .nav-menu { position: fixed; top: 60px; right: -100%; width: 260px; height: 100%; background: #0a0a0a; transition: 0.3s; z-index: 1900; border-left: 2px solid var(--rosso); }
-        .nav-menu.active { right: 0; }
-        .nav-menu button { width: 100%; padding: 18px; background: none; border: none; color: white; text-align: left; font-weight: bold; border-bottom: 1px solid #1a1a1a; text-transform: uppercase; font-size: 11px; }
+        /* MENU LATERALE V80 */
+        .sidebar { position: fixed; top: 60px; right: -100%; width: 280px; height: 100%; background: #0a0a0a; transition: 0.3s; z-index: 999; border-left: 2px solid var(--rosso); }
+        .sidebar.active { right: 0; }
+        .sidebar button { width: 100%; padding: 20px; background: none; border: none; color: white; text-align: left; font-weight: bold; border-bottom: 1px solid #1a1a1a; text-transform: uppercase; font-size: 13px; letter-spacing: 1px; }
 
-        .pagina { display: none; padding: 15px; }
-        .pagina.attiva { display: block; }
+        .main-content { height: calc(100vh - 60px); overflow-y: auto; padding: 15px; box-sizing: border-box; }
+        .page { display: none; }
+        .page.active { display: block; }
 
-        /* IL CAMPO V80 */
-        .moduli-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 10px; }
-        .btn-mod { background: #111; border: 1px solid var(--oro); color: var(--oro); padding: 8px 2px; font-size: 10px; font-weight: bold; border-radius: 4px; }
-        .btn-mod.active { background: var(--oro); color: black; }
+        /* FORMAZIONE E CAMPO V80 */
+        .moduli-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 15px; }
+        .mod-btn { background: #000; border: 1px solid var(--oro); color: var(--oro); padding: 10px 0; font-weight: bold; border-radius: 4px; font-size: 11px; }
+        .mod-btn.selected { background: var(--oro); color: #000; }
 
         #pitch { 
-            width: 100%; max-width: 400px; height: 500px; background: var(--erba); 
-            margin: 0 auto; position: relative; border: 2px solid white; border-radius: 5px;
-            background-image: repeating-linear-gradient(0deg, var(--erba), var(--erba) 45px, var(--erba-scura) 45px, var(--erba-scura) 90px);
+            width: 100%; aspect-ratio: 3/4; max-height: 500px; background: var(--erba-chiara); 
+            margin: 0 auto; position: relative; border: 2px solid white; border-radius: 4px;
+            background-image: repeating-linear-gradient(0deg, var(--erba-chiara), var(--erba-chiara) 45px, var(--erba-scura) 45px, var(--erba-scura) 90px);
         }
-        .pedina { position: absolute; width: 50px; text-align: center; transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 100; }
-        .maglia { width: 40px; height: 40px; background: black; border: 2px solid var(--rosso); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: 900; font-size: 14px; box-shadow: 0 4px 8px rgba(0,0,0,0.5); }
-        .nome-p { background: rgba(0,0,0,0.8); font-size: 9px; padding: 2px 4px; border-radius: 3px; margin-top: 2px; display: inline-block; font-weight: bold; }
+        .player-token { position: absolute; width: 50px; text-align: center; transition: all 0.5s ease-in-out; }
+        .jersey { width: 42px; height: 42px; background: #000; border: 2px solid var(--rosso); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin: 0 auto; box-shadow: 0 4px 6px rgba(0,0,0,0.4); }
+        .p-name { background: rgba(0,0,0,0.8); font-size: 10px; padding: 2px 4px; border-radius: 3px; margin-top: 3px; display: inline-block; }
 
-        /* SCHEDE V80 */
-        .scheda { background: #111; padding: 15px; margin-bottom: 10px; border-left: 5px solid var(--rosso); border-radius: 5px; position: relative; }
-        .voto-box { position: absolute; right: 15px; top: 15px; color: var(--oro); font-weight: 900; font-size: 1.2rem; }
-        .stats { font-size: 11px; color: #888; margin-top: 5px; }
+        /* SCHEDE ROSA */
+        .player-card { background: #111; padding: 15px; margin-bottom: 12px; border-left: 5px solid var(--rosso); border-radius: 4px; position: relative; }
+        .voto-display { position: absolute; right: 15px; top: 15px; color: var(--oro); font-weight: 900; font-size: 1.3rem; }
         
-        .btn-milan { width: 100%; padding: 15px; background: var(--rosso); color: white; border: none; font-weight: 900; border-radius: 5px; text-transform: uppercase; margin-top: 10px; }
-        input, select { width: 100%; padding: 12px; margin: 5px 0; background: #0f0f0f; border: 1px solid #333; color: white; border-radius: 5px; box-sizing: border-box; }
+        .btn-action { width: 100%; padding: 15px; background: var(--rosso); color: white; border: none; font-weight: bold; border-radius: 5px; text-transform: uppercase; margin-top: 10px; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 4px; }
     </style>
 </head>
 <body>
 
     <div id="intro">
-        <h1 style="color:var(--rosso); font-size: 3rem; margin: 0; font-weight: 900;">MILANAC</h1>
-        <p style="letter-spacing: 2px;">V80 CLOUD SYSTEM</p>
-        <button class="btn-milan" style="width: auto; padding: 15px 60px; border-radius: 30px;" onclick="document.getElementById('intro').style.display='none'">ENTRA</button>
+        <h1 class="milanac-title">MILANAC<br>PROCLUB</h1>
+        <p style="margin-bottom: 30px;">V81 Cloud Attiva ✅</p>
+        <button class="btn-action" style="width: 200px;" onclick="document.getElementById('intro').style.display='none'">ENTRA</button>
     </div>
 
     <header>
-        <div style="font-weight: 900; color: var(--rosso); font-size: 22px;">MILANAC V80</div>
-        <div class="burger" onclick="document.querySelector('.nav-menu').classList.toggle('active')">☰</div>
+        <div style="font-weight: 900; color: var(--rosso); font-size: 24px; letter-spacing: -1px;">MILANAC PRO</div>
+        <div class="burger" onclick="document.querySelector('.sidebar').classList.toggle('active')">☰</div>
     </header>
 
-    <nav class="nav-menu">
-        <button onclick="vai('rosa')">ROSA SQUADRA</button>
-        <button onclick="vai('tattica')">LAVAGNA TATTICA</button>
-        <button onclick="vai('mercato')">MERCATO</button>
-        <button onclick="vai('premi')">BACHECA PREMI</button>
-        <button onclick="vai('admin')">ADMIN</button>
+    <nav class="sidebar">
+        <button onclick="showPage('rosa')">Rosa</button>
+        <button onclick="showPage('tattica')">Lavagna Tattica</button>
+        <button onclick="showPage('partite')">Gestione Partite</button>
+        <button onclick="showPage('mercato')">Valori Mercato</button>
+        <button onclick="showPage('admin')">Admin Area</button>
     </nav>
 
-    <div id="p-rosa" class="pagina attiva">
-        <h2 style="text-align:center">LA ROSA</h2>
-        <div id="lista-rosa"></div>
-    </div>
-
-    <div id="p-tattica" class="pagina">
-        <div class="moduli-bar">
-            <button class="btn-mod" onclick="applicaModulo('4-4-2')">4-4-2</button>
-            <button class="btn-mod" onclick="applicaModulo('4-3-3')">4-3-3</button>
-            <button class="btn-mod" onclick="applicaModulo('3-5-2')">3-5-2</button>
-            <button class="btn-mod" onclick="applicaModulo('3-4-1-2')">3-4-1-2</button>
+    <div class="main-content">
+        <div id="p-rosa" class="page active">
+            <h2 style="text-align:center; text-transform:uppercase;">La Rosa</h2>
+            <div id="rosa-list"></div>
         </div>
-        <div id="pitch"><div id="pedine-campo"></div></div>
-    </div>
 
-    <div id="p-mercato" class="pagina"><h2 style="text-align:center">VALORI</h2><div id="lista-mercato"></div></div>
-    <div id="p-premi" class="pagina"><h2 style="text-align:center">PREMI</h2><div id="lista-premi"></div></div>
-
-    <div id="p-admin" class="pagina">
-        <div class="scheda">
-            <h3>NUOVO GIOCATORE</h3>
-            <input type="text" id="add-n" placeholder="Nome">
-            <input type="number" id="add-m" placeholder="Numero">
-            <select id="add-r"><option>POR</option><option>DIF</option><option>CEN</option><option>ATT</option></select>
-            <button class="btn-milan" onclick="addP()">SALVA GIOCATORE</button>
+        <div id="p-tattica" class="page">
+            <h2 style="text-align:center; text-transform:uppercase;">Formazione</h2>
+            <div class="moduli-grid">
+                <button class="mod-btn" onclick="setMod('4-4-2')">4-4-2</button>
+                <button class="mod-btn" onclick="setMod('4-3-3')">4-3-3</button>
+                <button class="mod-btn" onclick="setMod('3-5-2')">3-5-2</button>
+                <button class="mod-btn" onclick="setMod('3-4-1-2')">3-4-1-2</button>
+            </div>
+            <div id="pitch"><div id="pitch-players"></div></div>
         </div>
-        <div id="lista-admin"></div>
+
+        <div id="p-partite" class="page"><h2 style="text-align:center;">PARTITE</h2><div id="match-list"></div></div>
+        <div id="p-mercato" class="page"><h2 style="text-align:center;">MERCATO</h2><div id="market-list"></div></div>
+
+        <div id="p-admin" class="page">
+            <div class="player-card">
+                <h3>NUOVO GIOCATORE</h3>
+                <input type="text" id="in-nome" placeholder="Nome">
+                <input type="number" id="in-num" placeholder="Numero Maglia">
+                <select id="in-ruolo"><option>POR</option><option>DIF</option><option>CEN</option><option>ATT</option></select>
+                <button class="btn-action" onclick="addPlayer()">AGGIUNGI AL CLOUD</button>
+            </div>
+            <div id="admin-list"></div>
+        </div>
     </div>
 
     <script>
@@ -113,81 +116,60 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        let club = { ps: [], mod: '4-4-2' };
+        let appData = { players: [], formation: '4-4-2', matches: [] };
 
-        // Caricamento Cloud
-        db.collection("milanac").doc("v80").onSnapshot(doc => {
-            if(doc.exists) { club = doc.data(); render(); }
+        db.collection("milanac").doc("v80_data").onSnapshot(doc => {
+            if(doc.exists) { appData = doc.data(); render(); }
         });
 
-        function salva() { db.collection("milanac").doc("v80").set(club); }
+        function sync() { db.collection("milanac").doc("v80_data").set(appData); }
 
-        function vai(p) {
-            document.querySelectorAll('.pagina').forEach(x => x.classList.remove('attiva'));
-            document.getElementById('p-' + p).classList.add('attiva');
-            document.querySelector('.nav-menu').classList.remove('active');
+        function showPage(p) {
+            document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
+            document.getElementById('p-' + p).classList.add('active');
+            document.querySelector('.sidebar').classList.remove('active');
         }
 
-        function addP() {
-            const n = document.getElementById('add-n').value, m = document.getElementById('add-m').value, r = document.getElementById('add-r').value;
-            if(n && m) {
-                club.ps.push({ id: Date.now(), n, m, r, v: 6.0, g: 0, p: 0, c: false });
-                salva();
+        function addPlayer() {
+            const n = document.getElementById('in-nome').value, num = document.getElementById('in-num').value, r = document.getElementById('in-ruolo').value;
+            if(n && num) {
+                appData.players.push({ id: Date.now(), nome: n, numero: num, ruolo: r, voto: 6.0, gol: 0, convocato: false });
+                sync();
             }
         }
 
-        const schemi = {
+        const coords = {
             '4-4-2': [{x:50,y:85},{x:20,y:70},{x:40,y:70},{x:60,y:70},{x:80,y:70},{x:20,y:45},{x:40,y:45},{x:60,y:45},{x:80,y:45},{x:40,y:20},{x:60,y:20}],
             '4-3-3': [{x:50,y:85},{x:20,y:70},{x:40,y:70},{x:60,y:70},{x:80,y:70},{x:30,y:45},{x:50,y:45},{x:70,y:45},{x:20,y:20},{x:50,y:15},{x:80,y:20}],
             '3-5-2': [{x:50,y:85},{x:30,y:70},{x:50,y:70},{x:70,y:70},{x:15,y:45},{x:35,y:45},{x:50,y:45},{x:65,y:45},{x:85,y:45},{x:40,y:20},{x:60,y:20}],
             '3-4-1-2': [{x:50,y:85},{x:30,y:70},{x:50,y:70},{x:70,y:70},{x:20,y:45},{x:40,y:45},{x:60,y:45},{x:80,y:45},{x:50,y:30},{x:40,y:15},{x:60,y:15}]
         };
 
-        function applicaModulo(m) { club.mod = m; salva(); }
+        function setMod(m) { appData.formation = m; sync(); }
 
         function render() {
-            let hRosa = "", hMercato = "", hPremi = "";
-            club.ps.forEach(p => {
-                const valore = (10 + p.g*2 + p.p*5 + (p.v-6)*5).toFixed(1);
-                hRosa += `<div class="scheda">
-                    <div class="voto-box">${p.v}</div>
-                    <b style="color:var(--rosso)">${p.n.toUpperCase()}</b> #${p.m}<br>
-                    <div class="stats">GOL: ${p.g} | POTM: ${p.p} | ${p.r}</div>
-                    <button class="btn-milan" style="padding:5px; font-size:10px; background:${p.c?'#4caf50':'#333'}; width:auto;" 
-                    onclick="const i=club.ps.findIndex(x=>x.id==${p.id}); club.ps[i].c=!club.ps[i].c; salva()">
-                        ${p.c ? 'SCHIERATO ✅' : 'SCHIERA'}
-                    </button>
-                </div>`;
-                hMercato += `<div class="scheda"><b>#${p.m} ${p.n}</b> <span style="float:right; color:#4caf50">€${valore}M</span></div>`;
-                if(p.p > 0) hPremi += `<div class="scheda"><b>${p.n}</b>: ${p.p}x POTM 🏆</div>`;
+            let hRosa = "", hMarket = "", hAdmin = "";
+            appData.players.forEach(p => {
+                const val = (10 + (p.voto-6)*5 + p.gol*2).toFixed(1);
+                hRosa += `<div class="player-card"><div class="voto-display">${p.voto}</div><b style="color:var(--rosso)">${p.nome}</b> #${p.numero}<br><small>${p.ruolo} | Gol: ${p.gol}</small><button class="btn-action" style="padding:5px; font-size:10px; background:${p.convocato?'#4caf50':'#333'}; width:auto; margin-top:10px" onclick="const i=appData.players.findIndex(x=>x.id==${p.id}); appData.players[i].convocato=!appData.players[i].convocato; sync()">${p.convocato?'SCHIERATO':'SCHIERA'}</button></div>`;
+                hMarket += `<div class="player-card"><b>#${p.numero} ${p.nome}</b> <span style="float:right; color:#4caf50">€${val}M</span></div>`;
+                hAdmin += `<div class="player-card"><b>${p.nome}</b><br>Voto: <input type="number" step="0.5" value="${p.voto}" style="width:60px; display:inline" onchange="const i=appData.players.findIndex(x=>x.id==${p.id}); appData.players[i].voto=parseFloat(this.value); sync()"> Gol: <button onclick="const i=appData.players.findIndex(x=>x.id==${p.id}); appData.players[i].gol++; sync()">+1</button><button onclick="appData.players=appData.players.filter(x=>x.id!==${p.id}); sync()" style="float:right; color:red; border:none; background:none">ELIMINA</button></div>`;
             });
-            document.getElementById('lista-rosa').innerHTML = hRosa;
-            document.getElementById('lista-mercato').innerHTML = hMercato;
-            document.getElementById('lista-premi').innerHTML = hPremi || "<p style='text-align:center'>Nessun premio assegnato</p>";
+            document.getElementById('rosa-list').innerHTML = hRosa;
+            document.getElementById('market-list').innerHTML = hMarket;
+            document.getElementById('admin-list').innerHTML = hAdmin;
 
-            const campo = document.getElementById('pedine-campo'); campo.innerHTML = "";
-            const convocati = club.ps.filter(p => p.c);
-            const pos = schemi[club.mod || '4-4-2'];
-            convocati.forEach((p, i) => {
+            const pitch = document.getElementById('pitch-players'); pitch.innerHTML = "";
+            const active = appData.players.filter(p => p.convocato);
+            const pMod = coords[appData.formation || '4-4-2'];
+            active.forEach((p, i) => {
                 if(i < 11) {
-                    const div = document.createElement('div'); div.className = 'pedina';
-                    div.style.left = `calc(${pos[i].x}% - 25px)`; div.style.top = `calc(${pos[i].y}% - 25px)`;
-                    div.innerHTML = `<div class="maglia">${p.m}</div><div class="nome-p">${p.n}</div>`;
-                    campo.appendChild(div);
+                    const d = document.createElement('div'); d.className = 'player-token';
+                    d.style.left = `calc(${pMod[i].x}% - 25px)`; d.style.top = `calc(${pMod[i].y}% - 25px)`;
+                    d.innerHTML = `<div class="jersey">${p.numero}</div><div class="p-name">${p.nome}</div>`;
+                    pitch.appendChild(d);
                 }
             });
-
-            document.getElementById('lista-admin').innerHTML = club.ps.map(p => `
-                <div class="scheda">
-                    <b>${p.n}</b>
-                    <div style="margin-top:5px">
-                        Voto: <input type="number" step="0.5" value="${p.v}" style="width:60px; display:inline" onchange="const i=club.ps.findIndex(x=>x.id==${p.id}); club.ps[i].v=parseFloat(this.value); salva()">
-                        Gol: <button onclick="const i=club.ps.findIndex(x=>x.id==${p.id}); club.ps[i].g++; salva()">+G</button>
-                        POTM: <button onclick="const i=club.ps.findIndex(x=>x.id==${p.id}); club.ps[i].p++; salva()">+P</button>
-                        <button onclick="club.ps=club.ps.filter(x=>x.id!==${p.id}); salva()" style="float:right; color:red; border:none; background:none">ELIMINA</button>
-                    </div>
-                </div>
-            `).join('');
         }
     </script>
 </body>
