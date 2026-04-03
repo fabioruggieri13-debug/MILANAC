@@ -7,10 +7,9 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <style>
-        :root { --rosso: #C61C23; --oro: #D4AF37; --nero: #000; --erba: #2e7d32; --linee: rgba(255,255,255,0.8); }
+        :root { --rosso: #C61C23; --oro: #D4AF37; --nero: #000; --erba-scura: #1b5e20; --erba-chiara: #2e7d32; --linee: rgba(255,255,255,0.9); }
         body { margin: 0; background: var(--nero); color: white; font-family: 'Segoe UI', sans-serif; overflow: hidden; height: 100vh; touch-action: none; }
         
-        /* INTRO PULSANTE */
         #intro { position: fixed; inset: 0; background: radial-gradient(circle at center, #200000 0%, #000 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; animation: heartBeatBg 2s infinite; }
         .pulsing-title { font-size: 4rem; font-weight: 900; text-transform: uppercase; animation: colorPulse 3s infinite alternate, heartBeatText 2s infinite; }
         @keyframes colorPulse { 0% { color: var(--oro); text-shadow: 0 0 15px var(--oro); } 100% { color: var(--rosso); text-shadow: 0 0 15px var(--rosso); } }
@@ -25,25 +24,37 @@
         .container { height: calc(100vh - 60px); overflow-y: auto; padding: 15px; box-sizing: border-box; padding-bottom: 60px; }
         .page { display: none; } .page.active { display: block; }
 
-        /* MODULI TATTICI */
         .mod-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 10px; }
         .btn-mod { background: #111; border: 1px solid var(--oro); color: var(--oro); padding: 8px 0; font-weight: bold; border-radius: 4px; font-size: 10px; cursor: pointer; }
         .btn-mod.active { background: var(--oro); color: #000; }
 
-        /* CAMPO (INTOCCATO) */
-        #pitch { width: 95%; aspect-ratio: 2/3; max-height: 70vh; margin: 0 auto; background: var(--erba); border: 2px solid white; position: relative; overflow: hidden; background-image: repeating-linear-gradient(0deg, #2e7d32, #2e7d32 40px, #266b2a 40px, #266b2a 80px); }
+        /* IL NUOVO CAMPO MIGLIORATO */
+        #pitch { 
+            width: 95%; aspect-ratio: 2/3; max-height: 70vh; margin: 0 auto; 
+            background: var(--erba-chiara); border: 3px solid white; position: relative; overflow: hidden; 
+            background-image: repeating-linear-gradient(0deg, var(--erba-scura), var(--erba-scura) 10%, var(--erba-chiara) 10%, var(--erba-chiara) 20%);
+        }
         .p-line { position: absolute; border: 2px solid var(--linee); pointer-events: none; }
         .mid-line { top: 50%; width: 100%; height: 0; border-top: 2px solid var(--linee); }
-        .mid-circle { top: 50%; left: 50%; width: 70px; height: 70px; border-radius: 50%; transform: translate(-50%, -50%); }
+        .mid-circle { top: 50%; left: 50%; width: 22%; aspect-ratio: 1; border-radius: 50%; transform: translate(-50%, -50%); }
+        .mid-dot { top: 50%; left: 50%; width: 4px; height: 4px; background: white; border-radius: 50%; transform: translate(-50%, -50%); position: absolute; }
+        .box-large-top { top: -2px; left: 50%; width: 60%; height: 16%; transform: translateX(-50%); border-top: none; }
+        .box-small-top { top: -2px; left: 50%; width: 30%; height: 6%; transform: translateX(-50%); border-top: none; }
+        .arc-top { top: 12%; left: 50%; width: 20%; height: 8%; border: 2px solid var(--linee); border-radius: 50%; transform: translateX(-50%); clip-path: inset(50% 0 0 0); }
+        .box-large-bot { bottom: -2px; left: 50%; width: 60%; height: 16%; transform: translateX(-50%); border-bottom: none; }
+        .box-small-bot { bottom: -2px; left: 50%; width: 30%; height: 6%; transform: translateX(-50%); border-bottom: none; }
+        .arc-bot { bottom: 12%; left: 50%; width: 20%; height: 8%; border: 2px solid var(--linee); border-radius: 50%; transform: translateX(-50%); clip-path: inset(0 0 50% 0); }
+        .penalty-dot-top { top: 11%; left: 50%; width: 4px; height: 4px; background: white; border-radius: 50%; transform: translateX(-50%); position: absolute; }
+        .penalty-dot-bot { bottom: 11%; left: 50%; width: 4px; height: 4px; background: white; border-radius: 50%; transform: translateX(-50%); position: absolute; }
+
         .player { position: absolute; width: 54px; text-align: center; cursor: move; z-index: 100; touch-action: none; }
-        .jersey { width: 42px; height: 42px; background: #000; border: 2px solid var(--rosso); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; margin: 0 auto; color: var(--oro); }
-        .p-name { background: rgba(0,0,0,0.8); font-size: 10px; padding: 2px 5px; border-radius: 3px; margin-top: 3px; display: inline-block; font-weight: bold; text-transform: uppercase; }
+        .jersey { width: 44px; height: 44px; background: #000; border: 3px solid var(--rosso); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; margin: 0 auto; color: var(--oro); font-size: 18px; }
+        .p-name { background: rgba(0,0,0,0.85); font-size: 11px; padding: 2px 6px; border-radius: 10px; margin-top: 4px; display: inline-block; font-weight: bold; text-transform: uppercase; color: white; }
 
         .card { background: #111; padding: 15px; margin-bottom: 12px; border-left: 5px solid var(--rosso); border-radius: 4px; }
         .btn-main { width: 100%; padding: 14px; background: var(--rosso); color: white; border: none; font-weight: bold; border-radius: 6px; text-transform: uppercase; cursor: pointer; }
         input, select, textarea { width: 100%; padding: 12px; margin: 5px 0; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 4px; box-sizing: border-box; }
         
-        /* GRAFICA VOTI */
         .vote-control { display: flex; align-items: center; gap: 10px; background: #222; padding: 10px; border-radius: 8px; margin-top: 5px; }
         .v-val { font-size: 1.5rem; font-weight: 900; color: var(--oro); min-width: 40px; text-align: center; }
         .btn-v { width: 35px; height: 35px; border-radius: 50%; border: none; font-weight: bold; cursor: pointer; }
@@ -74,7 +85,7 @@
         <button onclick="go('mercato')">💰 Mercato</button>
         <button onclick="go('partite')">🏟️ Gestione Partite</button>
         <button onclick="go('premi')">🏆 Premi</button>
-        <button onclick="go('admin')">⚙️ Area Admin</button>
+        <button onclick="goAdmin()">⚙️ Area Admin</button>
         <button onclick="document.querySelector('.sidebar').classList.remove('active')">Chiudi</button>
     </nav>
 
@@ -94,10 +105,17 @@
             <div class="mod-grid" id="mod-btns"></div>
             <div id="pitch">
                 <div class="p-line mid-line"></div>
-                <div class="p-line mid-circle"></div>
+                <div class="p-line mid-circle"><div class="mid-dot"></div></div>
+                <div class="p-line box-large-top"></div>
+                <div class="p-line box-small-top"></div>
+                <div class="arc-top"></div>
+                <div class="penalty-dot-top"></div>
+                <div class="p-line box-large-bot"></div>
+                <div class="p-line box-small-bot"></div>
+                <div class="arc-bot"></div>
+                <div class="penalty-dot-bot"></div>
                 <div id="pitch-players"></div>
             </div>
-            <p style="text-align:center; font-size:10px; color:var(--oro); margin-top:5px;">Scegli un modulo o trascina liberamente</p>
         </div>
 
         <div id="p-mercato" class="page"><h3>VALORI DI MERCATO</h3><div id="l-mercato"></div></div>
@@ -145,6 +163,9 @@
         const firebaseConfig = { apiKey: "AIzaSyDbO_AxHKz1avQpYscoSSLpEfmFaL8MRGg", authDomain: "milanac-proclub.firebaseapp.com", projectId: "milanac-proclub", storageBucket: "milanac-proclub.firebasestorage.app", messagingSenderId: "61702234008", appId: "1:61702234008:web:aa597d8600d0a8251895ed" };
         firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
         let data = { ps: [], mod: '4-4-2', matches: [], news: [] };
+        
+        // --- PASSWORD IMPOSTATA ---
+        const PASS = "milanac"; 
 
         const modali = {
             '4-4-2': [{x:43,y:85},{x:10,y:70},{x:33,y:72},{x:55,y:72},{x:78,y:70},{x:10,y:45},{x:33,y:48},{x:55,y:48},{x:78,y:45},{x:33,y:20},{x:55,y:20}],
@@ -157,6 +178,11 @@
         function sync() { db.collection("milanac").doc("v84_final").set(data); }
 
         function go(p) { document.querySelectorAll('.page').forEach(x=>x.classList.remove('active')); document.getElementById('p-'+p).classList.add('active'); document.querySelector('.sidebar').classList.remove('active'); }
+        
+        function goAdmin() {
+            let p = prompt("Inserisci la Password Admin:");
+            if(p === PASS) { go('admin'); } else { alert("Accesso Negato!"); go('rosa'); }
+        }
 
         function addP() {
             const n=document.getElementById('in-n').value, m=document.getElementById('in-m').value, r=document.getElementById('in-r').value;
@@ -193,24 +219,11 @@
                 hR += `<div class="card" onclick="openP(${p.id})"><b>${p.n}</b> #${p.m}<br><small>${p.r} | Media: ${media}</small><br><button class="btn-main" style="width:auto; padding:5px 10px; margin-top:5px; background:${p.convocato?'green':'#333'}" onclick="event.stopPropagation(); const i=data.ps.findIndex(x=>x.id==${p.id}); data.ps[i].convocato=!data.ps[i].convocato; sync()">${p.convocato?'IN CAMPO':'SCHIERA'}</button></div>`;
                 hMk += `<div class="card"><b>${p.n}</b> <span style="float:right; color:var(--oro)">€${(10+(media-6)*5+p.g*2).toFixed(1)}M</span></div>`;
                 hP += `<div class="card"><b>${p.n}</b> <span style="float:right">🏆 ${p.mvp} MVP</span></div>`;
-                
-                hA += `<div class="card">
-                    <div style="display:flex; justify-content:space-between;"><b>${p.n}</b> <button style="color:red; background:none; border:none; font-weight:bold;" onclick="if(confirm('Eliminare ${p.n}?')){data.ps=data.ps.filter(x=>x.id!==${p.id}); sync()}">ELIMINA 🗑️</button></div>
-                    <div class="vote-control">
-                        <span>Voto ${activeAdm}:</span>
-                        <button class="btn-v btn-minus" onclick="const i=data.ps.findIndex(x=>x.id==${p.id}); data.ps[i].v_adm['${activeAdm}']-=0.5; sync()">-</button>
-                        <span class="v-val">${p.v_adm[activeAdm]}</span>
-                        <button class="btn-v btn-plus" onclick="const i=data.ps.findIndex(x=>x.id==${p.id}); data.ps[i].v_adm['${activeAdm}']+=0.5; sync()">+</button>
-                    </div>
-                    <div style="margin-top:10px; display:flex; gap:10px;">
-                        GOL: <button onclick="const i=data.ps.findIndex(x=>x.id==${p.id}); data.ps[i].g++; sync()">+</button>
-                        MVP: <button onclick="const i=data.ps.findIndex(x=>x.id==${p.id}); data.ps[i].mvp++; sync()">+</button>
-                    </div>
-                </div>`;
+                hA += `<div class="card"><b>${p.n}</b> <button style="color:red; float:right; border:none; background:none;" onclick="if(confirm('Eliminare?')){data.ps=data.ps.filter(x=>x.id!==${p.id}); sync()}">ELIMINA</button><div class="vote-control"><button class="btn-v btn-minus" onclick="const i=data.ps.findIndex(x=>x.id==${p.id}); data.ps[i].v_adm['${activeAdm}']-=0.5; sync()">-</button><span class="v-val">${p.v_adm[activeAdm]}</span><button class="btn-v btn-plus" onclick="const i=data.ps.findIndex(x=>x.id==${p.id}); data.ps[i].v_adm['${activeAdm}']+=0.5; sync()">+</button></div></div>`;
             });
 
-            (data.matches || []).forEach((m,idx) => { hMatch += `<div class="card"><b>${m.d}</b>: MILANAC ${m.ris} ${m.avv} <button style="float:right; color:red; border:none; background:none;" onclick="data.matches.splice(${idx},1); sync()">X</button></div>`; });
-            (data.news || []).forEach((n,idx) => { hNews += `<div class="card"><small>${n.d}</small><p>${n.txt}</p><button style="font-size:10px; color:gray; border:none; background:none;" onclick="data.news.splice(${idx},1); sync()">Elimina</button></div>`; });
+            (data.matches || []).forEach((m,idx) => { hMatch += `<div class="card"><b>${m.d}</b>: ${m.ris} vs ${m.avv} <button onclick="data.matches.splice(${idx},1); sync()">X</button></div>`; });
+            (data.news || []).forEach((n,idx) => { hNews += `<div class="card"><small>${n.d}</small><p>${n.txt}</p><button onclick="data.news.splice(${idx},1); sync()">Elimina</button></div>`; });
 
             document.getElementById('l-rosa').innerHTML = hR; document.getElementById('l-admin').innerHTML = hA;
             document.getElementById('l-mercato').innerHTML = hMk; document.getElementById('l-partite').innerHTML = hMatch;
@@ -221,18 +234,17 @@
                 const d = document.createElement('div'); d.className = 'player'; d.style.left = p.x + "%"; d.style.top = p.y + "%";
                 d.innerHTML = `<div class="jersey">${p.m}</div><div class="p-name">${p.n}</div>`;
                 d.onclick = () => openP(p.id);
-                
-                let isDragging = false;
-                const start = () => isDragging = true;
+                let isD = false;
+                const start = () => isD = true;
                 const move = (e) => {
-                    if (!isDragging) return;
+                    if (!isD) return;
                     const rect = document.getElementById('pitch').getBoundingClientRect();
                     const t = e.touches ? e.touches[0] : e;
                     p.x = ((t.clientX - rect.left) / rect.width) * 100 - 7;
                     p.y = ((t.clientY - rect.top) / rect.height) * 100 - 5;
                     d.style.left = p.x + "%"; d.style.top = p.y + "%";
                 };
-                const end = () => { if(isDragging) { isDragging = false; sync(); } };
+                const end = () => { if(isD) { isD = false; sync(); } };
                 d.addEventListener('touchstart', start); window.addEventListener('touchmove', move, {passive:false}); window.addEventListener('touchend', end);
                 pl.appendChild(d);
             });
