@@ -3,186 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MILANAC V28</title>
+    <title>MILANAC V29</title>
     <style>
-        :root { --red: #C61C23; --bg: #000; --card: #121212; --gold: #D4AF37; --field: #1b3d21; }
+        :root { --red: #C61C23; --bg: #000; --card: #121212; --gold: #D4AF37; --grass: #2d5a27; }
         body, html { margin: 0; padding: 0; background: #000; color: white; font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; }
 
-        /* INTRO RECOVERY */
-        #intro { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; }
-        .btn-start { background: var(--red); color: white; border: none; padding: 20px 40px; font-size: 1.2rem; font-weight: 900; border-radius: 8px; cursor: pointer; box-shadow: 0 0 20px rgba(198,28,35,0.4); text-transform: uppercase; }
+        /* INTRO PULSANTE */
+        #intro { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; text-align: center; }
+        .logo-milanac { font-size: 4rem; font-weight: 900; color: var(--red); margin-bottom: 30px; letter-spacing: 5px; text-shadow: 0 0 20px rgba(198,28,35,0.6); }
+        .btn-pulse { 
+            background: var(--red); color: white; border: none; padding: 25px 40px; font-size: 1.1rem; font-weight: 900; border-radius: 50px; cursor: pointer; text-transform: uppercase;
+            animation: pulse 2s infinite; box-shadow: 0 0 0 0 rgba(198, 28, 35, 0.7);
+        }
+        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(198, 28, 35, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(198, 28, 35, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(198, 28, 35, 0); } }
 
-        /* HEADER & MENU */
-        header { height: 60px; background: #0a0a0a; border-bottom: 2px solid var(--red); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; box-sizing: border-box; }
-        .logo { color: var(--red); font-weight: 900; font-size: 1.4rem; letter-spacing: 2px; }
+        /* HEADER */
+        header { height: 60px; background: #0a0a0a; border-bottom: 2px solid var(--red); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; position: relative; }
         .burger { font-size: 30px; color: var(--red); cursor: pointer; }
         .menu { position: absolute; top: 60px; right: 0; background: #0f0f0f; width: 220px; display: none; flex-direction: column; border: 1px solid var(--red); z-index: 9999; }
-        .menu button { background: none; border: none; color: white; padding: 18px; text-align: left; border-bottom: 1px solid #222; font-weight: bold; text-transform: uppercase; font-size: 13px; }
+        .menu button { background: none; border: none; color: white; padding: 18px; text-align: left; border-bottom: 1px solid #222; font-weight: bold; text-transform: uppercase; }
 
-        /* CONTENT */
         .content { height: calc(100vh - 60px); overflow-y: auto; padding: 15px; box-sizing: border-box; }
-        .page { display: none; } .active { display: block; }
+        .page { display: none; animation: fadeIn 0.4s; } .active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* CARDS & UI */
-        .card { background: var(--card); border: 1px solid #222; border-radius: 10px; padding: 15px; margin-bottom: 15px; }
-        h1 { color: var(--red); text-align: center; text-transform: uppercase; font-size: 1.3rem; margin-bottom: 20px; }
-        .primary { background: var(--red); color: white; border: none; padding: 14px; border-radius: 5px; width: 100%; font-weight: bold; text-transform: uppercase; cursor: pointer; }
-        input, textarea { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: #fff; margin-bottom: 10px; border-radius: 5px; box-sizing: border-box; }
-        
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; border-top: 1px solid #222; padding-top: 10px; font-size: 12px; }
-        .stat-grid b { color: var(--red); }
-        .voto-badge { border: 1px solid var(--gold); color: var(--gold); padding: 2px 8px; font-size: 11px; font-weight: bold; }
+        /* CAMPO DA CALCIO VERO */
+        #campo-fisico { 
+            width: 100%; height: 480px; background: var(--grass); border: 3px solid #fff; border-radius: 10px; position: relative; overflow: hidden; touch-action: none; 
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.1) 2px, transparent 2px),
+                linear-gradient(90deg, rgba(255,255,255,0.1) 2px, transparent 2px);
+            background-size: 100% 40px, 40px 100%;
+        }
+        .linea-centrale { position: absolute; top: 50%; width: 100%; height: 2px; background: white; }
+        .cerchio-centrale { position: absolute; top: 50%; left: 50%; width: 100px; height: 100px; border: 2px solid white; border-radius: 50%; transform: translate(-50%, -50%); }
+        .area-rigore { position: absolute; left: 50%; width: 60%; height: 70px; border: 2px solid white; transform: translateX(-50%); }
+        .area-rigore.top { top: 0; border-top: none; }
+        .area-rigore.bot { bottom: 0; border-bottom: none; }
 
-        /* LAVAGNA */
-        #campo { width: 100%; height: 400px; background: var(--field); border: 2px solid #333; border-radius: 10px; position: relative; overflow: hidden; touch-action: none; }
-        .tag-player { position: absolute; background: white; color: black; padding: 5px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; border-left: 4px solid var(--red); white-space: nowrap; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        /* UI ELEMENTS */
+        .card { background: var(--card); border: 1px solid #222; border-radius: 12px; padding: 15px; margin-bottom: 15px; border-left: 4px solid var(--red); }
+        .tag-player { position: absolute; background: white; color: black; padding: 6px 12px; border-radius: 4px; font-size: 11px; font-weight: 900; border: 2px solid var(--red); z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .primary { background: var(--red); color: white; border: none; padding: 15px; border-radius: 8px; width: 100%; font-weight: 900; text-transform: uppercase; cursor: pointer; }
+        input, textarea { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: #fff; margin-bottom: 10px; border-radius: 5px; }
+        .voto-badge { border: 1px solid var(--gold); color: var(--gold); padding: 2px 10px; font-size: 12px; font-weight: bold; border-radius: 4px; }
     </style>
 </head>
 <body>
 
     <div id="intro">
-        <h1 style="font-size: 3.5rem; border:none; margin-bottom: 20px;">MILANAC</h1>
-        <button class="btn-start" onclick="avviaApp()">Entra nel Club</button>
-        <p style="color: #444; margin-top: 40px; font-size: 10px;" onclick="resetDati()">RESET DI EMERGENZA</p>
+        <div class="logo-milanac">MILANAC</div>
+        <button class="btn-pulse" onclick="avvia()">Entra nello Spogliatoio</button>
+        <p style="color: #444; margin-top: 50px; font-size: 10px; cursor: pointer;" onclick="localStorage.clear(); location.reload();">RESET DI EMERGENZA</p>
     </div>
 
     <header>
-        <div class="logo">MILANAC</div>
-        <div class="burger" onclick="toggleMenu()">☰</div>
-        <div id="dropdown" class="menu">
+        <div style="color: var(--red); font-weight: 900; letter-spacing: 1px;">MILANAC</div>
+        <div class="burger" onclick="toggleM()">☰</div>
+        <div id="menu" class="menu">
             <button onclick="vai('h')">SQUADRA</button>
             <button onclick="vai('t')">LAVAGNA TATTICA</button>
             <button onclick="vai('n')">NOTIZIE</button>
             <button onclick="vai('s')">STATISTICHE</button>
-            <button onclick="vai('a')">AREA ADMIN</button>
+            <button onclick="vai('a')">ADMIN</button>
         </div>
     </header>
 
     <div class="content">
         <div id="p-h" class="page active">
-            <h1>LA ROSA</h1>
-            <div id="lista-home"></div>
+            <h1>FORMAZIONE</h1>
+            <div id="lista-h"></div>
         </div>
 
         <div id="p-t" class="page">
-            <h1>LAVAGNA TATTICA</h1>
-            <div id="campo"><div id="nomi-campo"></div></div>
-            <button class="primary" onclick="render()" style="background:#222; margin-top:10px; font-size:10px;">RESET POSIZIONI</button>
+            <h1>SCHIERAMENTO TATTICO</h1>
+            <div id="campo-fisico">
+                <div class="area-rigore top"></div>
+                <div class="linea-centrale"></div>
+                <div class="cerchio-centrale"></div>
+                <div class="area-rigore bot"></div>
+                <div id="nomi-campo"></div>
+            </div>
+            <p style="text-align:center; color:#666; font-size:11px; margin-top:10px;">Trascina i giocatori convocati per schierarli</p>
         </div>
 
         <div id="p-n" class="page">
-            <h1>COMUNICATI</h1>
-            <div id="lista-news"></div>
+            <h1>ULTIME DAL CLUB</h1>
+            <div id="lista-n"></div>
         </div>
 
         <div id="p-s" class="page">
-            <h1>CLASSIFICA PUNTI</h1>
-            <div id="lista-stats"></div>
+            <h1>CLASSIFICA MVP</h1>
+            <div id="lista-s"></div>
         </div>
 
         <div id="p-a" class="page">
-            <h1>PANNELLO COMANDO</h1>
-            <input type="password" id="pass" placeholder="Password (milan)">
-            <button class="primary" onclick="checkAdmin()">ACCEDI</button>
-            <div id="area-admin" style="display:none; margin-top:20px;">
+            <h1>GESTIONE SQUADRA</h1>
+            <input type="password" id="pw" placeholder="Password Admin">
+            <button class="primary" onclick="checkA()">ACCEDI</button>
+            <div id="adm-ui" style="display:none; margin-top:20px;">
                 <div class="card">
-                    <h3>NUOVO GIOCATORE</h3>
-                    <input type="text" id="add-nome" placeholder="Nome">
-                    <button class="primary" onclick="addGiocatore()">SALVA</button>
+                    <h3>PUBBLICA COMUNICATO</h3>
+                    <input type="text" id="ntit" placeholder="Titolo della notizia">
+                    <textarea id="ntxt" rows="3" placeholder="Scrivi qui il comunicato ufficiale..."></textarea>
+                    <button class="primary" onclick="pubblicaN()">PUBBLICA ORA</button>
                 </div>
                 <div class="card">
-                    <h3>PUBBLICA NEWS</h3>
-                    <input type="text" id="news-t" placeholder="Titolo">
-                    <textarea id="news-c" rows="2" placeholder="Testo..."></textarea>
-                    <button class="primary" onclick="addNews()">PUBBLICA</button>
+                    <h3>AGGIUNGI GIOCATORE</h3>
+                    <input type="text" id="pnome" placeholder="Nome Giocatore">
+                    <button class="primary" onclick="addP()">AGGIUNGI</button>
                 </div>
-                <div id="lista-admin"></div>
+                <div id="lista-adm-p"></div>
             </div>
         </div>
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('milanac_v28') || '{"players":[], "news":[]}');
+        let db = JSON.parse(localStorage.getItem('milanac_v29') || '{"ps":[], "ns":[]}');
 
-        function avviaApp() { document.getElementById('intro').style.display = 'none'; render(); }
-        function toggleMenu() { const m = document.getElementById('dropdown'); m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; }
-        function vai(p) { document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active')); document.getElementById('p-'+p).classList.add('active'); toggleMenu(); render(); }
-        function checkAdmin() { if(document.getElementById('pass').value === 'milan') { document.getElementById('area-admin').style.display = 'block'; render(); } }
+        function avvia() { document.getElementById('intro').style.display = 'none'; render(); }
+        function toggleM() { const m = document.getElementById('menu'); m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; }
+        function vai(p) { document.querySelectorAll('.page').forEach(x => x.classList.remove('active')); document.getElementById('p-'+p).classList.add('active'); toggleM(); render(); }
+        function checkA() { if(document.getElementById('pw').value === 'milan') document.getElementById('adm-ui').style.display='block'; }
 
-        function addGiocatore() {
-            const n = document.getElementById('add-nome').value;
-            if(n) { db.players.push({id: Date.now(), n: n, g:0, a:0, m:0, mvp:0, voti:[], in: false}); save(); }
-        }
-
-        function addNews() {
-            const t = document.getElementById('news-t').value;
-            const c = document.getElementById('news-c').value;
-            if(t && c) { db.news.unshift({id: Date.now(), t, c, d: new Date().toLocaleDateString()}); save(); }
-        }
-
-        function addVoto(id) { const v = prompt("Voto partita:"); if(v) { db.players.find(x => x.id === id).voti.push(parseFloat(v)); save(); } }
-        function edit(id, k, v) { db.players.find(x => x.id === id)[k] = parseInt(v) || 0; save(); }
-        function save() { localStorage.setItem('milanac_v28', JSON.stringify(db)); render(); }
-        function resetDati() { if(confirm("Cancello tutto?")) { localStorage.clear(); location.reload(); } }
+        function addP() { const n = document.getElementById('pnome').value; if(n) { db.ps.push({id: Date.now(), n, g:0, a:0, m:0, mvp:0, v:[], in: false}); salva(); } }
+        function pubblicaN() { const t = document.getElementById('ntit').value, c = document.getElementById('ntxt').value; if(t && c) { db.ns.unshift({id: Date.now(), t, c, d: new Date().toLocaleDateString()}); document.getElementById('ntit').value=''; document.getElementById('ntxt').value=''; salva(); } }
+        
+        function salva() { localStorage.setItem('milanac_v29', JSON.stringify(db)); render(); }
 
         function render() {
-            // Home
-            document.getElementById('lista-home').innerHTML = db.players.map(p => {
-                const media = p.voti.length ? (p.voti.reduce((a,b)=>a+b,0)/p.voti.length).toFixed(1) : "-";
+            // Home Lista
+            document.getElementById('lista-h').innerHTML = db.ps.map(p => {
+                const med = p.v.length ? (p.v.reduce((a,b)=>a+b,0)/p.v.length).toFixed(1) : "-";
                 return `<div class="card">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <b style="font-size:1.1rem;">${p.n.toUpperCase()}</b>
-                        <span class="voto-badge">Ø ${media}</span>
+                        <span style="font-size:1.2rem; font-weight:900;">${p.n.toUpperCase()}</span>
+                        <span class="voto-badge">MEDIA: ${med}</span>
                     </div>
-                    <div class="stat-grid">
-                        <span>GOL: <b>${p.g}</b></span><span>ASSIST: <b>${p.a}</b></span>
-                        <span>GARE: <b>${p.m}</b></span><span>MVP: <b>${p.mvp}</b></span>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; font-size:12px; color:#888;">
+                        <span>GOL: <b style="color:var(--red)">${p.g}</b></span><span>ASSIST: <b style="color:var(--red)">${p.a}</b></span>
                     </div>
-                    <button class="primary" onclick="db.players.find(x=>x.id===${p.id}).in=!db.players.find(x=>x.id===${p.id}).in; save();" 
-                    style="margin-top:12px; height:35px; background:${p.in?'var(--red)':'#222'}">${p.in?'PRESENTE':'ASSENTE'}</button>
+                    <button class="primary" onclick="db.ps.find(x=>x.id===${p.id}).in=!db.ps.find(x=>x.id===${p.id}).in; salva();" 
+                    style="margin-top:15px; height:40px; background:${p.in?'var(--red)':'#222'}">${p.in?'CONVOCATO':'ASSENTE'}</button>
                 </div>`;
             }).join('');
 
-            // News
-            document.getElementById('lista-news').innerHTML = db.news.map(n => `
-                <div class="card" style="border-left: 4px solid var(--red)">
-                    <small style="color:#666">${n.d}</small>
-                    <h3 style="margin:5px 0;">${n.t.toUpperCase()}</h3>
-                    <p style="color:#aaa; font-size:14px;">${n.c}</p>
+            // Notizie
+            document.getElementById('lista-n').innerHTML = db.ns.map(n => `
+                <div class="card" style="border-left: 5px solid var(--red)">
+                    <small style="color:var(--gold); font-weight:bold;">${n.d}</small>
+                    <h2 style="margin:5px 0; text-transform:uppercase;">${n.t}</h2>
+                    <p style="color:#bbb; line-height:1.4;">${n.c}</p>
+                    ${document.getElementById('adm-ui').style.display==='block' ? `<button onclick="db.ns=db.ns.filter(x=>x.id!==${n.id});salva()" style="color:red; background:none; border:none; font-size:10px;">ELIMINA</button>` : ''}
                 </div>
             `).join('');
 
-            // Lavagna
-            const campo = document.getElementById('nomi-campo'); campo.innerHTML = '';
-            db.players.filter(p => p.in).forEach((p, i) => {
+            // Campo
+            const c = document.getElementById('nomi-campo'); c.innerHTML = '';
+            db.ps.filter(p => p.in).forEach((p, i) => {
                 const d = document.createElement('div'); d.className = 'tag-player'; d.innerText = p.n.toUpperCase();
-                d.style.left = '20px'; d.style.top = (i * 45 + 50) + 'px'; campo.appendChild(d);
+                d.style.left = '30px'; d.style.top = (i * 45 + 50) + 'px'; c.appendChild(d);
                 d.addEventListener('touchmove', e => {
-                    e.preventDefault(); let t = e.touches[0]; let r = document.getElementById('campo').getBoundingClientRect();
+                    e.preventDefault(); let t = e.touches[0]; let r = document.getElementById('campo-fisico').getBoundingClientRect();
                     d.style.left = (t.pageX - r.left - 40) + 'px'; d.style.top = (t.pageY - r.top - 15) + 'px';
                 }, {passive: false});
             });
 
-            // Stats Ranking
-            document.getElementById('lista-stats').innerHTML = [...db.players].sort((a,b) => (b.g+b.a) - (a.g+a.a)).map(p => `
-                <div class="card" style="display:flex; justify-content:space-between; border-left:2px solid var(--gold)">
-                    <span>${p.n.toUpperCase()}</span><b>${p.g+p.a} PUNTI</b>
-                </div>`).join('');
-
-            // Admin Edit
-            document.getElementById('lista-admin').innerHTML = db.players.map(p => `
+            // Admin List
+            document.getElementById('lista-adm-p').innerHTML = db.ps.map(p => `
                 <div class="card">
-                    <b>${p.n.toUpperCase()}</b>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin-top:10px;">
-                        <input type="number" onchange="edit(${p.id},'g',this.value)" value="${p.g}" placeholder="Gol">
-                        <input type="number" onchange="edit(${p.id},'a',this.value)" value="${p.a}" placeholder="Assist">
-                        <input type="number" onchange="edit(${p.id},'m',this.value)" value="${p.m}" placeholder="Gare">
-                        <input type="number" onchange="edit(${p.id},'mvp',this.value)" value="${p.mvp}" placeholder="MVP">
+                    <b>${p.n}</b>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-top:10px;">
+                        <input type="number" onchange="db.ps.find(x=>x.id===${p.id}).g=parseInt(this.value);salva()" value="${p.g}" placeholder="Gol">
+                        <input type="number" onchange="db.ps.find(x=>x.id===${p.id}).a=parseInt(this.value);salva()" value="${p.a}" placeholder="Assist">
                     </div>
-                    <button class="primary" onclick="addVoto(${p.id})" style="background:var(--gold); color:black; margin:10px 0; height:30px; font-size:11px;">+ VOTO</button>
-                    <button onclick="if(confirm('Elimino?')){db.players=db.players.filter(x=>x.id!=${p.id});save();}" style="background:none; border:none; color:red; width:100%; font-size:10px;">ELIMINA GIOCATORE</button>
+                    <button onclick="if(confirm('Elimina?')){db.ps=db.ps.filter(x=>x.id!==${p.id});salva()}" style="color:red; background:none; border:none; width:100%; margin-top:10px;">ELIMINA GIOCATORE</button>
                 </div>
             `).join('');
+            
+            // Ranking
+            document.getElementById('lista-s').innerHTML = [...db.ps].sort((a,b)=> (b.g+b.a)-(a.g+a.a)).map(p => `
+                <div class="card" style="display:flex; justify-content:space-between; border-left:3px solid var(--gold)">
+                    <span>${p.n.toUpperCase()}</span> <b>${p.g+p.a} PT</b>
+                </div>`).join('');
         }
     </script>
 </body>
