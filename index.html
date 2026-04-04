@@ -7,7 +7,16 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <style>
-        :root { --rosso: #C61C23; --oro: #D4AF37; --nero: #000; --erba-scura: #1b5e20; --erba-chiara: #2e7d32; --linee: rgba(255,255,255,0.9); }
+        /* --- COLORI AGGIORNATI PER EFFETTO FOTO --- */
+        :root { 
+            --rosso: #C61C23; 
+            --oro: #D4AF37; 
+            --nero: #000; 
+            --erba-scura: #5d8a2a; 
+            --erba-chiara: #7eb33d; 
+            --linee: rgba(255,255,255,0.9); 
+        }
+        
         body { margin: 0; background: var(--nero); color: white; font-family: 'Segoe UI', sans-serif; overflow: hidden; height: 100vh; touch-action: none; }
         
         #intro { position: fixed; inset: 0; background: radial-gradient(circle at center, #200000 0%, #000 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; animation: heartBeatBg 2s infinite; }
@@ -28,28 +37,52 @@
         .btn-mod { background: #111; border: 1px solid var(--oro); color: var(--oro); padding: 8px 0; font-weight: bold; border-radius: 4px; font-size: 10px; cursor: pointer; }
         .btn-mod.active { background: var(--oro); color: #000; }
 
-        /* --- NUOVO CAMPO REALISTICO --- */
+        /* --- STILE CAMPO PROFESSIONAL (ISPIRATO ALLA TUA FOTO) --- */
         #pitch { 
             width: 95%; aspect-ratio: 2/3; max-height: 72vh; margin: 0 auto; 
-            background: radial-gradient(circle at center, #7eb33d 0%, #5d8a2a 100%);
+            /* Sfumatura radiale "occhio di bue" */
+            background: radial-gradient(circle at center, var(--erba-chiara) 0%, var(--erba-scura) 100%);
             border: 3px solid white; position: relative; overflow: hidden; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            /* Texture a strisce orizzontali delicate */
             background-image: 
                 linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
                 repeating-linear-gradient(0deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 5%, transparent 5%, transparent 10%);
         }
+
         .p-line { position: absolute; border: 2px solid rgba(255,255,255,0.9); pointer-events: none; }
+        
         .mid-line { top: 50%; width: 100%; height: 0; border-top: 2px solid white; }
-        .mid-circle { top: 50%; left: 50%; width: 28%; aspect-ratio: 1; border: 2px solid white; border-radius: 50%; transform: translate(-50%, -50%); }
-        .mid-dot { top: 50%; left: 50%; width: 6px; height: 6px; background: white; border-radius: 50%; transform: translate(-50%, -50%); position: absolute; }
+        .mid-circle { 
+            top: 50%; left: 50%; width: 28%; aspect-ratio: 1; 
+            border: 2px solid white; border-radius: 50%; 
+            transform: translate(-50%, -50%); 
+        }
+        .mid-dot { 
+            top: 50%; left: 50%; width: 6px; height: 6px; background: white; 
+            border-radius: 50%; transform: translate(-50%, -50%); position: absolute; 
+        }
+
+        /* Aree di rigore e Archi corretti e centrati */
         .box-large-top { top: -2px; left: 50%; width: 66%; height: 18%; transform: translateX(-50%); border-top: none; }
         .box-small-top { top: -2px; left: 50%; width: 32%; height: 6.5%; transform: translateX(-50%); border-top: none; }
-        .arc-top { top: 14%; left: 50%; width: 22%; height: 8%; border: 2px solid white; border-radius: 50%; transform: translateX(-50%); clip-path: inset(50% 0 0 0); }
+        .arc-top { 
+            top: 14%; left: 50%; width: 22%; height: 8%; 
+            border: 2px solid white; border-radius: 50%; 
+            transform: translateX(-50%); clip-path: inset(50% 0 0 0); 
+        }
+
         .box-large-bot { bottom: -2px; left: 50%; width: 66%; height: 18%; transform: translateX(-50%); border-bottom: none; }
         .box-small-bot { bottom: -2px; left: 50%; width: 32%; height: 6.5%; transform: translateX(-50%); border-bottom: none; }
-        .arc-bot { bottom: 14%; left: 50%; width: 22%; height: 8%; border: 2px solid white; border-radius: 50%; transform: translateX(-50%); clip-path: inset(0 0 50% 0); }
+        .arc-bot { 
+            bottom: 14%; left: 50%; width: 22%; height: 8%; 
+            border: 2px solid white; border-radius: 50%; 
+            transform: translateX(-50%); clip-path: inset(0 0 50% 0); 
+        }
+
         .penalty-dot-top { top: 12.5%; left: 50%; width: 5px; height: 5px; background: white; border-radius: 50%; transform: translateX(-50%); position: absolute; }
         .penalty-dot-bot { bottom: 12.5%; left: 50%; width: 5px; height: 5px; background: white; border-radius: 50%; transform: translateX(-50%); position: absolute; }
+        
         .corner { position: absolute; width: 15px; height: 15px; border: 2px solid white; border-radius: 50%; }
         .c-tl { top: -10px; left: -10px; } .c-tr { top: -10px; right: -10px; }
         .c-bl { bottom: -10px; left: -10px; } .c-br { bottom: -10px; right: -10px; }
@@ -131,6 +164,7 @@
         </div>
 
         <div id="p-calendario" class="page">
+            <h3 style="color:var(--oro)">CALENDARIO PROSSIME PARTITE</h3>
             <div class="card">
                 <input type="text" id="cal-avv" placeholder="Avversario">
                 <input type="datetime-local" id="cal-data">
