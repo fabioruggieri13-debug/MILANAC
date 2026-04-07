@@ -69,9 +69,10 @@
         }
         .bg-number {
             position: absolute;
-            right: 15px;
-            top: 10px;
-            font-size: 45px; 
+            right: 12px; /* Leggermente rientrato per non tagliare */
+            top: 50%; /* Centrato verticalmente rispetto alla card */
+            transform: translateY(-50%);
+            font-size: 55px; /* Aumentato per stile, ma con controllo overflow */
             font-weight: 900;
             z-index: 0;
             pointer-events: none;
@@ -80,8 +81,9 @@
             background: linear-gradient(180deg, #FFE08E 0%, #D4AF37 50%, #8A6E2F 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            opacity: 0.6;
+            opacity: 0.45; /* Leggermente più opaco per eleganza */
             filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.5));
+            overflow: visible; /* Fondamentale per non tagliare i numeri */
         }
         .card-left { position: relative; z-index: 1; flex: 1; display: flex; flex-direction: column; justify-content: center; }
         .role-badge { color: var(--oro); font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; font-family: 'Teko'; }
@@ -112,18 +114,20 @@
         .btn-plus { background: #2e7d32; color: white; }
         .btn-minus { background: #c61c23; color: white; }
 
-        /* --- STILE MODAL GIOCATORE (DALLA TUA FOTO) --- */
+        /* --- STILE MODAL GIOCATORE (FIXATO) --- */
         #modal-player { position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 5000; display: none; padding: 20px; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
         .modal-content { 
             background: linear-gradient(180deg, #151515 0%, #000 100%); 
             border: 2px solid var(--oro); 
             border-radius: 25px; 
-            padding: 30px; 
+            padding: 25px; 
             width: 90%; 
             max-width: 350px; 
             text-align: center; 
             position: relative;
             box-shadow: 0 0 40px rgba(212, 175, 55, 0.25);
+            max-height: 90vh;
+            overflow-y: auto; /* Per schermi molto piccoli */
         }
         #m-ruolo-txt { color: var(--oro); font-family: 'Teko'; font-size: 16px; text-transform: uppercase; letter-spacing: 2px; }
         #m-nome { 
@@ -140,24 +144,34 @@
             font-family: 'Oswald', sans-serif;
             font-size: 110px;
             font-weight: 700;
-            line-height: 0.85;
-            margin: 15px 0;
+            line-height: 1; /* Aumentato leggermente per non tagliare la testa del numero */
+            margin: 10px 0 20px 0; /* Spazio sotto per non toccare le stats */
             background: linear-gradient(180deg, #FFE08E 0%, #D4AF37 50%, #8A6E2F 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             filter: drop-shadow(0 4px 10px rgba(0,0,0,0.9));
+            display: block;
         }
         .m-stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
-            margin-top: 25px;
+            margin-top: 15px;
             border-top: 1px solid rgba(255,255,255,0.15);
             padding-top: 20px;
         }
-        .stat-item { display: flex; flex-direction: column; align-items: center; background: rgba(255,255,255,0.03); padding: 8px; border-radius: 10px; }
-        .stat-label { font-size: 10px; color: #888; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; }
-        .stat-value { font-family: 'Oswald'; font-size: 26px; color: white; font-weight: 700; }
+        .stat-item { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; /* Centratura verticale */
+            background: rgba(255,255,255,0.03); 
+            padding: 10px; 
+            border-radius: 10px; 
+            min-height: 60px;
+        }
+        .stat-label { font-size: 10px; color: #888; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; margin-bottom: 2px; }
+        .stat-value { font-family: 'Oswald'; font-size: 26px; color: white; font-weight: 700; line-height: 1; }
     </style>
 </head>
 <body>
@@ -277,7 +291,7 @@
                 <div class="stat-item"><span class="stat-label">ROSSI</span><span id="st-rd" class="stat-value">0</span></div>
             </div>
             
-            <button class="btn-main" style="margin-top:25px; border-radius:12px;" onclick="document.getElementById('modal-player').style.display='none'">CHIUDI</button>
+            <button class="btn-main" style="margin-top:30px; border-radius:15px; margin-bottom:10px;" onclick="document.getElementById('modal-player').style.display='none'">CHIUDI</button>
         </div>
     </div>
 
@@ -482,16 +496,13 @@
             });
         }
 
-        // --- FUNZIONE APERTURA MODAL (DALLA TUA IMMAGINE) ---
         function openP(id) {
             const p = data.ps.find(x=>x.id==id); 
-            // Titolo ruolo esteso
             const fullRoles = { 'POR': 'PORTIERE', 'DIF': 'DIFENSORE', 'CEN': 'CENTROCAMPISTA', 'ATT': 'ATTACCANTE' };
             document.getElementById('m-ruolo-txt').innerText = fullRoles[p.r] || p.r;
             document.getElementById('m-nome').innerText = p.n;
             document.getElementById('m-numero-big').innerText = p.m;
             
-            // Stats grid
             document.getElementById('st-g').innerText = p.g || 0;
             document.getElementById('st-a').innerText = p.a || 0;
             document.getElementById('st-mvp').innerText = p.mvp || 0;
