@@ -69,10 +69,10 @@
         }
         .bg-number {
             position: absolute;
-            right: 12px; /* Leggermente rientrato per non tagliare */
-            top: 50%; /* Centrato verticalmente rispetto alla card */
-            transform: translateY(-50%);
-            font-size: 55px; /* Aumentato per stile, ma con controllo overflow */
+            right: 12px; 
+            top: 5px; /* Spostato in alto */
+            transform: none; /* Rimosso centramento verticale */
+            font-size: 55px; 
             font-weight: 900;
             z-index: 0;
             pointer-events: none;
@@ -81,9 +81,9 @@
             background: linear-gradient(180deg, #FFE08E 0%, #D4AF37 50%, #8A6E2F 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            opacity: 0.45; /* Leggermente più opaco per eleganza */
+            opacity: 0.45; 
             filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.5));
-            overflow: visible; /* Fondamentale per non tagliare i numeri */
+            overflow: visible; 
         }
         .card-left { position: relative; z-index: 1; flex: 1; display: flex; flex-direction: column; justify-content: center; }
         .role-badge { color: var(--oro); font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; font-family: 'Teko'; }
@@ -114,7 +114,7 @@
         .btn-plus { background: #2e7d32; color: white; }
         .btn-minus { background: #c61c23; color: white; }
 
-        /* --- STILE MODAL GIOCATORE (FIXATO) --- */
+        /* --- STILE MODAL GIOCATORE --- */
         #modal-player { position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 5000; display: none; padding: 20px; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
         .modal-content { 
             background: linear-gradient(180deg, #151515 0%, #000 100%); 
@@ -127,7 +127,7 @@
             position: relative;
             box-shadow: 0 0 40px rgba(212, 175, 55, 0.25);
             max-height: 90vh;
-            overflow-y: auto; /* Per schermi molto piccoli */
+            overflow-y: auto; 
         }
         #m-ruolo-txt { color: var(--oro); font-family: 'Teko'; font-size: 16px; text-transform: uppercase; letter-spacing: 2px; }
         #m-nome { 
@@ -144,8 +144,8 @@
             font-family: 'Oswald', sans-serif;
             font-size: 110px;
             font-weight: 700;
-            line-height: 1; /* Aumentato leggermente per non tagliare la testa del numero */
-            margin: 10px 0 20px 0; /* Spazio sotto per non toccare le stats */
+            line-height: 1; 
+            margin: 10px 0 20px 0; 
             background: linear-gradient(180deg, #FFE08E 0%, #D4AF37 50%, #8A6E2F 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -164,7 +164,7 @@
             display: flex; 
             flex-direction: column; 
             align-items: center; 
-            justify-content: center; /* Centratura verticale */
+            justify-content: center; 
             background: rgba(255,255,255,0.03); 
             padding: 10px; 
             border-radius: 10px; 
