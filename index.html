@@ -256,7 +256,7 @@
 
             data.ps.forEach(p => {
                 const voti = Object.values(p.v_adm || {});
-                const media = parseFloat((voti.reduce((a,b)=>a+b,0) / voti.length).toFixed(1));
+                const media = parseFloat((voti.reduce((a,b)=>a+b,0) / (voti.length || 1)).toFixed(1));
                 if(media > maxMedia) { maxMedia = media; topPlayerId = p.id; }
                 if((p.mvp || 0) > maxMvp) { maxMvp = p.mvp; kingId = p.id; }
                 if(p.r === 'DIF' && media > maxDefMedia) { maxDefMedia = media; wallId = p.id; }
@@ -270,19 +270,44 @@
             }
             modSelect.value = data.mod;
 
+            // --- GESTIONE VISUALIZZAZIONE ROSA ---
+            if(!window.viewMode) window.viewMode = 'roles'; 
+            hR = `<div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <button onclick="window.viewMode='all'; render()" style="flex:1; padding:8px; font-size:11px; background:${window.viewMode==='all'?'var(--oro)':'#222'}; color:${window.viewMode==='all'?'black':'white'}; border:1px solid var(--oro); border-radius:5px; font-weight:bold;">TUTTI</button>
+                <button onclick="window.viewMode='roles'; render()" style="flex:1; padding:8px; font-size:11px; background:${window.viewMode==='roles'?'var(--oro)':'#222'}; color:${window.viewMode==='roles'?'black':'white'}; border:1px solid var(--oro); border-radius:5px; font-weight:bold;">PER RUOLO</button>
+            </div>`;
+
+            const ruoliOrdine = ['POR', 'DIF', 'CEN', 'ATT'];
+            const gruppi = { 'POR': '', 'DIF': '', 'CEN': '', 'ATT': '' };
+            let listaSemplice = "";
+
             data.ps.forEach(p => {
                 const voti = Object.values(p.v_adm || {});
-                const media = (voti.reduce((a,b)=>a+b,0) / voti.length).toFixed(1);
+                const media = (voti.reduce((a,b)=>a+b,0) / (voti.length || 1)).toFixed(1);
                 
-                let bRosa = "";
-                if(p.id === kingId && maxMvp > 0) bRosa += "👑";
-                if(p.id === topPlayerId && maxMedia > 6) bRosa += "🔥";
-                if(p.id === wallId && maxDefMedia > 6) bRosa += "🧱";
+                let bIcons = "";
+                if(p.id === kingId && maxMvp > 0) bIcons += "👑";
+                if(p.id === topPlayerId && maxMedia > 6) bIcons += "🔥";
+                if(p.id === wallId && maxDefMedia > 6) bIcons += "🧱";
 
-                hR += `<div class="card" onclick="openP(${p.id})"><b>${p.n} ${bRosa}</b> #${p.m}<br><small>${p.r} | Media: ${media}</small><br><button class="btn-main" style="width:auto; padding:5px 10px; margin-top:5px; background:${p.convocato?'green':'#333'}" onclick="event.stopPropagation(); const i=data.ps.findIndex(x=>x.id==${p.id}); data.ps[i].convocato=!data.ps[i].convocato; sync()">${p.convocato?'IN CAMPO':'SCHIERA'}</button></div>`;
+                const playerCard = `<div class="card" onclick="openP(${p.id})">
+                    <b>${p.n} ${bIcons}</b> #${p.m}<br>
+                    <small>${p.r} | Media: ${media}</small><br>
+                    <button class="btn-main" style="width:auto; padding:5px 10px; margin-top:5px; background:${p.convocato?'green':'#333'}" onclick="event.stopPropagation(); const i=data.ps.findIndex(x=>x.id==${p.id}); data.ps[i].convocato=!data.ps[i].convocato; sync()">${p.convocato?'IN CAMPO':'SCHIERA'}</button>
+                </div>`;
+
+                if(window.viewMode === 'roles') {
+                    if(gruppi[p.r] !== undefined) gruppi[p.r] += playerCard;
+                    else gruppi['ATT'] += playerCard;
+                } else {
+                    listaSemplice += playerCard;
+                }
+                
+                // Generazione Mercato e Premi (indipendente dalla vista Rosa)
                 hMk += `<div class="card"><b>${p.n}</b> <span style="float:right; color:var(--oro)">€${(10+(media-6)*5+(p.g||0)*2).toFixed(1)}M</span></div>`;
                 hP += `<div class="card"><b>${p.n}</b> <span style="float:right">👑 ${p.mvp||0} | ⭐ ${p.potm||0}</span></div>`;
                 
+                // Pannello Admin
                 hA += `<div class="card">
                     <b>${p.n}</b> <button style="color:red; float:right; border:none; background:none;" onclick="if(confirm('Eliminare?')){data.ps=data.ps.filter(x=>x.id!==${p.id}); sync()}">🗑️ ELIMINA</button>
                     
@@ -330,6 +355,15 @@
                     </div>
                 </div>`;
             });
+
+            // Assemblaggio Rosa finale
+            if(window.viewMode === 'roles') {
+                ruoliOrdine.forEach(r => {
+                    if(gruppi[r]) hR += `<h4 style="color:var(--oro); border-bottom:1px solid #333; padding-bottom:5px; margin:20px 0 10px 0; text-transform:uppercase; font-size:12px; letter-spacing:1px;">${r}</h4>` + gruppi[r];
+                });
+            } else {
+                hR += listaSemplice;
+            }
 
             (data.matches || []).forEach((m,idx) => { hMatch += `<div class="card"><b>${m.d}</b>: ${m.ris} vs ${m.avv} <button style="background:none; border:none; float:right" onclick="data.matches.splice(${idx},1); sync()">🗑️</button></div>`; });
             (data.news || []).forEach((n,idx) => { hNews += `<div class="card"><small>${n.d}</small><p>${n.txt}</p><button style="background:none; border:none; color:red" onclick="data.news.splice(${idx},1); sync()">🗑️ Elimina</button></div>`; });
