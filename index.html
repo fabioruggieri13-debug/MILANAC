@@ -73,13 +73,18 @@
             top: 10px;
             font-size: 45px; 
             font-weight: 900;
-            color: var(--oro); 
-            opacity: 0.3;
             z-index: 0;
             pointer-events: none;
-            font-family: 'Arial Black', sans-serif; 
+            /* Font Impact per stile maglia storica */
+            font-family: 'Impact', 'Arial Black', sans-serif; 
             line-height: 1;
-            font-style: italic;
+            /* Gradient Oro Metallico */
+            background: linear-gradient(180deg, #FFE08E 0%, #D4AF37 50%, #8A6E2F 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            opacity: 0.6;
+            /* Leggero bordo per simulare il rilievo */
+            filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.5));
         }
         .card-left { position: relative; z-index: 1; flex: 1; display: flex; flex-direction: column; justify-content: center; }
         
