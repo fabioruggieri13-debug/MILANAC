@@ -24,12 +24,10 @@
         .container { height: calc(100vh - 60px); overflow-y: auto; padding: 15px; box-sizing: border-box; padding-bottom: 60px; }
         .page { display: none; } .page.active { display: block; }
 
-        /* STILE SELETTORE MODULI */
         .mod-selector-container { margin-bottom: 10px; display: flex; align-items: center; gap: 10px; background: #111; padding: 10px; border-radius: 8px; border: 1px solid var(--oro); }
         .mod-label { font-size: 12px; font-weight: bold; color: var(--oro); text-transform: uppercase; }
         #mod-select { flex-grow: 1; padding: 8px; background: #222; border: 1px solid #444; color: white; border-radius: 4px; font-weight: bold; }
 
-        /* --- STILE DEL CAMPO DA GIOCO FIXATO --- */
         #pitch { 
             width: 95% !important; aspect-ratio: 2/3 !important; max-height: 72vh !important; 
             margin: 0 auto !important; background: #2e7d32 !important; border: 3px solid #fff !important; 
@@ -110,8 +108,7 @@
         <div id="p-tattica" class="page">
             <div class="mod-selector-container">
                 <span class="mod-label">Modulo:</span>
-                <select id="mod-select" onchange="setModulo(this.value)">
-                    </select>
+                <select id="mod-select" onchange="setModulo(this.value)"></select>
             </div>
             <div id="pitch">
                 <div class="p-line mid-line"></div>
@@ -184,7 +181,6 @@
         const firebaseConfig = { apiKey: "AIzaSyDbO_AxHKz1avQpYscoSSLpEfmFaL8MRGg", authDomain: "milanac-proclub.firebaseapp.com", projectId: "milanac-proclub", storageBucket: "milanac-proclub.firebasestorage.app", messagingSenderId: "61702234008", appId: "1:61702234008:web:aa597d8600d0a8251895ed" };
         firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
         let data = { ps: [], mod: '4-4-2', matches: [], news: [], calendar: [] };
-        
         const PASS = "milanac"; 
 
         const modali = {
@@ -253,7 +249,6 @@
             let hR="", hA="", hMk="", hP="", hMatch="", hNews="", hCal="";
             const activeAdm = document.getElementById('active-admin').value;
 
-            // Logica Badge
             let maxMedia = -1, topPlayerId = null;
             let maxMvp = -1, kingId = null;
             let maxDefMedia = -1, wallId = null;
@@ -261,20 +256,15 @@
             data.ps.forEach(p => {
                 const voti = Object.values(p.v_adm || {});
                 const media = parseFloat((voti.reduce((a,b)=>a+b,0) / voti.length).toFixed(1));
-                
                 if(media > maxMedia) { maxMedia = media; topPlayerId = p.id; }
                 if((p.mvp || 0) > maxMvp) { maxMvp = p.mvp; kingId = p.id; }
                 if(p.r === 'DIF' && media > maxDefMedia) { maxDefMedia = media; wallId = p.id; }
             });
 
-            // Popola il menù a tendina dei moduli (solo la prima volta o al cambio)
             const modSelect = document.getElementById('mod-select');
             if (modSelect.options.length === 0) {
                 Object.keys(modali).forEach(m => {
-                    let opt = document.createElement('option');
-                    opt.value = m;
-                    opt.innerHTML = m;
-                    modSelect.appendChild(opt);
+                    let opt = document.createElement('option'); opt.value = m; opt.innerHTML = m; modSelect.appendChild(opt);
                 });
             }
             modSelect.value = data.mod;
@@ -304,7 +294,9 @@
                     <div class="stat-row">
                         <span>⚽ Goal: ${p.g||0} | 👟 Assist: ${p.a||0}</span> 
                         <div>
-                            <button class="btn-v btn-minus" style="margin-right:2px" onclick="updateStat(${p.id},'g',1)">⚽+</button>
+                            <button class="btn-v btn-minus" onclick="updateStat(${p.id},'g',-1)">-</button>
+                            <button class="btn-v btn-plus" onclick="updateStat(${p.id},'g',1)">⚽+</button>
+                            <button class="btn-v btn-minus" style="margin-left:8px" onclick="updateStat(${p.id},'a',-1)">-</button>
                             <button class="btn-v btn-plus" onclick="updateStat(${p.id},'a',1)">👟+</button>
                         </div>
                     </div>
@@ -312,8 +304,10 @@
                     <div class="stat-row">
                         <span>🟨: ${p.yl||0} | 🟥: ${p.rd||0}</span>
                         <div>
-                            <button class="btn-v" style="background:gold" onclick="updateStat(${p.id},'yl',1)">🟨</button>
-                            <button class="btn-v" style="background:red; margin-left:2px" onclick="updateStat(${p.id},'rd',1)">🟥</button>
+                            <button class="btn-v btn-minus" onclick="updateStat(${p.id},'yl',-1)">-</button>
+                            <button class="btn-v" style="background:gold; color:black" onclick="updateStat(${p.id},'yl',1)">🟨+</button>
+                            <button class="btn-v btn-minus" style="margin-left:8px" onclick="updateStat(${p.id},'rd',-1)">-</button>
+                            <button class="btn-v" style="background:red; color:white" onclick="updateStat(${p.id},'rd',1)">🟥+</button>
                         </div>
                     </div>
 
@@ -322,7 +316,7 @@
                         <div>
                             <button class="btn-v" style="background:var(--oro); color:black; margin-right:2px" onclick="updateStat(${p.id},'mvp',1)">🏆+</button>
                             <button class="btn-v" style="background:white; color:black" onclick="updateStat(${p.id},'potm',1)">⭐+</button>
-                            <button class="btn-v" style="background:#444; margin-left:2px" onclick="updateStat(${p.id},'mvp',-1);updateStat(${p.id},'potm',-1);updateStat(${p.id},'g',-1);updateStat(${p.id},'a',-1)">↺</button>
+                            <button class="btn-v" style="background:#444; margin-left:2px" onclick="updateStat(${p.id},'mvp',-1);updateStat(${p.id},'potm',-1);updateStat(${p.id},'g',-1);updateStat(${p.id},'a',-1);updateStat(${p.id},'yl',-1);updateStat(${p.id},'rd',-1)">↺</button>
                         </div>
                     </div>
                 </div>`;
@@ -330,15 +324,10 @@
 
             (data.matches || []).forEach((m,idx) => { hMatch += `<div class="card"><b>${m.d}</b>: ${m.ris} vs ${m.avv} <button style="background:none; border:none; float:right" onclick="data.matches.splice(${idx},1); sync()">🗑️</button></div>`; });
             (data.news || []).forEach((n,idx) => { hNews += `<div class="card"><small>${n.d}</small><p>${n.txt}</p><button style="background:none; border:none; color:red" onclick="data.news.splice(${idx},1); sync()">🗑️ Elimina</button></div>`; });
-            
             (data.calendar || []).forEach((c,idx) => {
                 const dateObj = new Date(c.dt);
                 const formatData = dateObj.toLocaleDateString() + " ore " + dateObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                hCal += `<div class="card">
-                    <span style="color:var(--oro)">${formatData}</span><br>
-                    <b>${c.avv}</b>
-                    <button style="background:none; border:none; float:right; color:red" onclick="data.calendar.splice(${idx},1); sync()">🗑️</button>
-                </div>`;
+                hCal += `<div class="card"><span style="color:var(--oro)">${formatData}</span><br><b>${c.avv}</b><button style="background:none; border:none; float:right; color:red" onclick="data.calendar.splice(${idx},1); sync()">🗑️</button></div>`;
             });
 
             document.getElementById('l-rosa').innerHTML = hR; document.getElementById('l-admin').innerHTML = hA;
@@ -352,12 +341,10 @@
                 if(p.id === kingId && maxMvp > 0) pBadge = "👑";
                 else if(p.id === topPlayerId && maxMedia > 6.5) pBadge = "🔥";
                 else if(p.id === wallId && maxDefMedia > 6) pBadge = "🧱";
-
                 const d = document.createElement('div'); d.className = 'player'; d.style.left = p.x + "%"; d.style.top = p.y + "%";
                 d.innerHTML = `<div class="jersey">${p.m}${pBadge ? `<span class="badge-icon">${pBadge}</span>` : ''}</div><div class="p-name">${p.n}</div>`;
                 d.onclick = () => openP(p.id);
-                let isD = false;
-                const start = () => isD = true;
+                let isD = false; const start = () => isD = true;
                 const move = (e) => {
                     if (!isD) return;
                     const rect = document.getElementById('pitch').getBoundingClientRect();
