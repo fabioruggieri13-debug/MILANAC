@@ -298,7 +298,7 @@
         @keyframes dash { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
 
         .calendar-wrapper { background: #111; padding: 15px; border-radius: 15px; border: 1px solid var(--oro); margin-top: 10px; }
-        .calendar-header { display: flex; justify-content: center; margin-bottom: 10px; font-family: 'Oswald'; color: var(--oro); text-transform: uppercase; font-size: 18px; }
+        .calendar-header { display: flex; justify: center; margin-bottom: 10px; font-family: 'Oswald'; color: var(--oro); text-transform: uppercase; font-size: 18px; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
         .calendar-day-label { text-align: center; font-size: 10px; color: #777; font-weight: bold; padding-bottom: 5px; }
         .calendar-cell { 
@@ -394,7 +394,10 @@
                     <option value="🏅 Torneo">Torneo</option>
                 </select>
                 <input type="text" id="cal-avv" placeholder="Nome Avversario">
-                <input type="datetime-local" id="cal-data">
+                <div style="display: flex; gap: 10px;">
+                    <input type="date" id="cal-data-solo" style="flex: 2;">
+                    <input type="time" id="cal-ora" style="flex: 1;">
+                </div>
                 <button class="btn-main" onclick="addCalendarEvent()">AGGIUNGI A CALENDARIO</button>
             </div>
             <div id="l-calendario"></div>
@@ -505,15 +508,18 @@
 
         function addCalendarEvent() {
             const avv = document.getElementById('cal-avv').value;
-            const dataOra = document.getElementById('cal-data').value;
+            const dataSolo = document.getElementById('cal-data-solo').value;
+            const ora = document.getElementById('cal-ora').value || "00:00";
             const tipo = document.getElementById('cal-tipo').value;
-            if(avv && dataOra) {
+            if(avv && dataSolo) {
+                const dataOra = `${dataSolo}T${ora}`;
                 if(!data.calendar) data.calendar = [];
                 data.calendar.push({id: Date.now(), avv, dt: dataOra, tipo: tipo});
                 data.calendar.sort((a,b) => new Date(a.dt) - new Date(b.dt));
                 sync();
                 document.getElementById('cal-avv').value = '';
-                document.getElementById('cal-data').value = '';
+                document.getElementById('cal-data-solo').value = '';
+                document.getElementById('cal-ora').value = '';
             }
         }
 
@@ -597,7 +603,7 @@
             (data.matches || []).forEach((m,idx) => { hMatch += `<div class="card" style="display:flex"><b>${m.d}</b>: ${m.ris} vs ${m.avv} <button style="background:none; border:none; float:right" onclick="data.matches.splice(${idx},1); sync()">🗑️</button></div>`; });
             (data.news || []).forEach((n,idx) => { hNews += `<div class="card" style="display:block"><small>${n.d}</small><p>${n.txt}</p><button style="background:none; border:none; color:red" onclick="data.news.splice(${idx},1); sync()">🗑️ Elimina</button></div>`; });
             
-            const ora = new Date(); const meseCorrente = ora.getMonth(); const annoCorrente = ora.getFullYear(); const nomiMesi = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
+            const oraRef = new Date(); const meseCorrente = oraRef.getMonth(); const annoCorrente = oraRef.getFullYear(); const nomiMesi = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
             const primoGiornoMese = new Date(annoCorrente, meseCorrente, 1).getDay(); const giorniNelMese = new Date(annoCorrente, meseCorrente + 1, 0).getDate();
             const startOffset = primoGiornoMese === 0 ? 6 : primoGiornoMese - 1;
             let hCal = `<div class="calendar-wrapper"><div class="calendar-header">${nomiMesi[meseCorrente]} ${annoCorrente}</div><div class="calendar-grid"><div class="calendar-day-label">L</div><div class="calendar-day-label">M</div><div class="calendar-day-label">M</div><div class="calendar-day-label">G</div><div class="calendar-day-label">V</div><div class="calendar-day-label">S</div><div class="calendar-day-label">D</div>`;
@@ -605,7 +611,7 @@
             for(let d=1; d<=giorniNelMese; d++) {
                 const dataLoop = new Date(annoCorrente, meseCorrente, d).toLocaleDateString();
                 const eventiOggi = (data.calendar || []).filter(c => new Date(c.dt).toLocaleDateString() === dataLoop);
-                const isToday = dataLoop === ora.toLocaleDateString();
+                const isToday = dataLoop === oraRef.toLocaleDateString();
                 hCal += `<div class="calendar-cell ${eventiOggi.length > 0 ? 'has-event' : ''} ${isToday ? 'today' : ''}" onclick="showDayEvents('${dataLoop}')">${d}${eventiOggi.length > 0 ? '<div class="event-dot"></div>' : ''}</div>`;
             }
             hCal += `</div><div id="selected-day-info" class="selected-event-info"></div></div>`;
@@ -638,7 +644,16 @@
             const evs = (data.calendar || []).filter(c => new Date(c.dt).toLocaleDateString() === dataS);
             let html = `<h4 style="color:var(--oro); font-size:12px; margin-bottom:10px;">EVENTI DEL ${dataS}</h4>`;
             if(evs.length === 0) html += `<p style="font-size:12px; color:#666">Nessuna partita.</p>`;
-            evs.forEach(e => { html += `<div class="card" style="flex-direction:row; justify-content:space-between; align-items:center; min-height:auto; padding:10px; margin-bottom:5px;"><div><span style="color:var(--oro)">${e.tipo}</span> vs <b>${e.avv}</b></div><div style="color:red; cursor:pointer" onclick="data.calendar = data.calendar.filter(x=>x.id != ${e.id}); sync()">🗑️</div></div>`; });
+            evs.forEach(e => { 
+                const oraFormattata = new Date(e.dt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                html += `<div class="card" style="flex-direction:row; justify-content:space-between; align-items:center; min-height:auto; padding:10px; margin-bottom:5px;">
+                    <div>
+                        <span style="color:var(--oro); font-weight:bold;">${oraFormattata}</span> - 
+                        <span style="font-size:13px">${e.tipo}</span> vs <b>${e.avv}</b>
+                    </div>
+                    <div style="color:red; cursor:pointer" onclick="data.calendar = data.calendar.filter(x=>x.id != ${e.id}); sync()">🗑️</div>
+                </div>`; 
+            });
             document.getElementById('selected-day-info').innerHTML = html;
         };
 
