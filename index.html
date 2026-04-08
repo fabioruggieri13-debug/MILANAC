@@ -54,8 +54,9 @@
             width: 80%;
             max-width: 320px;
             mix-blend-mode: lighten; 
-            filter: drop-shadow(0 10px 30px rgba(0,0,0,0.8)) brightness(1.1);
-            animation: logoEntrance 1.5s ease-out, logoFloat3D 4s infinite ease-in-out;
+            filter: drop-shadow(0 0 30px rgba(198, 28, 35, 0.6)) brightness(1.1);
+            /* Modificata per animazione d'impatto "contro lo schermo" */
+            animation: logoEntrancePro 1.2s cubic-bezier(0.2, 0.8, 0.2, 1.2) forwards;
             margin-bottom: 40px;
             transform-style: preserve-3d;
             position: relative;
@@ -64,33 +65,45 @@
         .intro-shadow {
             width: 150px;
             height: 20px;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.7);
             border-radius: 50%;
-            filter: blur(10px);
+            filter: blur(12px);
             margin-top: -30px;
             margin-bottom: 30px;
-            animation: shadowPulse 4s infinite ease-in-out;
+            opacity: 0;
+            animation: shadowFadeIn 0.5s ease-out 1s forwards;
         }
 
-        @keyframes shadowPulse {
-            0%, 100% { transform: scale(1.2); opacity: 0.5; }
-            50% { transform: scale(0.8); opacity: 0.2; }
+        @keyframes shadowFadeIn {
+            to { opacity: 1; }
         }
 
-        @keyframes logoEntrance {
-            0% { transform: scale(0.5) translateZ(-500px); opacity: 0; filter: blur(10px); }
-            100% { transform: scale(1) translateZ(0); opacity: 1; filter: blur(0); }
-        }
-
-        @keyframes logoFloat3D {
-            0%, 100% { transform: rotateY(-15deg) rotateX(10deg) translateY(0px); }
-            50% { transform: rotateY(15deg) rotateX(-5deg) translateY(-20px); }
+        /* --- KEYFRAMES INGRESSO PROSPETTICO AGGRESSIVO --- */
+        @keyframes logoEntrancePro {
+            0% { 
+                transform: scale(0.1) translateZ(-1500px) rotateX(45deg); 
+                opacity: 0; 
+                filter: blur(20px); 
+            }
+            70% {
+                transform: scale(1.1) translateZ(100px) rotateX(0deg); 
+                opacity: 1; 
+                filter: blur(0);
+            }
+            85% {
+                transform: scale(0.98) translateZ(-20px);
+            }
+            100% { 
+                transform: scale(1) translateZ(0); 
+                opacity: 1; 
+                filter: blur(0) drop-shadow(0 0 20px rgba(198, 28, 35, 0.4));
+            }
         }
 
         #intro.fade-out {
-            transform: scale(2) translateZ(500px);
+            transform: scale(3) translateZ(800px);
             opacity: 0;
-            filter: blur(15px);
+            filter: blur(20px);
             pointer-events: none;
         }
 
@@ -116,7 +129,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Riflesso Glossy Superiore */
         .btn-entrance::before {
             content: "";
             position: absolute;
