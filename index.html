@@ -11,11 +11,26 @@
         :root { --rosso: #C61C23; --oro: #D4AF37; --nero: #000; --erba-scura: #1b5e20; --erba-chiara: #2e7d32; --linee: rgba(255,255,255,0.9); }
         body { margin: 0; background: var(--nero); color: white; font-family: 'Segoe UI', sans-serif; overflow: hidden; height: 100vh; touch-action: none; }
         
-        #intro { position: fixed; inset: 0; background: radial-gradient(circle at center, #200000 0%, #000 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; animation: heartBeatBg 2s infinite; }
-        .pulsing-title { font-size: 4rem; font-weight: 900; text-transform: uppercase; animation: colorPulse 3s infinite alternate, heartBeatText 2s infinite; font-family: 'Oswald'; }
+        /* --- NUOVA INTRO AL "TOP" (MODIFICATA) --- */
+        #intro { 
+            position: fixed; inset: 0; 
+            background: 
+                linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.9)), /* Maschera per leggibilità */
+                url('https://i.ibb.co/X7W747x/image-6.png') no-repeat center center; /* URL Immagine Diavolo */
+            background-size: cover;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            z-index: 10000; 
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s, filter 0.8s; /* Animazione uscita */
+        }
+        #intro.fade-out {
+            transform: scale(1.5); /* Zoom in */
+            opacity: 0; /* Dissolvenza */
+            filter: blur(10px); /* Sfocatura */
+            pointer-events: none; /* Disabilita interazioni */
+        }
+        .pulsing-title { font-size: 4rem; font-weight: 900; text-transform: uppercase; animation: colorPulse 3s infinite alternate, heartBeatText 2s infinite; font-family: 'Oswald'; margin-bottom: 20px;}
         @keyframes colorPulse { 0% { color: var(--oro); text-shadow: 0 0 15px var(--oro); } 100% { color: var(--rosso); text-shadow: 0 0 15px var(--rosso); } }
         @keyframes heartBeatText { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.1); } }
-        @keyframes heartBeatBg { 0%, 100% { background: radial-gradient(circle at center, #200000 0%, #000 100%); } 15% { background: radial-gradient(circle at center, #400000 0%, #000 100%); } }
 
         header { height: 60px; border-bottom: 2px solid var(--rosso); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; background: #000; z-index: 2000; position: relative; }
         .sidebar { position: fixed; top: 0; right: -100%; width: 280px; height: 100%; background: rgba(5,5,5,0.98); transition: 0.4s; z-index: 3000; border-left: 2px solid var(--rosso); padding-top: 60px; }
@@ -206,8 +221,10 @@
 
     <div id="intro">
         <h1 class="pulsing-title">MILANAC</h1>
-        <p>BENVENUTO NEL CLUB</p>
-        <button class="btn-main" style="width:180px; border-radius:30px;" onclick="document.getElementById('intro').style.display='none'">ENTRA</button>
+        <button class="btn-main" style="width:180px; border-radius:30px;" onclick="
+            document.getElementById('intro').classList.add('fade-out'); // Aggiunge classe animazione
+            setTimeout(() => { document.getElementById('intro').style.display='none'; }, 800); // Nasconde dopo animazione
+        ">ENTRA</button>
     </div>
 
     <header>
