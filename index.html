@@ -298,7 +298,7 @@
         @keyframes dash { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
 
         .calendar-wrapper { background: #111; padding: 15px; border-radius: 15px; border: 1px solid var(--oro); margin-top: 10px; }
-        .calendar-header { display: flex; justify-content: center; margin-bottom: 10px; font-family: 'Oswald'; color: var(--oro); text-transform: uppercase; font-size: 18px; }
+        .calendar-header { display: flex; justify(content: center; margin-bottom: 10px; font-family: 'Oswald'; color: var(--oro); text-transform: uppercase; font-size: 18px; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
         .calendar-day-label { text-align: center; font-size: 10px; color: #777; font-weight: bold; padding-bottom: 5px; }
         .calendar-cell { 
@@ -319,6 +319,26 @@
         .event-dot { width: 5px; height: 5px; background: var(--oro); border-radius: 50%; margin-top: 2px; }
         
         .selected-event-info { margin-top: 15px; border-top: 1px solid #333; padding-top: 10px; }
+
+        /* NUOVI STILI COUNTDOWN */
+        .countdown-container {
+            background: linear-gradient(180deg, #1a1a1a 0%, #000 100%);
+            border: 2px solid var(--rosso);
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 15px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(198, 28, 35, 0.3);
+        }
+        .countdown-title { font-family: 'Oswald'; color: var(--oro); font-size: 12px; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; }
+        .countdown-timer { display: flex; justify-content: center; gap: 10px; font-family: 'Oswald'; }
+        .timer-segment { display: flex; flex-direction: column; align-items: center; }
+        .timer-val { font-size: 24px; font-weight: 700; color: #fff; line-height: 1; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+        .timer-label { font-size: 9px; color: var(--rosso); text-transform: uppercase; font-weight: bold; margin-top: 2px; }
+        .timer-sep { font-size: 24px; color: var(--rosso); animation: blink 1s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+        .match-live { color: #2e7d32; font-family: 'Oswald'; font-weight: bold; font-size: 18px; text-transform: uppercase; animation: pulse-green 1.5s infinite; }
+        @keyframes pulse-green { 0% { opacity: 0.6; } 50% { opacity: 1; transform: scale(1.05); } 100% { opacity: 0.6; } }
     </style>
 </head>
 <body>
@@ -458,6 +478,7 @@
         firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
         let data = { ps: [], mod: '4-4-2', matches: [], news: [], calendar: [] };
         const PASS = "milanac"; 
+        let countdownInterval;
 
         const modali = {
             '4-4-2': [{x:43,y:85},{x:10,y:70},{x:33,y:72},{x:55,y:72},{x:78,y:70},{x:10,y:45},{x:33,y:48},{x:55,y:48},{x:78,y:45},{x:33,y:20},{x:55,y:20}],
@@ -635,10 +656,59 @@
         }
 
         window.showDayEvents = function(dataS) {
+            if(countdownInterval) clearInterval(countdownInterval);
             const evs = (data.calendar || []).filter(c => new Date(c.dt).toLocaleDateString() === dataS);
             let html = `<h4 style="color:var(--oro); font-size:12px; margin-bottom:10px;">EVENTI DEL ${dataS}</h4>`;
             if(evs.length === 0) html += `<p style="font-size:12px; color:#666">Nessuna partita.</p>`;
-            evs.forEach(e => { html += `<div class="card" style="flex-direction:row; justify-content:space-between; align-items:center; min-height:auto; padding:10px; margin-bottom:5px;"><div><span style="color:var(--oro)">${e.tipo}</span> vs <b>${e.avv}</b></div><div style="color:red; cursor:pointer" onclick="data.calendar = data.calendar.filter(x=>x.id != ${e.id}); sync()">🗑️</div></div>`; });
+            
+            evs.forEach(e => { 
+                const matchTime = new Date(e.dt).getTime();
+                const eventId = `timer-${e.id}`;
+                html += `
+                <div class="card" style="flex-direction:column; min-height:auto; padding:15px; margin-bottom:10px; border-left: 4px solid var(--rosso);">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div><span style="color:var(--oro)">${e.tipo}</span><br><b style="font-size:18px;">MILANAC vs ${e.avv}</b><br><small style="color:#888;">Ore: ${new Date(e.dt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</small></div>
+                        <div style="color:red; cursor:pointer; font-size:20px;" onclick="data.calendar = data.calendar.filter(x=>x.id != ${e.id}); sync()">🗑️</div>
+                    </div>
+                    <div class="countdown-container" id="container-${eventId}">
+                        <div class="countdown-title">Countdown al Calcio d'Inizio</div>
+                        <div class="countdown-timer" id="${eventId}">
+                            <div class="timer-segment"><span class="timer-val" id="d-${eventId}">00</span><span class="timer-label">GG</span></div>
+                            <span class="timer-sep">:</span>
+                            <div class="timer-segment"><span class="timer-val" id="h-${eventId}">00</span><span class="timer-label">HH</span></div>
+                            <span class="timer-sep">:</span>
+                            <div class="timer-segment"><span class="timer-val" id="m-${eventId}">00</span><span class="timer-label">MM</span></div>
+                            <span class="timer-sep">:</span>
+                            <div class="timer-segment"><span class="timer-val" id="s-${eventId}">00</span><span class="timer-label">SS</span></div>
+                        </div>
+                    </div>
+                </div>`;
+
+                countdownInterval = setInterval(() => {
+                    const now = new Date().getTime();
+                    const diff = matchTime - now;
+                    const el = document.getElementById(eventId);
+                    if(!el) return;
+
+                    if (diff <= 0) {
+                        const duration = 60 * 60 * 1000; // Assumiamo 1 ora di match
+                        if (diff > -duration) {
+                            document.getElementById(`container-${eventId}`).innerHTML = `<div class="match-live">🔴 MATCH IN CORSO</div>`;
+                        } else {
+                            document.getElementById(`container-${eventId}`).innerHTML = `<div style="color:#555; font-family:'Oswald'; font-weight:bold;">PARTITA TERMINATA</div>`;
+                        }
+                    } else {
+                        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                        const secs = Math.floor((diff % (1000 * 60)) / 1000);
+                        document.getElementById(`d-${eventId}`).innerText = days.toString().padStart(2, '0');
+                        document.getElementById(`h-${eventId}`).innerText = hours.toString().padStart(2, '0');
+                        document.getElementById(`m-${eventId}`).innerText = mins.toString().padStart(2, '0');
+                        document.getElementById(`s-${eventId}`).innerText = secs.toString().padStart(2, '0');
+                    }
+                }, 1000);
+            });
             document.getElementById('selected-day-info').innerHTML = html;
         };
 
