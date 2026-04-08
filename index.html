@@ -177,69 +177,29 @@
         .tactic-line { stroke: var(--oro); stroke-width: 1.5; stroke-dasharray: 4; opacity: 0.4; animation: dash 10s linear infinite; }
         @keyframes dash { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
 
-        /* --- NUOVO STILE CARD EVENTO CALENDARIO --- */
-        .page#p-calendario .card {
-            display: flex !important;
-            flex-direction: row !important;
-            justify-content: space-between;
-            align-items: center;
-            min-height: auto;
-            padding: 20px;
-            gap: 15px;
+        /* --- GRID CALENDAR STYLE (STILE FOTO) --- */
+        .calendar-wrapper { background: #111; padding: 15px; border-radius: 15px; border: 1px solid var(--oro); margin-top: 10px; }
+        .calendar-header { display: flex; justify-content: center; margin-bottom: 10px; font-family: 'Oswald'; color: var(--oro); text-transform: uppercase; font-size: 18px; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+        .calendar-day-label { text-align: center; font-size: 10px; color: #777; font-weight: bold; padding-bottom: 5px; }
+        .calendar-cell { 
+            aspect-ratio: 1; 
+            background: #1a1a1a; 
+            border-radius: 5px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 12px; 
+            color: #fff;
+            position: relative;
+            border: 1px solid #333;
         }
-        .event-details {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            flex-grow: 1;
-        }
-        .event-badge-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-width: 100px;
-            text-align: center;
-        }
-        .event-type-badge {
-            background: rgba(0,0,0,0.5);
-            border: 1px solid var(--oro);
-            border-radius: 8px;
-            color: var(--oro);
-            font-family: 'Oswald';
-            font-size: 11px;
-            padding: 4px 8px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
-        }
-        .event-separator {
-            width: 1px;
-            height: 50px;
-            background: rgba(212, 175, 55, 0.3);
-        }
-        .event-opponent-name {
-            font-family: 'Oswald';
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: white;
-            text-transform: uppercase;
-            line-height: 1.1;
-        }
-        .event-meta {
-            text-align: right;
-            font-size: 13px;
-            color: #ccc;
-        }
-        .event-delete-icon {
-            color: #777;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: color 0.2s;
-        }
-        .event-delete-icon:hover {
-            color: #c61c23;
-        }
+        .calendar-cell.has-event { background: rgba(198, 28, 35, 0.3); border: 1px solid var(--rosso); }
+        .calendar-cell.today { border: 1px solid var(--oro); box-shadow: 0 0 5px var(--oro); }
+        .event-dot { width: 5px; height: 5px; background: var(--oro); border-radius: 50%; margin-top: 2px; }
+        
+        .selected-event-info { margin-top: 15px; border-top: 1px solid #333; padding-top: 10px; }
     </style>
 </head>
 <body>
@@ -302,7 +262,7 @@
         </div>
 
         <div id="p-calendario" class="page">
-            <h3 style="color:var(--oro); font-family: 'Oswald';">CALENDARIO PROSSIME PARTITE</h3>
+            <h3 style="color:var(--oro); font-family: 'Oswald';">CALENDARIO</h3>
             <div class="card" style="display:block;">
                 <select id="cal-tipo">
                     <option value="🏆 Campionato">Campionato</option>
@@ -426,7 +386,7 @@
             const tipo = document.getElementById('cal-tipo').value;
             if(avv && dataOra) {
                 if(!data.calendar) data.calendar = [];
-                data.calendar.push({avv, dt: dataOra, tipo: tipo});
+                data.calendar.push({id: Date.now(), avv, dt: dataOra, tipo: tipo});
                 data.calendar.sort((a,b) => new Date(a.dt) - new Date(b.dt));
                 sync();
                 document.getElementById('cal-avv').value = '';
@@ -470,7 +430,7 @@
         }
 
         function render() {
-            let hR="", hA="", hMk="", hP="", hMatch="", hNews="", hCal="";
+            let hR="", hA="", hMk="", hP="", hMatch="", hNews="";
             const activeAdm = document.getElementById('active-admin').value;
 
             let maxMedia = -1, topPlayerId = null;
@@ -572,21 +532,36 @@
 
             (data.matches || []).forEach((m,idx) => { hMatch += `<div class="card" style="display:flex"><b>${m.d}</b>: ${m.ris} vs ${m.avv} <button style="background:none; border:none; float:right" onclick="data.matches.splice(${idx},1); sync()">🗑️</button></div>`; });
             (data.news || []).forEach((n,idx) => { hNews += `<div class="card" style="display:block"><small>${n.d}</small><p>${n.txt}</p><button style="background:none; border:none; color:red" onclick="data.news.splice(${idx},1); sync()">🗑️ Elimina</button></div>`; });
-            (data.calendar || []).forEach((c,idx) => {
-                const dateObj = new Date(c.dt); const formatData = dateObj.toLocaleDateString() + " ore " + dateObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                // --- NUOVA VISUALIZZAZIONE EVENTO ELEGANTE ---
-                hCal += `<div class="card" style="display:flex">
-                    <div class="event-details">
-                        <div class="event-badge-container">
-                            <span class="event-type-badge">${c.tipo || 'Partita'}</span>
-                            <div class="event-meta">${formatData}</div>
-                        </div>
-                        <div class="event-separator"></div>
-                        <div class="event-opponent-name">${c.avv}</div>
-                    </div>
-                    <div onclick="data.calendar.splice(${idx},1); sync()" class="event-delete-icon">🗑️</div>
+            
+            // --- LOGICA GRID CALENDAR (STILE FOTO) ---
+            const ora = new Date();
+            const meseCorrente = ora.getMonth();
+            const annoCorrente = ora.getFullYear();
+            const nomiMesi = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
+            const primoGiornoMese = new Date(annoCorrente, meseCorrente, 1).getDay();
+            const giorniNelMese = new Date(annoCorrente, meseCorrente + 1, 0).getDate();
+            const startOffset = primoGiornoMese === 0 ? 6 : primoGiornoMese - 1;
+
+            let hCal = `<div class="calendar-wrapper">
+                <div class="calendar-header">${nomiMesi[meseCorrente]} ${annoCorrente}</div>
+                <div class="calendar-grid">
+                    <div class="calendar-day-label">L</div><div class="calendar-day-label">M</div><div class="calendar-day-label">M</div>
+                    <div class="calendar-day-label">G</div><div class="calendar-day-label">V</div><div class="calendar-day-label">S</div>
+                    <div class="calendar-day-label">D</div>`;
+            
+            for(let i=0; i<startOffset; i++) hCal += `<div class="calendar-cell" style="opacity:0"></div>`;
+            
+            for(let d=1; d<=giorniNelMese; d++) {
+                const dataLoop = new Date(annoCorrente, meseCorrente, d).toLocaleDateString();
+                const eventiOggi = (data.calendar || []).filter(c => new Date(c.dt).toLocaleDateString() === dataLoop);
+                const isToday = dataLoop === ora.toLocaleDateString();
+                
+                hCal += `<div class="calendar-cell ${eventiOggi.length > 0 ? 'has-event' : ''} ${isToday ? 'today' : ''}" onclick="showDayEvents('${dataLoop}')">
+                    ${d}
+                    ${eventiOggi.length > 0 ? '<div class="event-dot"></div>' : ''}
                 </div>`;
-            });
+            }
+            hCal += `</div><div id="selected-day-info" class="selected-event-info"></div></div>`;
 
             document.getElementById('l-rosa').innerHTML = hR; document.getElementById('l-admin').innerHTML = hA;
             document.getElementById('l-mercato').innerHTML = hMk; document.getElementById('l-partite').innerHTML = hMatch;
@@ -605,14 +580,28 @@
                     const t = e.touches ? e.touches[0] : e;
                     p.x = ((t.clientX - rect.left) / rect.width) * 100 - 7; p.y = ((t.clientY - rect.top) / rect.height) * 100 - 5;
                     d.style.left = p.x + "%"; d.style.top = p.y + "%";
-                    drawTacticLines(); // Aggiorna linee durante il movimento
+                    drawTacticLines();
                 };
                 const end = () => { if(isD) { isD = false; sync(); } };
                 d.addEventListener('touchstart', start); window.addEventListener('touchmove', move, {passive:false}); window.addEventListener('touchend', end);
                 pl.appendChild(d);
             });
-            drawTacticLines(); // Disegna al caricamento
+            drawTacticLines();
         }
+
+        // Funzione per mostrare eventi del giorno cliccato
+        window.showDayEvents = function(dataS) {
+            const evs = (data.calendar || []).filter(c => new Date(c.dt).toLocaleDateString() === dataS);
+            let html = `<h4 style="color:var(--oro); font-size:12px; margin-bottom:10px;">EVENTI DEL ${dataS}</h4>`;
+            if(evs.length === 0) html += `<p style="font-size:12px; color:#666">Nessuna partita in programma.</p>`;
+            evs.forEach(e => {
+                html += `<div class="card" style="flex-direction:row; justify-content:space-between; align-items:center; min-height:auto; padding:10px; margin-bottom:5px;">
+                    <div style="font-family:'Oswald'"><span style="color:var(--oro)">${e.tipo}</span> vs <b>${e.avv}</b></div>
+                    <div style="color:red; cursor:pointer" onclick="data.calendar = data.calendar.filter(x=>x.id != ${e.id}); sync()">🗑️</div>
+                </div>`;
+            });
+            document.getElementById('selected-day-info').innerHTML = html;
+        };
 
         function openP(id) {
             const p = data.ps.find(x=>x.id==id); 
@@ -620,14 +609,12 @@
             document.getElementById('m-ruolo-txt').innerText = fullRoles[p.r] || p.r;
             document.getElementById('m-nome').innerText = p.n;
             document.getElementById('m-numero-big').innerText = p.m;
-            
             document.getElementById('st-g').innerText = p.g || 0;
             document.getElementById('st-a').innerText = p.a || 0;
             document.getElementById('st-mvp').innerText = p.mvp || 0;
             document.getElementById('st-potm').innerText = p.potm || 0;
             document.getElementById('st-yl').innerText = p.yl || 0;
             document.getElementById('st-rd').innerText = p.rd || 0;
-            
             document.getElementById('modal-player').style.display='flex';
         }
     </script>
