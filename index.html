@@ -171,6 +171,18 @@
         .penalty-dot-bot { bottom: 13% !important; left: 50% !important; width: 5px !important; height: 5px !important; background: #fff !important; border-radius: 50% !important; transform: translateX(-50%) !important; position: absolute !important; }
         .arc-bot { bottom: 18% !important; left: 50% !important; width: 25% !important; height: 10% !important; border: 2px solid rgba(255,255,255,0.9) !important; border-radius: 50% 50% 0 0 / 100% 100% 0 0 !important; transform: translateX(-50%) !important; border-bottom: none !important; position: absolute !important; }
 
+        /* --- STILI HEATMAP --- */
+        #heatmap-overlay { position: absolute; inset: 0; pointer-events: none; z-index: 10; }
+        .heat-point { 
+            position: absolute; 
+            width: 120px; 
+            height: 120px; 
+            background: radial-gradient(circle, rgba(198, 28, 35, 0.45) 0%, rgba(198, 28, 35, 0.1) 40%, transparent 70%); 
+            transform: translate(-50%, -50%); 
+            pointer-events: none;
+            transition: left 0.1s linear, top 0.1s linear;
+        }
+
         .player { position: absolute; width: 54px; text-align: center; cursor: move; z-index: 100; touch-action: none; }
         .jersey { width: 44px; height: 44px; background: #000; border: 3px solid var(--rosso); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; margin: 0 auto; color: var(--oro); font-size: 18px; position: relative; font-family: 'Oswald'; }
         .badge-icon { position: absolute; top: -8px; right: -8px; font-size: 16px; background: rgba(0,0,0,0.8); border-radius: 50%; padding: 2px; }
@@ -461,6 +473,8 @@
             </div>
 
             <div id="pitch">
+                <div id="heatmap-overlay"></div>
+                
                 <svg id="tactic-svg"></svg>
                 <div class="p-line mid-line"></div>
                 <div class="p-line mid-circle"></div>
@@ -603,11 +617,10 @@
         async function shareSquad() {
             const pitch = document.getElementById('pitch');
             try {
-                // Cattura l'elemento pitch come immagine
                 const canvas = await html2canvas(pitch, {
                     useCORS: true,
                     backgroundColor: '#2e7d32',
-                    scale: 2 // Aumenta la risoluzione
+                    scale: 2 
                 });
                 
                 const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
@@ -621,7 +634,6 @@
                         text: `📋 Formazione Milanac (${data.mod})`
                     });
                 } else {
-                    // Fallback: download dell'immagine se la condivisione diretta non è supportata
                     const link = document.createElement('a');
                     link.download = 'formazione-milanac.jpg';
                     link.href = dataUrl;
@@ -629,7 +641,6 @@
                 }
             } catch (err) {
                 console.error('Errore durante la generazione della grafica:', err);
-                // Fallback testuale in caso di errore critico
                 const conv = data.ps.filter(p => p.convocato).map(p => `${p.m}. ${p.n}`).join('\n');
                 alert("Impossibile generare la grafica. Ecco il testo:\n\n" + conv);
             }
@@ -684,6 +695,20 @@
                     }
                 }
             }
+        }
+
+        /* --- FUNZIONE HEATMAP --- */
+        function updateHeatmap() {
+            const overlay = document.getElementById('heatmap-overlay');
+            if(!overlay) return;
+            overlay.innerHTML = "";
+            data.ps.filter(p => p.convocato).forEach(p => {
+                const h = document.createElement('div');
+                h.className = 'heat-point';
+                h.style.left = (p.x + 7) + "%";
+                h.style.top = (p.y + 5) + "%";
+                overlay.appendChild(h);
+            });
         }
 
         window.changeMonth = function(dir) {
@@ -757,7 +782,6 @@
             (data.matches || []).forEach((m,idx) => { hMatch += `<div class="card" style="display:flex"><b>${m.d}</b>: ${m.ris} vs ${m.avv} <button style="background:none; border:none; float:right" onclick="data.matches.splice(${idx},1); sync()">🗑️</button></div>`; });
             (data.news || []).forEach((n,idx) => { hNews += `<div class="card" style="display:block"><small>${n.d}</small><p>${n.txt}</p><button style="background:none; border:none; color:red" onclick="data.news.splice(${idx},1); sync()">🗑️ Elimina</button></div>`; });
             
-            // --- CALENDARIO ---
             const meseVis = viewDate.getMonth(); const annoVis = viewDate.getFullYear(); 
             const nomiMesi = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
             const primoGiornoMese = new Date(annoVis, meseVis, 1).getDay(); 
@@ -800,7 +824,10 @@
                     p.x = ((t.clientX - rect.left) / rect.width) * 100 - 7; 
                     p.y = ((t.clientY - rect.top) / rect.height) * 100 - 5;
                     d.style.left = p.x + "%"; d.style.top = p.y + "%";
+                    
+                    // AGGIORNAMENTO LINEE E HEATMAP IN TEMPO REALE
                     drawTacticLines();
+                    updateHeatmap();
                 };
                 const end = () => { if(isD) { isD = false; sync(); } };
                 d.addEventListener('touchstart', start); 
@@ -809,6 +836,7 @@
                 pl.appendChild(d);
             });
             drawTacticLines();
+            updateHeatmap(); // Mostra gli aloni all'avvio
         }
 
         window.showDayEvents = function(dataS) {
