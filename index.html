@@ -24,8 +24,6 @@
             background-size: 50px 50px; animation: particlesMove 20s linear infinite; opacity: 0.3; z-index: -1;
         }
         @keyframes particlesMove { from { background-position: 0 0; } to { background-position: 500px 1000px; } }
-        @keyframes fadeInDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
-        @keyframes fadeInUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
         .intro-container { position: relative; display: flex; flex-direction: column; align-items: center; transform-style: preserve-3d; }
         .intro-logo { width: 80%; max-width: 320px; mix-blend-mode: lighten; filter: drop-shadow(0 10px 30px rgba(0,0,0,0.8)) brightness(1.1); animation: logoEntrance 1.5s ease-out, logoFloat3D 4s infinite ease-in-out; margin-bottom: 40px; transform-style: preserve-3d; position: relative; }
         .intro-shadow { width: 150px; height: 20px; background: rgba(0,0,0,0.6); border-radius: 50%; filter: blur(10px); margin-top: -30px; margin-bottom: 30px; animation: shadowPulse 4s infinite ease-in-out; }
@@ -36,14 +34,12 @@
         .btn-entrance { padding: 16px 55px; margin-top: 50px; background: linear-gradient(180deg, #e3262e 0%, #a01115 50%, #8b1216 100%); color: white; border: 3px solid var(--oro); border-radius: 50px; font-family: 'Oswald'; font-weight: bold; font-size: 16px; text-transform: uppercase; letter-spacing: 2.5px; cursor: pointer; position: relative; overflow: hidden; z-index: 10; box-shadow: 0 10px 25px rgba(0,0,0,0.7), inset 0 2px 5px rgba(255,255,255,0.3); transition: all 0.3s ease-out; -webkit-tap-highlight-color: transparent; }
         .btn-entrance::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 50%; background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 100%); border-radius: 50px 50px 0 0; pointer-events: none; }
         .btn-entrance:hover, .btn-entrance:active { transform: translateY(-4px) scale(1.02); box-shadow: 0 15px 35px rgba(198, 28, 35, 0.6), inset 0 2px 5px rgba(255,255,255,0.4); background: linear-gradient(180deg, #ff333a 0%, #C61C23 100%); border-color: #fff; }
-
         header { height: 60px; border-bottom: 2px solid var(--rosso); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; background: #000; z-index: 2000; position: relative; }
         .sidebar { position: fixed; top: 0; right: -100%; width: 280px; height: 100%; background: rgba(5,5,5,0.98); transition: 0.4s; z-index: 3000; border-left: 2px solid var(--rosso); padding-top: 60px; }
         .sidebar.active { right: 0; }
         .sidebar button { width: 100%; padding: 18px; background: none; border: none; color: white; text-align: left; font-weight: bold; border-bottom: 1px solid #222; text-transform: uppercase; cursor: pointer; font-family: 'Oswald'; }
         .container { height: calc(100vh - 60px); overflow-y: auto; padding: 15px; box-sizing: border-box; padding-bottom: 60px; }
         .page { display: none; } .page.active { display: block; }
-
         /* ======================================================
            ACCORDION PAGELLE
         ====================================================== */
@@ -157,12 +153,10 @@
             background: rgba(255,255,255,0.06);
             color: #888;
         }
-
         @keyframes ledPulse {
             0%, 100% { box-shadow: 0 0 4px #4caf50; opacity: 1; }
             50% { box-shadow: 0 0 12px #4caf50, 0 0 20px rgba(76,175,80,0.4); opacity: 0.7; }
         }
-
         /* ======================================================
            CAMPO DA GIOCO
         ====================================================== */
@@ -185,11 +179,9 @@
         .box-small-bot { bottom: -2px !important; left: 50% !important; width: 32% !important; height: 6% !important; transform: translateX(-50%) !important; border-bottom: none !important; }
         .penalty-dot-bot { bottom: 13% !important; left: 50% !important; width: 5px !important; height: 5px !important; background: #fff !important; border-radius: 50% !important; transform: translateX(-50%) !important; position: absolute !important; }
         .arc-bot { bottom: 18% !important; left: 50% !important; width: 25% !important; height: 10% !important; border: 2px solid rgba(255,255,255,0.9) !important; border-radius: 50% 50% 0 0 / 100% 100% 0 0 !important; transform: translateX(-50%) !important; border-bottom: none !important; position: absolute !important; }
-
         /* ======================================================
            HEATMAP PROFESSIONALE
         ====================================================== */
-
         /* Canvas heatmap sovrapposto al campo */
         #heatmap-canvas {
             position: absolute;
@@ -200,7 +192,6 @@
             opacity: 0.82;
             transition: opacity 0.3s;
         }
-
         /* SVG per frecce tattiche */
         #arrows-svg {
             position: absolute;
@@ -219,12 +210,10 @@
             opacity: 0.92;
             filter: drop-shadow(0 0 4px rgba(255,215,0,0.8));
         }
-
         /* SVG per linee tattiche esistenti */
         #tactic-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
         .tactic-line { stroke: var(--oro); stroke-width: 1.5; stroke-dasharray: 4; opacity: 0.4; animation: dash 10s linear infinite; }
         @keyframes dash { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
-
         /* ======================================================
            PANNELLO CONTROLLO HEATMAP
         ====================================================== */
@@ -275,7 +264,6 @@
             box-shadow: 0 0 10px rgba(198,28,35,0.5);
         }
         .btn-hm-tool:active { transform: scale(0.95); }
-
         /* Intensità brush */
         .intensity-row {
             display: flex;
@@ -308,7 +296,6 @@
             border: 2px solid #000;
             box-shadow: 0 0 6px rgba(212,175,55,0.8);
         }
-
         /* Zone preset */
         .zone-presets {
             display: grid;
@@ -335,7 +322,6 @@
             color: white;
             transform: scale(0.95);
         }
-
         /* Legenda colori heatmap */
         .heatmap-legend {
             display: flex;
@@ -360,7 +346,6 @@
             color: #666;
             text-transform: uppercase;
         }
-
         /* Separatore sezioni */
         .section-divider {
             display: flex;
@@ -382,7 +367,6 @@
             height: 1px;
             background: #2a2a2a;
         }
-
         /* ======================================================
            GIOCATORI SUL CAMPO
         ====================================================== */
@@ -390,7 +374,6 @@
         .jersey { width: 44px; height: 44px; background: #000; border: 3px solid var(--rosso); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; margin: 0 auto; color: var(--oro); font-size: 18px; position: relative; font-family: 'Oswald'; }
         .badge-icon { position: absolute; top: -8px; right: -8px; font-size: 16px; background: rgba(0,0,0,0.8); border-radius: 50%; padding: 2px; }
         .p-name { background: rgba(0,0,0,0.85); font-size: 11px; padding: 2px 6px; border-radius: 10px; margin-top: 4px; display: inline-block; font-weight: bold; text-transform: uppercase; color: white; font-family: 'Teko'; }
-
         /* ======================================================
            CARD GIOCATORI ROSA
         ====================================================== */
@@ -410,7 +393,6 @@
         .btn-v { width: 32px; height: 32px; border-radius: 5px; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .btn-plus { background: #2e7d32; color: white; }
         .btn-minus { background: #c61c23; color: white; }
-
         /* ======================================================
            MODAL GIOCATORE
         ====================================================== */
@@ -423,7 +405,6 @@
         .stat-item { display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 10px; min-height: 60px; }
         .stat-label { font-size: 10px; color: #888; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; margin-bottom: 2px; }
         .stat-value { font-family: 'Oswald'; font-size: 26px; color: white; font-weight: 700; line-height: 1; }
-
         /* ======================================================
            CALENDARIO
         ====================================================== */
@@ -440,16 +421,13 @@
         .event-dot { width: 6px; height: 6px; background: var(--oro); border-radius: 50%; margin-top: 4px; box-shadow: 0 0 5px var(--oro); }
         .selected-event-info { margin-top: 25px; border-top: 2px solid rgba(212, 175, 55, 0.3); padding-top: 15px; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
         /* ======================================================
            CONVOCATI MODAL
         ====================================================== */
         .convocati-list { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 6000; display: none; padding: 20px; overflow-y: auto; }
-
         /* Bottoni azione tattica */
         .tactic-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
         .btn-tactic-action { padding: 10px; background: #222; border: 1px solid var(--rosso); color: white; border-radius: 8px; font-family: 'Oswald'; font-size: 12px; text-transform: uppercase; cursor: pointer; }
-
         /* ======================================================
            MODAL LOGIN ADMIN
         ====================================================== */
@@ -515,72 +493,52 @@
             border-color: var(--rosso);
             color: white;
         }
-        /* PIN pad — design moderno */
+        /* PIN pad */
         .pin-display {
             display: flex;
             justify-content: center;
-            gap: 14px;
-            margin-bottom: 16px;
+            gap: 10px;
+            margin-bottom: 12px;
         }
         .pin-dot {
-            width: 13px; height: 13px;
+            width: 14px; height: 14px;
             border-radius: 50%;
-            border: 2px solid #333;
+            border: 2px solid #444;
             background: transparent;
-            transition: all 0.15s;
+            transition: all 0.2s;
         }
         .pin-dot.filled {
             background: var(--oro);
             border-color: var(--oro);
-            box-shadow: 0 0 10px rgba(212,175,55,0.7);
-            transform: scale(1.1);
+            box-shadow: 0 0 8px rgba(212,175,55,0.6);
         }
         .pin-dot.error { background: var(--rosso); border-color: var(--rosso); animation: shake 0.3s ease; }
-        @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+        @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
         .pin-pad {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+            gap: 7px;
             margin-bottom: 10px;
         }
         .pin-key {
-            height: 62px;
-            background: rgba(255,255,255,0.06);
-            border: none;
+            aspect-ratio: 1;
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
             color: white;
-            border-radius: 14px;
+            border-radius: 10px;
             font-family: 'Oswald';
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.12s;
+            transition: all 0.15s;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 1px;
-            -webkit-tap-highlight-color: transparent;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+            padding: 8px 0;
         }
-        .pin-key .pin-sub {
-            font-size: 7px;
-            color: #666;
-            letter-spacing: 1.5px;
-            font-family: 'Oswald';
-            text-transform: uppercase;
-            line-height: 1;
-        }
-        .pin-key:active {
-            background: rgba(212,175,55,0.15);
-            transform: scale(0.94);
-            box-shadow: none;
-        }
-        .pin-key.del {
-            font-size: 20px;
-            color: #aaa;
-            background: rgba(255,255,255,0.04);
-        }
-        .pin-key.empty { background: transparent; border: none; cursor: default; box-shadow: none; }
+        .pin-key:active { background: #333; transform: scale(0.94); }
+        .pin-key.del { font-size: 16px; color: #888; }
+        .pin-key.empty { background: transparent; border: none; cursor: default; }
         /* Input password testuale */
         .pwd-input-wrap { margin-bottom: 15px; }
         .pwd-input-wrap input {
@@ -612,106 +570,6 @@
             margin-top: 8px;
             min-height: 18px;
         }
-
-        /* ======================================================
-           FUT CARD — PREMI
-        ====================================================== */
-        .fut-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            padding: 4px 0;
-        }
-        .fut-card {
-            position: relative;
-            border-radius: 16px;
-            overflow: hidden;
-            aspect-ratio: 0.68;
-            cursor: pointer;
-            transition: transform 0.2s;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .fut-card:active { transform: scale(0.97); }
-        .fut-card-bg {
-            position: absolute;
-            inset: 0;
-            z-index: 0;
-        }
-        .fut-card-content {
-            position: relative;
-            z-index: 1;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            padding: 10px 10px 8px;
-        }
-        .fut-overall {
-            font-family: 'Oswald';
-            font-size: 32px;
-            font-weight: 900;
-            line-height: 1;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
-        }
-        .fut-pos {
-            font-family: 'Oswald';
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.8);
-        }
-        .fut-shield {
-            width: 28px;
-            height: 28px;
-            margin: 4px 0;
-            opacity: 0.9;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
-        }
-        .fut-name {
-            font-family: 'Teko';
-            font-size: 22px;
-            font-weight: 700;
-            text-transform: uppercase;
-            line-height: 1;
-            text-shadow: 0 2px 6px rgba(0,0,0,0.9);
-            text-align: center;
-            margin-top: auto;
-            padding-top: 4px;
-        }
-        .fut-stats-row {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 6px;
-            padding-top: 6px;
-            border-top: 1px solid rgba(255,255,255,0.15);
-        }
-        .fut-stat {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1px;
-        }
-        .fut-stat-val {
-            font-family: 'Oswald';
-            font-size: 14px;
-            font-weight: 900;
-            line-height: 1;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.8);
-        }
-        .fut-stat-lbl {
-            font-family: 'Oswald';
-            font-size: 7px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            opacity: 0.75;
-        }
-        /* Colori carta in base al rating */
-        .fut-gold { background: linear-gradient(160deg,#c9a227 0%,#f5d97a 35%,#c9821a 65%,#8b5e0a 100%); color: #3a2800; }
-        .fut-silver { background: linear-gradient(160deg,#8a8a8a 0%,#d0d0d0 35%,#8a8a8a 65%,#555 100%); color: #2a2a2a; }
-        .fut-bronze { background: linear-gradient(160deg,#9c5a1d 0%,#d4895a 35%,#9c5a1d 65%,#5a2e00 100%); color: #2a1000; }
-        .fut-special { background: linear-gradient(160deg,#1a0a2e 0%,#6c3dbf 35%,#1a0a2e 65%,#0d0520 100%); color: white; }
-        .fut-toty { background: linear-gradient(160deg,#0d1f0d 0%,#2e7d32 35%,#0d1f0d 65%,#050f05 100%); color: #b9f6ca; }
-
         /* ======================================================
            STORICO VOTI — badge partita
         ====================================================== */
@@ -798,40 +656,21 @@
     </style>
 </head>
 <body>
-
 <!-- INTRO -->
 <div id="intro">
-    <!-- Erba stilizzata in basso -->
-    <div style="position:absolute;bottom:0;left:0;width:100%;height:35%;background:linear-gradient(180deg,transparent 0%,rgba(27,94,32,0.15) 50%,rgba(27,94,32,0.35) 100%);pointer-events:none;z-index:0;"></div>
-    <!-- Linee campo sfocate -->
-    <div style="position:absolute;bottom:15%;left:50%;transform:translateX(-50%);width:70%;height:1px;background:rgba(255,255,255,0.06);pointer-events:none;"></div>
-    <div style="position:absolute;bottom:15%;left:50%;transform:translateX(-50%);width:25px;height:25px;border:1px solid rgba(255,255,255,0.06);border-radius:50%;pointer-events:none;"></div>
-
-    <div class="intro-container" style="z-index:1;">
-        <!-- Stagione -->
-        <div style="font-family:Oswald;font-size:11px;color:rgba(212,175,55,0.6);letter-spacing:5px;text-transform:uppercase;margin-bottom:16px;animation:fadeInDown 1s ease 0.3s both;">STAGIONE 2025/26</div>
-
+    <div class="intro-container">
         <img src="https://i.postimg.cc/655M6n4M/copilot-image-1759429057496.png" class="intro-logo" alt="Milanac Logo">
         <div class="intro-shadow"></div>
-
-        <!-- Tagline -->
-        <div style="font-family:Teko;font-size:16px;color:rgba(255,255,255,0.35);letter-spacing:4px;text-transform:uppercase;margin-top:-10px;margin-bottom:30px;animation:fadeInUp 1s ease 0.8s both;">PRO CLUB</div>
-
         <button class="btn-entrance" onclick="
             document.getElementById('intro').classList.add('fade-out');
             setTimeout(() => { document.getElementById('intro').style.display='none'; }, 800);
-        ">⚽ ENTRA NEL CLUB</button>
-
-        <!-- Versione -->
-        <div style="position:absolute;bottom:24px;font-family:Oswald;font-size:9px;color:#222;letter-spacing:2px;text-transform:uppercase;">v2.0 · MILANAC</div>
+        ">ENTRA NEL CLUB</button>
     </div>
 </div>
-
 <header>
     <div style="font-weight:900; color:var(--rosso); font-size:22px; font-family: 'Oswald';">MILANAC</div>
     <div onclick="document.querySelector('.sidebar').classList.add('active')" style="font-size:30px; cursor:pointer; color:var(--rosso)">☰</div>
 </header>
-
 <nav class="sidebar">
     <button onclick="go('rosa')">🛡️ Rosa</button>
     <button onclick="go('tattica')">📋 Formazione</button>
@@ -843,9 +682,7 @@
     <button onclick="goAdmin()">⚙️ Area Admin</button>
     <button onclick="document.querySelector('.sidebar').classList.remove('active')">Chiudi</button>
 </nav>
-
 <div class="container">
-
     <!-- NEWS -->
     <div id="p-news" class="page">
         <h2 style="color:var(--oro); font-family: 'Oswald';">NEWS & COMUNICATI</h2>
@@ -855,7 +692,6 @@
         </div>
         <div id="l-news"></div>
     </div>
-
     <!-- ROSA -->
     <div id="p-rosa" class="page active"><div id="l-rosa"></div></div>
     
@@ -863,13 +699,11 @@
          SEZIONE TATTICA CON HEATMAP PROFESSIONALE
     ====================================================== -->
     <div id="p-tattica" class="page">
-
         <!-- PANNELLO HEATMAP -->
         <div class="heatmap-panel">
             <div class="heatmap-panel-title">
                 🔥 HEATMAP TATTICA
             </div>
-
             <!-- Strumenti -->
             <div class="hm-tools-row">
                 <button class="btn-hm-tool active" id="tool-heat" onclick="setTool('heat')">🔥 Calore</button>
@@ -877,13 +711,11 @@
                 <button class="btn-hm-tool" id="tool-erase" onclick="setTool('erase')">✕ Cancella</button>
                 <button class="btn-hm-tool" id="tool-clear" onclick="clearAll()" style="border-color:#C61C23;">🗑 Reset</button>
             </div>
-
             <!-- Intensità -->
             <div class="intensity-row">
                 <span class="intensity-label">Intensità</span>
                 <input type="range" class="intensity-slider" id="brush-intensity" min="1" max="10" value="6">
             </div>
-
             <!-- Zone preset -->
             <div class="section-divider"><span>Zone rapide</span></div>
             <div class="zone-presets">
@@ -896,7 +728,6 @@
                 <button class="btn-zone-preset" onclick="paintZone('portaDif')">⬇ Porta Dif.</button>
                 <button class="btn-zone-preset" onclick="paintZone('tuttoCampo')">Full Field</button>
             </div>
-
             <!-- Legenda -->
             <div class="heatmap-legend">
                 <span class="legend-txt">Bassa</span>
@@ -904,18 +735,15 @@
                 <span class="legend-txt">Alta</span>
             </div>
         </div>
-
         <!-- Azioni formazione -->
         <div class="tactic-controls">
             <button class="btn-tactic-action" onclick="document.getElementById('convocati-modal').style.display='block'">👥 Convocati</button>
             <button class="btn-tactic-action" style="background:#C61C23; border-color:white;" onclick="shareSquad()">📲 Condividi</button>
         </div>
-
         <!-- CAMPO -->
         <div id="pitch">
             <!-- Canvas heatmap -->
             <canvas id="heatmap-canvas"></canvas>
-
             <!-- SVG frecce tattiche disegnate a mano -->
             <svg id="arrows-svg">
                 <defs>
@@ -931,10 +759,8 @@
                     </filter>
                 </defs>
             </svg>
-
             <!-- SVG linee tattiche tra giocatori -->
             <svg id="tactic-svg"></svg>
-
             <!-- Linee campo -->
             <div class="p-line mid-line"></div>
             <div class="p-line mid-circle"></div>
@@ -947,23 +773,19 @@
             <div class="p-line box-small-bot"></div>
             <div class="arc-bot"></div>
             <div class="penalty-dot-bot"></div>
-
             <!-- Giocatori -->
             <div id="pitch-players"></div>
         </div>
-
         <p style="text-align:center; font-size:10px; color:#555; margin-top:8px;">
             🔥 Dipingi zone di calore · ➜ Disegna frecce di movimento · Trascina giocatori
         </p>
     </div>
-
     <!-- CONVOCATI -->
     <div id="convocati-modal" class="convocati-list">
         <h3 style="color:var(--oro); font-family:'Oswald'">CONVOCATI PER LA PARTITA</h3>
         <div id="list-convocabili"></div>
         <button class="btn-main" style="margin-top:20px" onclick="document.getElementById('convocati-modal').style.display='none'">SALVA E CHIUDI</button>
     </div>
-
     <!-- CALENDARIO -->
     <div id="p-calendario" class="page">
         <h3 style="color:var(--oro); font-family: 'Oswald';">CALENDARIO</h3>
@@ -982,11 +804,9 @@
         </div>
         <div id="l-calendario"></div>
     </div>
-
     <!-- PAGELLE -->
     <div id="p-mercato" class="page">
         <h3 style="font-family:'Oswald';color:var(--oro);margin-bottom:14px;">📰 PAGELLE PARTITA</h3>
-
         <!-- Login rapido pagelle (se non admin) -->
         <div id="pagella-login-prompt" style="display:block;margin-bottom:14px;">
             <div style="background:#111;border:1px solid rgba(198,28,35,0.3);border-radius:14px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:10px;">
@@ -994,7 +814,6 @@
                 <button onclick="openAdminLogin()" style="background:var(--rosso);border:none;color:white;font-family:'Oswald';font-size:11px;padding:8px 16px;border-radius:8px;cursor:pointer;text-transform:uppercase;white-space:nowrap;">ACCEDI</button>
             </div>
         </div>
-
         <!-- Form scrittura pagella (solo admin) -->
         <div id="pagella-form-wrap" style="display:none;margin-bottom:16px;">
             <div style="background:linear-gradient(145deg,#111,#080808);border:1px solid rgba(212,175,55,0.3);border-radius:18px;overflow:hidden;">
@@ -1016,11 +835,9 @@
                 </div>
             </div>
         </div>
-
         <!-- Lista pagelle pubblicate -->
         <div id="l-mercato"></div>
     </div>
-
     <!-- PARTITE -->
     <div id="p-partite" class="page">
         <h3 style="font-family:'Oswald';color:var(--oro);margin-bottom:12px;">🏟️ RISULTATI PARTITE</h3>
@@ -1039,15 +856,8 @@
         </div>
         <div id="l-partite"></div>
     </div>
-
     <!-- PREMI -->
-    <div id="p-premi" class="page">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-            <h3 style="font-family:Oswald;color:var(--oro);margin:0;">🏆 HALL OF FAME</h3>
-            <div style="font-family:Oswald;font-size:10px;color:#444;text-transform:uppercase;letter-spacing:1px;">Overall calcolato</div>
-        </div>
-        <div class="fut-grid" id="l-premi"></div>
-    </div>
+    <div id="p-premi" class="page"><h3 style="font-family: 'Oswald';">HALL OF FAME</h3><div id="l-premi"></div></div>
     
     <!-- ADMIN -->
     <div id="p-admin" class="page">
@@ -1104,7 +914,6 @@
         <div id="l-storico-voti"></div>
     </div>
 </div>
-
 <!-- MODAL LOGIN ADMIN -->
 <div id="modal-admin-login" style="position:fixed;inset:0;background:rgba(0,0,0,0.96);z-index:9000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(10px);">
     <div class="admin-login-box">
@@ -1124,18 +933,18 @@
                 <div class="pin-dot" id="pd2"></div><div class="pin-dot" id="pd3"></div>
             </div>
             <div class="pin-pad">
-                <button class="pin-key" onclick="pinPress('1')">1<span class="pin-sub"></span></button>
-                <button class="pin-key" onclick="pinPress('2')">2<span class="pin-sub">ABC</span></button>
-                <button class="pin-key" onclick="pinPress('3')">3<span class="pin-sub">DEF</span></button>
-                <button class="pin-key" onclick="pinPress('4')">4<span class="pin-sub">GHI</span></button>
-                <button class="pin-key" onclick="pinPress('5')">5<span class="pin-sub">JKL</span></button>
-                <button class="pin-key" onclick="pinPress('6')">6<span class="pin-sub">MNO</span></button>
-                <button class="pin-key" onclick="pinPress('7')">7<span class="pin-sub">PQRS</span></button>
-                <button class="pin-key" onclick="pinPress('8')">8<span class="pin-sub">TUV</span></button>
-                <button class="pin-key" onclick="pinPress('9')">9<span class="pin-sub">WXYZ</span></button>
+                <button class="pin-key" onclick="pinPress('1')">1</button>
+                <button class="pin-key" onclick="pinPress('2')">2</button>
+                <button class="pin-key" onclick="pinPress('3')">3</button>
+                <button class="pin-key" onclick="pinPress('4')">4</button>
+                <button class="pin-key" onclick="pinPress('5')">5</button>
+                <button class="pin-key" onclick="pinPress('6')">6</button>
+                <button class="pin-key" onclick="pinPress('7')">7</button>
+                <button class="pin-key" onclick="pinPress('8')">8</button>
+                <button class="pin-key" onclick="pinPress('9')">9</button>
                 <div class="pin-key empty"></div>
-                <button class="pin-key" onclick="pinPress('0')">0<span class="pin-sub">+</span></button>
-                <button class="pin-key del" onclick="pinDel()">⌫</button>
+                <button class="pin-key" onclick="pinPress('0')">0</button>
+                <button class="pin-key del" onclick="pinDel()">&#x232B;</button>
             </div>
         </div>
         <div id="pwd-section" style="display:none;">
@@ -1148,7 +957,6 @@
         <button style="background:none;border:none;color:#444;font-family:'Oswald';font-size:12px;cursor:pointer;margin-top:5px;" onclick="closeAdminLogin()">ANNULLA</button>
     </div>
 </div>
-
 <!-- MODAL GIOCATORE -->
 <div id="modal-player" onclick="this.style.display='none'">
     <div class="modal-content" onclick="event.stopPropagation()">
@@ -1168,7 +976,6 @@
         <button class="btn-main" style="margin-top:20px; border-radius:15px; margin-bottom:10px;" onclick="document.getElementById('modal-player').style.display='none'">CHIUDI</button>
     </div>
 </div>
-
 <script>
     /* ============================================================
        FIREBASE
@@ -1178,7 +985,6 @@
     const db = firebase.firestore();
     let data = { ps: [], mod: '4-4-2', matches: [], news: [], calendar: [], voteHistory: [], pagelle: [] };
     let viewDate = new Date();
-
     // ---- ADMIN AUTH ----
     // Credenziali per ogni admin: { pin: '1234', pwd: 'password' }
     // IMPORTANTE: cambia questi valori prima di distribuire l'app!
@@ -1194,10 +1000,8 @@
     let loginTarget = null;    // admin selezionato nel login modal
     let pinBuffer = '';
     let loginMode = 'pin';     // 'pin' | 'pwd'
-
     db.collection("milanac").doc("v84_final").onSnapshot(doc => { if(doc.exists) { data = doc.data(); if(!data.voteHistory) data.voteHistory=[]; if(!data.pagelle) data.pagelle=[]; render(); } });
     function sync() { db.collection("milanac").doc("v84_final").set(data); }
-
     /* ============================================================
        NAVIGAZIONE
     ============================================================ */
@@ -1211,7 +1015,6 @@
     function goAdmin() {
         openAdminLogin();
     }
-
     /* ============================================================
        ADMIN LOGIN SYSTEM
     ============================================================ */
@@ -1302,7 +1105,6 @@
         document.getElementById('vote-session-wrap').style.display = 'none';
         go('rosa');
     }
-
     /* ============================================================
        SESSIONE VOTI PARTITA
     ============================================================ */
@@ -1352,7 +1154,6 @@
         session.votes[playerId][currentAdmin] = Math.min(10, Math.max(1, parseFloat((cur + delta).toFixed(1))));
         sync();
     }
-
     /* ============================================================
        HEATMAP ENGINE
     ============================================================ */
@@ -1363,7 +1164,6 @@
     let isDrawing = false;
     let arrowStart = null;
     let arrows = [];           // array frecce salvate { x1,y1,x2,y2 }
-
     // Inizializza griglia vuota
     function initGrid() {
         heatGrid = [];
@@ -1373,7 +1173,6 @@
         }
     }
     initGrid();
-
     function initHeatmapCanvas() {
         const pitch = document.getElementById('pitch');
         const canvas = document.getElementById('heatmap-canvas');
@@ -1383,7 +1182,6 @@
         drawHeatmap();
         setupPitchInteraction();
     }
-
     /* Disegna la heatmap sul canvas usando interpolazione radiale */
     function drawHeatmap() {
         const canvas = document.getElementById('heatmap-canvas');
@@ -1392,10 +1190,8 @@
         const W = canvas.width;
         const H = canvas.height;
         ctx.clearRect(0, 0, W, H);
-
         const cellW = W / GRID_COLS;
         const cellH = H / GRID_ROWS;
-
         for (let r = 0; r < GRID_ROWS; r++) {
             for (let c = 0; c < GRID_COLS; c++) {
                 const val = Math.min(1, heatGrid[r][c]);
@@ -1430,7 +1226,6 @@
         }
         drawArrows();
     }
-
     function drawArrows() {
         const svg = document.getElementById('arrows-svg');
         if (!svg) return;
@@ -1476,14 +1271,12 @@
         line.setAttribute("class", "arrow-preview");
         svg.appendChild(line);
     }
-
     /* Converti coordinate pixel → griglia */
     function pixelToGrid(px, py, canvas) {
         const col = Math.floor((px / canvas.width) * GRID_COLS);
         const row = Math.floor((py / canvas.height) * GRID_ROWS);
         return { col: Math.max(0, Math.min(GRID_COLS - 1, col)), row: Math.max(0, Math.min(GRID_ROWS - 1, row)) };
     }
-
     /* Pittura calore su un punto con brush rotondo */
     function paintHeat(px, py, canvas, intensity) {
         const { col, row } = pixelToGrid(px, py, canvas);
@@ -1499,7 +1292,6 @@
             }
         }
     }
-
     /* Cancella area */
     function eraseHeat(px, py, canvas) {
         const { col, row } = pixelToGrid(px, py, canvas);
@@ -1512,7 +1304,6 @@
             }
         }
     }
-
     /* Ottieni coordinate evento toccato/cliccato relative al canvas */
     function getEventPos(e, canvas) {
         const rect = canvas.getBoundingClientRect();
@@ -1524,7 +1315,6 @@
             y: (t.clientY - rect.top) * scaleY
         };
     }
-
     let _rafPending = false;
     function setupPitchInteraction() {
         const canvas = document.getElementById('heatmap-canvas');
@@ -1534,7 +1324,6 @@
         const newCanvas = canvas.cloneNode(true);
         canvas.parentNode.replaceChild(newCanvas, canvas);
         const c = document.getElementById('heatmap-canvas');
-
         const onStart = (e) => {
             if (currentTool === 'arrow') {
                 const pos = getEventPos(e, c);
@@ -1589,18 +1378,15 @@
             const svg2 = document.getElementById('arrows-svg');
             if(svg2) svg2.querySelectorAll('.arrow-preview').forEach(el => el.remove());
         };
-
         c.addEventListener('mousedown', onStart);
         c.addEventListener('mousemove', onMove);
         window.addEventListener('mouseup', onEnd);
         c.addEventListener('touchstart', onStart, { passive: true });
         c.addEventListener('touchmove', onMove, { passive: false });
         c.addEventListener('touchend', onEnd);
-
         // Aggiorna pointer-events: il canvas deve catturare eventi solo se tool attivo
         c.style.pointerEvents = 'auto';
     }
-
     /* ============================================================
        TOOL SELECTOR
     ============================================================ */
@@ -1616,7 +1402,6 @@
         const c = document.getElementById('heatmap-canvas');
         if (c) c.style.cursor = t === 'arrow' ? 'crosshair' : t === 'erase' ? 'cell' : 'default';
     }
-
     function clearAll() {
         initGrid();
         arrows = [];
@@ -1624,7 +1409,6 @@
         const svg = document.getElementById('arrows-svg');
         if (svg) svg.querySelectorAll('.arrow-path').forEach(el => el.remove());
     }
-
     /* ============================================================
        ZONE PRESET — dipinge zone tattiche predefinite
     ============================================================ */
@@ -1638,7 +1422,6 @@
         portaDif:     { rStart: 48, rEnd: 60, cStart: 10, cEnd: 30, intensity: 0.85 },
         tuttoCampo:   { rStart: 5,  rEnd: 55, cStart: 3,  cEnd: 37, intensity: 0.45 }
     };
-
     function paintZone(zoneKey) {
         const z = ZONE_DEFS[zoneKey];
         if (!z) return;
@@ -1655,7 +1438,6 @@
         event.target.classList.add('flashing');
         setTimeout(() => event.target.classList.remove('flashing'), 400);
     }
-
     /* ============================================================
        LINEE TATTICHE TRA GIOCATORI
     ============================================================ */
@@ -1679,7 +1461,6 @@
             }
         }
     }
-
     /* ============================================================
        CONDIVISIONE
     ============================================================ */
@@ -1703,7 +1484,6 @@
             alert("Impossibile generare la grafica.\n\n" + conv);
         }
     }
-
     /* ============================================================
        CRUD DATI
     ============================================================ */
@@ -1761,12 +1541,10 @@
         const txt = document.getElementById('news-text').value;
         if (txt) { if (!data.news) data.news = []; data.news.unshift({ txt, d: new Date().toLocaleString() }); sync(); document.getElementById('news-text').value = ''; }
     }
-
     /* ============================================================
        CALENDARIO NAVIGAZIONE
     ============================================================ */
     window.changeMonth = function (dir) { viewDate.setMonth(viewDate.getMonth() + dir); render(); };
-
     /* ============================================================
        RENDER PRINCIPALE
     ============================================================ */
@@ -1782,12 +1560,10 @@
         // Apri quello cliccato solo se era chiuso
         if (!isOpen) el.classList.add('open');
     }
-
     /* ============================================================
        PAGELLE ENGINE
     ============================================================ */
     let pagellaVoti = {}; // { playerId: voto } temporaneo per il form
-
     function renderPagellaVotes() {
         const container = document.getElementById('pagella-players-votes');
         const adminLbl = document.getElementById('pagella-admin-label');
@@ -1825,7 +1601,6 @@
             </div>`;
         }).join('');
     }
-
     function salvaPagella() {
         if(!currentAdmin) { alert('Devi essere loggato.'); return; }
         const sel = document.getElementById('pagella-match-sel');
@@ -1855,12 +1630,10 @@
         renderPagellaVotes();
         alert('✅ Pagella pubblicata!');
     }
-
     function render() {
         let hR = "", hA = "", hMk = "", hP = "", hMatch = "", hNews = "", hConv = "";
         const activeAdm = document.getElementById('active-admin').value;
         let maxMedia = -1, topPlayerId = null, maxMvp = -1, kingId = null, maxDefMedia = -1, wallId = null;
-
         data.ps.forEach(p => {
             const voti = Object.values(p.v_adm || {});
             const media = parseFloat((voti.reduce((a, b) => a + b, 0) / (voti.length || 1)).toFixed(1));
@@ -1868,7 +1641,6 @@
             if ((p.mvp || 0) > maxMvp) { maxMvp = p.mvp; kingId = p.id; }
             if (p.r === 'DIF' && media > maxDefMedia) { maxDefMedia = media; wallId = p.id; }
         });
-
         if (!window.viewMode) window.viewMode = 'roles';
         hR = `<div style="margin-bottom:10px;background:#111;padding:10px;border-radius:8px;border:1px solid var(--oro);display:flex;align-items:center;gap:10px">
             <span style="font-size:12px;font-weight:bold;color:var(--oro);text-transform:uppercase;font-family:Oswald">Visualizza:</span>
@@ -1880,11 +1652,9 @@
                 <option value="CEN" ${window.viewMode === 'CEN' ? 'selected' : ''}>CEN</option>
                 <option value="ATT" ${window.viewMode === 'ATT' ? 'selected' : ''}>ATT</option>
             </select></div>`;
-
         const ruoliOrdine = ['POR', 'DIF', 'CEN', 'ATT'];
         const gruppi = { 'POR': '', 'DIF': '', 'CEN': '', 'ATT': '' };
         let listaSemplice = "";
-
         data.ps.forEach(p => {
             const voti = Object.values(p.v_adm || {});
             const media = (voti.reduce((a, b) => a + b, 0) / (voti.length || 1)).toFixed(1);
@@ -1892,7 +1662,6 @@
             if (p.id === kingId && maxMvp > 0) bIcons += "👑";
             if (p.id === topPlayerId && maxMedia > 6) bIcons += "🔥";
             if (p.id === wallId && maxDefMedia > 6) bIcons += "🧱";
-
             const rsLabel = p.rs || p.r;
             const convBg = p.convocato ? 'linear-gradient(90deg,#1b5e20,#2e7d32)' : '#1a1a1a';
             const convColor = p.convocato ? '#4caf50' : '#555';
@@ -1929,63 +1698,15 @@
                     </button>
                 </div>
             </div>`;
-
             if (window.viewMode === 'all') { listaSemplice += playerCard; }
             else if (window.viewMode === 'roles') { if (gruppi[p.r] !== undefined) gruppi[p.r] += playerCard; else gruppi['ATT'] += playerCard; }
             else if (window.viewMode === p.r) { listaSemplice += playerCard; }
-
             hConv += `<div class="card" style="min-height:auto; padding:10px; margin-bottom:5px; border-left:5px solid ${p.convocato ? '#2e7d32' : '#222'}">
                 <b>${p.n}</b> (${p.r})
                 <button class="btn-status" style="float:right; width:auto; padding:5px 15px; background:${p.convocato ? '#C61C23' : '#2e7d32'}" onclick="const i=data.ps.findIndex(x=>x.id==${p.id}); data.ps[i].convocato=!data.ps[i].convocato; sync()">${p.convocato ? 'RIMUOVI' : 'AGGIUNGI'}</button>
             </div>`;
             // hMk non più usato per mercato
-            // FUT Card render
-            {
-                // Calcola overall: media voti + bonus
-                const pgVoti = [];
-                (data.pagelle||[]).forEach(pg => {
-                    const e = pg.voti && pg.voti[p.id];
-                    if(e !== undefined) { const v = typeof e==='object'?e.voto:e; if(v) pgVoti.push(v); }
-                });
-                (data.voteHistory||[]).forEach(sess => {
-                    const pv = sess.votes && sess.votes[p.id] ? Object.values(sess.votes[p.id]) : [];
-                    if(pv.length) pgVoti.push(pv.reduce((a,b)=>a+b,0)/pv.length);
-                });
-                const avgVoto = pgVoti.length ? pgVoti.reduce((a,b)=>a+b,0)/pgVoti.length : parseFloat(media)||6;
-                const overall = Math.min(99, Math.round(avgVoto * 9.5 + (p.mvp||0)*1.5 + (p.potm||0) + (p.g||0)*0.5));
-                const cardClass = overall >= 88 ? 'fut-toty' : overall >= 84 ? 'fut-special' : overall >= 80 ? 'fut-gold' : overall >= 74 ? 'fut-silver' : 'fut-bronze';
-                const textColor = (cardClass==='fut-toty'||cardClass==='fut-special') ? 'white' : (cardClass==='fut-gold'?'#3a2800':cardClass==='fut-silver'?'#2a2a2a':'#2a1000');
-                hP += `<div class="fut-card ${cardClass}" onclick="openP(${p.id})">
-                    <div class="fut-card-content">
-                        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                            <div>
-                                <div class="fut-overall" style="color:${textColor};">${overall}</div>
-                                <div class="fut-pos" style="color:${textColor};">${p.rs||p.r}</div>
-                                <div style="font-size:8px;font-family:Oswald;opacity:0.6;color:${textColor};margin-top:2px;">MILANAC</div>
-                            </div>
-                            <div style="text-align:right;font-size:9px;font-family:Oswald;color:${textColor};opacity:0.7;">
-                                ${p.mvp>0?'👑'.repeat(Math.min(p.mvp,3)):''}
-                                ${p.potm>0?'⭐'.repeat(Math.min(p.potm,3)):''}
-                            </div>
-                        </div>
-                        <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:6px 0;">
-                            <div style="width:60px;height:60px;border-radius:50%;
-                                background:rgba(0,0,0,0.25);
-                                border:2px solid rgba(255,255,255,0.2);
-                                display:flex;align-items:center;justify-content:center;
-                                font-family:Oswald;font-size:28px;font-weight:900;color:${textColor};
-                                text-shadow:0 2px 8px rgba(0,0,0,0.5);">${p.m}</div>
-                        </div>
-                        <div class="fut-name" style="color:${textColor};">${p.n}</div>
-                        <div class="fut-stats-row" style="color:${textColor};">
-                            <div class="fut-stat"><span class="fut-stat-val">${p.g||0}</span><span class="fut-stat-lbl">GOL</span></div>
-                            <div class="fut-stat"><span class="fut-stat-val">${p.a||0}</span><span class="fut-stat-lbl">ASS</span></div>
-                            <div class="fut-stat"><span class="fut-stat-val">${p.mvp||0}</span><span class="fut-stat-lbl">MVP</span></div>
-                            <div class="fut-stat"><span class="fut-stat-val">${overall}</span><span class="fut-stat-lbl">OVR</span></div>
-                        </div>
-                    </div>
-                </div>`;
-            }
+            hP += `<div class="card" style="display:flex"><b>${p.n}</b> <span style="float:right">👑 ${p.mvp || 0} | ⭐ ${p.potm || 0}</span></div>`;
             // Admin card con voto sessione
             if(currentAdmin) {
                 let sessionVoteHtml = '';
@@ -2054,11 +1775,9 @@
                 </div>`;
             }
         });
-
         if (window.viewMode === 'roles') {
             ruoliOrdine.forEach(r => { if (gruppi[r]) hR += `<h4 style="color:var(--oro); border-bottom:1px solid #333; padding-bottom:5px; margin:20px 0 10px 0; text-transform:uppercase; font-size:12px; letter-spacing:1px; font-family:Oswald">${r}</h4>` + gruppi[r]; });
         } else { hR += listaSemplice; }
-
         // Summary stats
         const msEl = document.getElementById('match-summary');
         if(msEl) {
@@ -2072,7 +1791,6 @@
                 <div style="font-size:10px;color:#555;font-family:Oswald;letter-spacing:1px;text-transform:uppercase;">${s2.label}</div>
             </div>`).join('');
         }
-
         (data.matches || []).forEach((m, idx) => {
             const parts = (m.ris || '').split('-').map(s => s.trim());
             const gF = parseInt(parts[0]) || 0, gA = parseInt(parts[1]) || 0;
@@ -2090,7 +1808,6 @@
             </div>`;
         });
         (data.news || []).forEach((n, idx) => { hNews += `<div class="card" style="display:block"><small>${n.d}</small><p>${n.txt}</p><button style="background:none; border:none; color:red" onclick="data.news.splice(${idx},1); sync()">🗑️ Elimina</button></div>`; });
-
         // Calendario
         const meseVis = viewDate.getMonth(), annoVis = viewDate.getFullYear();
         const nomiMesi = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
@@ -2107,7 +1824,6 @@
             hCal += `<div class="calendar-cell ${eventiOggi.length > 0 ? 'has-event' : ''} ${isToday ? 'today' : ''}" onclick="showDayEvents('${dataLoop}')">${d}${eventiOggi.length > 0 ? '<div class="event-dot"></div>' : ''}</div>`;
         }
         hCal += `</div><div id="selected-day-info" class="selected-event-info"></div></div>`;
-
         // Aggiorna selector partite per sessione voto
         const selPV = document.getElementById('sel-partita-voto');
         if(selPV) {
@@ -2168,7 +1884,6 @@
             hStorico += `</div>`;
         });
         if(!hStorico) hStorico = '<p style="color:#555;font-size:13px;text-align:center;">Nessuna sessione voto ancora aperta.</p>';
-
         document.getElementById('l-rosa').innerHTML = hR;
         document.getElementById('l-admin').innerHTML = hA;
         const storicoEl = document.getElementById('l-storico-voti');
@@ -2266,7 +1981,6 @@
         document.getElementById('l-premi').innerHTML = hP;
         document.getElementById('l-calendario').innerHTML = hCal;
         document.getElementById('list-convocabili').innerHTML = hConv;
-
         // Giocatori sul campo
         const pl = document.getElementById('pitch-players');
         pl.innerHTML = "";
@@ -2279,7 +1993,6 @@
             d.className = 'player'; d.style.left = p.x + "%"; d.style.top = p.y + "%";
             d.innerHTML = `<div class="jersey">${p.m}${pBadge ? `<span class="badge-icon">${pBadge}</span>` : ''}</div><div class="p-name">${p.n}</div>`;
             d.onclick = () => openP(p.id);
-
             let isD = false;
             const start = () => isD = true;
             const move = (e) => {
@@ -2298,13 +2011,11 @@
             pl.appendChild(d);
         });
         drawTacticLines();
-
         // Se la sezione tattica è attiva, aggiorna il canvas
         if (document.getElementById('p-tattica').classList.contains('active')) {
             setTimeout(initHeatmapCanvas, 50);
         }
     }
-
     /* ============================================================
        MODALE EVENTI CALENDARIO
     ============================================================ */
@@ -2325,7 +2036,6 @@
         });
         document.getElementById('selected-day-info').innerHTML = html;
     };
-
     /* ============================================================
        MODALE GIOCATORE
     ============================================================ */
@@ -2347,8 +2057,7 @@
         document.getElementById('st-potm').innerText = p.potm || 0;
         document.getElementById('st-yl').innerText = p.yl || 0;
         document.getElementById('st-rd').innerText = p.rd || 0;
-
-        // Calcola presenze: quante sessioni voto contengono questo giocatore
+        // Calcola media storica da voteHistory
         const allSessions = (data.voteHistory || []);
         let totalVotes = 0, voteCount = 0;
         allSessions.forEach(sess => {
@@ -2360,30 +2069,8 @@
                 voteCount++;
             }
         });
-        // Aggiungi anche voti dalle pagelle pubblicate
-        let pgTotal = 0, pgCount = 0;
-        (data.pagelle || []).forEach(pg => {
-            const entry = pg.voti && pg.voti[p.id];
-            if(entry !== undefined) {
-                const v = typeof entry === 'object' ? entry.voto : entry;
-                if(v) { pgTotal += v; pgCount++; }
-            }
-        });
-        // Media combinata: voteHistory + pagelle
-        const totaleVoti = totalVotes + pgTotal;
-        const totaleCount = voteCount + pgCount;
-        const mediaStorica = totaleCount > 0 ? (totaleVoti / totaleCount).toFixed(2) : '—';
-        // Presenze = sessioni in cui è stato votato (senza duplicati)
-        const matchIds = new Set();
-        allSessions.forEach(sess => {
-            if(sess.votes && sess.votes[p.id] && Object.values(sess.votes[p.id]).length > 0)
-                matchIds.add(sess.matchId || sess.id);
-        });
-        (data.pagelle || []).forEach(pg => {
-            if(pg.voti && pg.voti[p.id] !== undefined) matchIds.add(pg.matchId);
-        });
-        const partiteGiocate = matchIds.size;
-
+        const mediaStorica = voteCount > 0 ? (totalVotes / voteCount).toFixed(2) : '—';
+        const partiteGiocate = voteCount;
         // Inserisci dati extra nel modal
         const extraEl = document.getElementById('m-extra-stats');
         if(extraEl) {
@@ -2401,7 +2088,6 @@
         }
         document.getElementById('modal-player').style.display = 'flex';
     }
-
     // Ridimensiona canvas se la finestra cambia
     window.addEventListener('resize', () => {
         if (document.getElementById('p-tattica').classList.contains('active')) {
