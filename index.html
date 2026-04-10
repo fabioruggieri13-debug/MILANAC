@@ -581,7 +581,7 @@
     <button onclick="go('tattica')">📋 Formazione</button>
     <button onclick="go('calendario')">📅 Calendario Partite</button>
     <button onclick="go('news')">📰 News & Comunicati</button>
-    <button onclick="go('mercato')">💰 Mercato</button>
+    <button onclick="go('mercato')">📰 Pagelle Partita</button>
     <button onclick="go('partite')">🏟️ Risultati Partite</button>
     <button onclick="go('premi')">🏆 Premi</button>
     <button onclick="goAdmin()">⚙️ Area Admin</button>
@@ -727,8 +727,31 @@
         <div id="l-calendario"></div>
     </div>
 
-    <!-- MERCATO -->
-    <div id="p-mercato" class="page"><h3 style="font-family: 'Oswald';">VALORI DI MERCATO</h3><div id="l-mercato"></div></div>
+    <!-- PAGELLE -->
+    <div id="p-mercato" class="page">
+        <h3 style="font-family:'Oswald';color:var(--oro);margin-bottom:14px;">📰 PAGELLE PARTITA</h3>
+
+        <!-- Form scrittura pagella (solo admin) -->
+        <div id="pagella-form-wrap" style="display:none;margin-bottom:16px;">
+            <div style="background:linear-gradient(145deg,#111,#080808);border:1px solid rgba(212,175,55,0.3);border-radius:16px;padding:14px;">
+                <div style="font-family:'Oswald';font-size:11px;color:var(--oro);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;">✍️ Scrivi Pagella</div>
+                <select id="pagella-match-sel" style="margin-bottom:8px;font-family:'Oswald';">
+                    <option value="">— Seleziona partita —</option>
+                </select>
+                <div id="pagella-players-votes" style="margin-bottom:10px;"></div>
+                <div style="font-family:'Oswald';font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Commento Partita</div>
+                <textarea id="pagella-commento" placeholder="Scrivi il commento alla partita (stile giornalistico)..."
+                    style="min-height:100px;font-size:14px;line-height:1.5;resize:vertical;font-family:'Segoe UI',sans-serif;"></textarea>
+                <button class="btn-main" onclick="salvaPagella()" style="border-radius:10px;margin-top:8px;">📤 PUBBLICA PAGELLA</button>
+            </div>
+        </div>
+        <div id="pagella-login-prompt" style="background:#111;border:1px solid #222;border-radius:12px;padding:14px;text-align:center;margin-bottom:16px;display:block;">
+            <div style="font-family:'Oswald';font-size:12px;color:#555;text-transform:uppercase;letter-spacing:1px;">🔒 Solo gli admin possono scrivere pagelle</div>
+        </div>
+
+        <!-- Lista pagelle pubblicate -->
+        <div id="l-mercato"></div>
+    </div>
 
     <!-- PARTITE -->
     <div id="p-partite" class="page">
@@ -879,7 +902,7 @@
     const firebaseConfig = { apiKey: "AIzaSyDbO_AxHKz1avQpYscoSSLpEfmFaL8MRGg", authDomain: "milanac-proclub.firebaseapp.com", projectId: "milanac-proclub", storageBucket: "milanac-proclub.firebasestorage.app", messagingSenderId: "61702234008", appId: "1:61702234008:web:aa597d8600d0a8251895ed" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-    let data = { ps: [], mod: '4-4-2', matches: [], news: [], calendar: [], voteHistory: [] };
+    let data = { ps: [], mod: '4-4-2', matches: [], news: [], calendar: [], voteHistory: [], pagelle: [] };
     let viewDate = new Date();
 
     // ---- ADMIN AUTH ----
@@ -898,7 +921,7 @@
     let pinBuffer = '';
     let loginMode = 'pin';     // 'pin' | 'pwd'
 
-    db.collection("milanac").doc("v84_final").onSnapshot(doc => { if(doc.exists) { data = doc.data(); if(!data.voteHistory) data.voteHistory=[]; render(); } });
+    db.collection("milanac").doc("v84_final").onSnapshot(doc => { if(doc.exists) { data = doc.data(); if(!data.voteHistory) data.voteHistory=[]; if(!data.pagelle) data.pagelle=[]; render(); } });
     function sync() { db.collection("milanac").doc("v84_final").set(data); }
 
     /* ============================================================
@@ -1473,6 +1496,59 @@
     /* ============================================================
        RENDER PRINCIPALE
     ============================================================ */
+    /* ============================================================
+       PAGELLE ENGINE
+    ============================================================ */
+    let pagellaVoti = {}; // { playerId: voto } temporaneo per il form
+
+    function renderPagellaVotes() {
+        const container = document.getElementById('pagella-players-votes');
+        if(!container) return;
+        if(!currentAdmin) { container.innerHTML = ''; return; }
+        if(data.ps.length === 0) { container.innerHTML = '<p style="color:#555;font-size:12px;">Aggiungi prima dei giocatori.</p>'; return; }
+        container.innerHTML = `
+            <div style="font-family:'Oswald';font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Voti Giocatori</div>
+            ${data.ps.map(p => {
+                const v = pagellaVoti[p.id] !== undefined ? pagellaVoti[p.id] : 6;
+                const vColor = v >= 7 ? '#4caf50' : v >= 6 ? '#D4AF37' : '#ef5350';
+                return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                    <span style="font-family:'Teko';font-size:16px;color:white;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.n} <span style="font-size:11px;color:#555;">${p.rs||p.r}</span></span>
+                    <button onclick="pagellaVoti[${p.id}]=Math.max(1,parseFloat(((pagellaVoti[${p.id}]||6)-0.5).toFixed(1)));renderPagellaVotes()"
+                        style="width:26px;height:26px;background:#c62828;border:none;color:white;border-radius:5px;cursor:pointer;font-weight:900;">-</button>
+                    <span style="font-family:'Oswald';font-size:18px;font-weight:900;color:${vColor};min-width:32px;text-align:center;">${v}</span>
+                    <button onclick="pagellaVoti[${p.id}]=Math.min(10,parseFloat(((pagellaVoti[${p.id}]||6)+0.5).toFixed(1)));renderPagellaVotes()"
+                        style="width:26px;height:26px;background:#2e7d32;border:none;color:white;border-radius:5px;cursor:pointer;font-weight:900;">+</button>
+                </div>`;
+            }).join('')}`;
+    }
+
+    function salvaPagella() {
+        if(!currentAdmin) { alert('Devi essere loggato.'); return; }
+        const sel = document.getElementById('pagella-match-sel');
+        const commento = document.getElementById('pagella-commento').value.trim();
+        if(!sel || !sel.value) { alert('Seleziona una partita.'); return; }
+        const match = data.matches.find(m => (m.id||m.avv+m.d) == sel.value);
+        if(!match) { alert('Partita non trovata.'); return; }
+        // Copia voti correnti
+        const votiFinali = {};
+        data.ps.forEach(p => { votiFinali[p.id] = pagellaVoti[p.id] !== undefined ? pagellaVoti[p.id] : 6; });
+        if(!data.pagelle) data.pagelle = [];
+        data.pagelle.unshift({
+            id: Date.now(),
+            matchId: sel.value,
+            matchLabel: `${match.ris} vs ${match.avv} (${match.d})`,
+            author: currentAdmin,
+            date: new Date().toLocaleDateString(),
+            voti: votiFinali,
+            commento
+        });
+        sync();
+        document.getElementById('pagella-commento').value = '';
+        pagellaVoti = {};
+        renderPagellaVotes();
+        alert('✅ Pagella pubblicata!');
+    }
+
     function render() {
         let hR = "", hA = "", hMk = "", hP = "", hMatch = "", hNews = "", hConv = "";
         const activeAdm = document.getElementById('active-admin').value;
@@ -1530,15 +1606,18 @@
                     </div>
                     <div style="font-size:11px;color:#555;font-family:'Oswald';">Media ${media} &nbsp;·&nbsp; ⚽${p.g||0} 👟${p.a||0}</div>
                 </div>
-                <div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0;">
-                    <div style="width:8px;height:8px;border-radius:50%;background:${p.convocato ? '#4caf50' : '#333'};
-                        box-shadow:${p.convocato ? '0 0 6px #4caf50' : 'none'};align-self:flex-end;"></div>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0;">
+                    <div style="width:8px;height:8px;border-radius:50%;
+                        background:${p.convocato ? '#4caf50' : '#444'};
+                        box-shadow:${p.convocato ? '0 0 8px #4caf50' : 'none'};"></div>
                     <button style="padding:5px 10px;border-radius:8px;border:none;
-                        background:${p.convocato ? '#C61C23' : '#2e7d32'};color:white;
+                        background:${p.convocato ? '#1a1a1a' : '#1b5e20'};
+                        border:1px solid ${p.convocato ? '#333' : '#2e7d32'};
+                        color:${p.convocato ? '#888' : '#4caf50'};
                         font-family:'Oswald';font-size:10px;font-weight:700;cursor:pointer;
-                        text-transform:uppercase;letter-spacing:0.5px;"
+                        text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;"
                         onclick="event.stopPropagation(); const i=data.ps.findIndex(x=>x.id==${p.id}); data.ps[i].convocato=!data.ps[i].convocato; sync()">
-                        ${p.convocato ? 'OUT' : 'IN'}
+                        ${p.convocato ? 'NON DISP.' : 'DISPONIBILE'}
                     </button>
                 </div>
             </div>`;
@@ -1551,7 +1630,7 @@
                 <b>${p.n}</b> (${p.r})
                 <button class="btn-status" style="float:right; width:auto; padding:5px 15px; background:${p.convocato ? '#C61C23' : '#2e7d32'}" onclick="const i=data.ps.findIndex(x=>x.id==${p.id}); data.ps[i].convocato=!data.ps[i].convocato; sync()">${p.convocato ? 'RIMUOVI' : 'AGGIUNGI'}</button>
             </div>`;
-            hMk += `<div class="card" style="display:flex"><b>${p.n}</b> <span style="float:right; color:var(--oro)">€${(10 + (media - 6) * 5 + (p.g || 0) * 2).toFixed(1)}M</span></div>`;
+            // hMk non più usato per mercato
             hP += `<div class="card" style="display:flex"><b>${p.n}</b> <span style="float:right">👑 ${p.mvp || 0} | ⭐ ${p.potm || 0}</span></div>`;
             // Admin card con voto sessione
             if(currentAdmin) {
@@ -1743,7 +1822,61 @@
         // Aggiorna nome admin loggato
         const adminNameEl = document.getElementById('admin-logged-name');
         if(adminNameEl) adminNameEl.innerText = currentAdmin || '—';
-        document.getElementById('l-mercato').innerHTML = hMk;
+        // Render pagelle
+        const pagelleEl = document.getElementById('l-mercato');
+        if(pagelleEl) {
+            const pagelle = (data.pagelle || []);
+            if(pagelle.length === 0) {
+                pagelleEl.innerHTML = '<p style="color:#444;text-align:center;font-family:Oswald;font-size:13px;padding:20px 0;">Nessuna pagella pubblicata ancora.</p>';
+            } else {
+                pagelleEl.innerHTML = pagelle.map((pg, idx) => {
+                    const votiHtml = Object.keys(pg.voti||{}).map(pid => {
+                        const player = data.ps.find(x => x.id == pid);
+                        if(!player) return '';
+                        const v = pg.voti[pid];
+                        const vColor = v >= 7 ? '#4caf50' : v >= 6 ? '#D4AF37' : '#ef5350';
+                        return `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,0.04);">
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <span style="font-family:'Oswald';font-size:13px;color:#888;">${player.rs||player.r}</span>
+                                <span style="font-family:'Teko';font-size:18px;color:white;">${player.n}</span>
+                            </div>
+                            <span style="font-family:'Oswald';font-size:22px;font-weight:900;color:${vColor};">${v}</span>
+                        </div>`;
+                    }).join('');
+                    const canDelete = currentAdmin === pg.author;
+                    return `<div style="background:linear-gradient(145deg,#111,#080808);border:1px solid rgba(255,255,255,0.07);border-radius:18px;overflow:hidden;margin-bottom:14px;">
+                        <div style="background:linear-gradient(90deg,rgba(198,28,35,0.15),transparent);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.06);">
+                            <div>
+                                <div style="font-family:'Teko';font-size:22px;color:white;text-transform:uppercase;">${pg.matchLabel}</div>
+                                <div style="font-size:10px;color:#555;font-family:'Oswald';">Pagella di ${pg.author} · ${pg.date}</div>
+                            </div>
+                            ${canDelete ? `<button onclick="data.pagelle.splice(${idx},1);sync()" style="background:none;border:none;color:#444;font-size:18px;cursor:pointer;">🗑️</button>` : ''}
+                        </div>
+                        ${votiHtml ? `<div style="padding:4px 0;">${votiHtml}</div>` : ''}
+                        ${pg.commento ? `<div style="padding:14px 16px;font-size:14px;color:#bbb;line-height:1.6;font-style:italic;border-top:1px solid rgba(255,255,255,0.05);">"${pg.commento}"</div>` : ''}
+                    </div>`;
+                }).join('');
+            }
+        }
+        // Aggiorna form pagella visibilità e selector partite
+        const pgForm = document.getElementById('pagella-form-wrap');
+        const pgPrompt = document.getElementById('pagella-login-prompt');
+        if(pgForm) pgForm.style.display = currentAdmin ? 'block' : 'none';
+        if(pgPrompt) pgPrompt.style.display = currentAdmin ? 'none' : 'block';
+        const pgSel = document.getElementById('pagella-match-sel');
+        if(pgSel) {
+            const curVal = pgSel.value;
+            pgSel.innerHTML = '<option value="">— Seleziona partita —</option>';
+            (data.matches||[]).forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m.id || (m.avv+m.d);
+                opt.innerText = `${m.ris} vs ${m.avv} (${m.d})`;
+                pgSel.appendChild(opt);
+            });
+            pgSel.value = curVal;
+        }
+        // Aggiorna voti giocatori nel form pagella
+        renderPagellaVotes();
         document.getElementById('l-partite').innerHTML = hMatch;
         document.getElementById('l-news').innerHTML = hNews;
         document.getElementById('l-premi').innerHTML = hP;
@@ -1851,13 +1984,13 @@
         if(extraEl) {
             extraEl.innerHTML = `
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:5px;">
-                    <div style="background:rgba(212,175,55,0.07);border:1px solid rgba(212,175,55,0.25);border-radius:12px;padding:12px;text-align:center;">
-                        <div style="font-size:9px;color:#666;font-family:'Oswald';text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Media Stagione</div>
-                        <div style="font-family:'Oswald';font-size:30px;font-weight:900;color:var(--oro);">${mediaStorica}</div>
-                    </div>
                     <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px;text-align:center;">
-                        <div style="font-size:9px;color:#666;font-family:'Oswald';text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Partite</div>
+                        <div style="font-size:9px;color:#666;font-family:'Oswald';text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Presenze</div>
                         <div style="font-family:'Oswald';font-size:30px;font-weight:900;color:white;">${partiteGiocate}</div>
+                    </div>
+                    <div style="background:rgba(212,175,55,0.07);border:1px solid rgba(212,175,55,0.25);border-radius:12px;padding:12px;text-align:center;">
+                        <div style="font-size:9px;color:#666;font-family:'Oswald';text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Media Voto</div>
+                        <div style="font-family:'Oswald';font-size:30px;font-weight:900;color:var(--oro);">${mediaStorica}</div>
                     </div>
                 </div>`;
         }
