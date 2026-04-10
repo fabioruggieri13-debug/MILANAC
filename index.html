@@ -344,36 +344,38 @@
         .admin-login-box {
             background: linear-gradient(160deg, #111 0%, #050505 100%);
             border: 2px solid var(--oro);
-            border-radius: 24px;
-            padding: 30px 25px;
-            width: 88%;
+            border-radius: 20px;
+            padding: 18px 18px 16px;
+            width: 92%;
             max-width: 340px;
+            max-height: 92vh;
+            overflow-y: auto;
             text-align: center;
             box-shadow: 0 0 60px rgba(198,28,35,0.2);
         }
         .admin-login-title {
             font-family: 'Oswald';
-            font-size: 13px;
+            font-size: 11px;
             color: #666;
             text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 6px;
+            letter-spacing: 2px;
+            margin-bottom: 4px;
         }
         .admin-login-name {
             font-family: 'Teko';
-            font-size: 42px;
+            font-size: 30px;
             font-weight: 700;
             color: white;
             text-transform: uppercase;
-            margin: 0 0 20px;
+            margin: 0 0 12px;
             line-height: 1;
         }
         /* Selezione admin */
         .admin-selector {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 20px;
+            gap: 6px;
+            margin-bottom: 12px;
         }
         .admin-btn {
             padding: 10px 5px;
@@ -396,8 +398,8 @@
         .pin-display {
             display: flex;
             justify-content: center;
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 12px;
         }
         .pin-dot {
             width: 14px; height: 14px;
@@ -416,23 +418,24 @@
         .pin-pad {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 7px;
+            margin-bottom: 10px;
         }
         .pin-key {
             aspect-ratio: 1;
             background: #1a1a1a;
             border: 1px solid #2a2a2a;
             color: white;
-            border-radius: 12px;
+            border-radius: 10px;
             font-family: 'Oswald';
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.15s;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 8px 0;
         }
         .pin-key:active { background: #333; transform: scale(0.94); }
         .pin-key.del { font-size: 16px; color: #888; }
@@ -1113,47 +1116,45 @@
         if (!svg) return;
         svg.querySelectorAll('.arrow-path, .arrow-preview').forEach(el => el.remove());
         arrows.forEach((a, idx) => {
-            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-            const dx = a.x2 - a.x1, dy = a.y2 - a.y1;
-            const len = Math.sqrt(dx*dx + dy*dy);
-            // Curva morbida proporzionale alla lunghezza, perpendicolare alla direzione
-            const perpX = -dy / len * len * 0.18;
-            const perpY =  dx / len * len * 0.18;
-            const cx = (a.x1 + a.x2) / 2 + perpX;
-            const cy = (a.y1 + a.y2) / 2 + perpY;
-            path.setAttribute("d", `M${a.x1},${a.y1} Q${cx},${cy} ${a.x2},${a.y2}`);
-            path.setAttribute("class", "arrow-path");
-            path.setAttribute("filter", "url(#glow)");
-            // doppio tap sul path per eliminarla
-            path.setAttribute("data-idx", idx);
-            path.style.pointerEvents = 'stroke';
-            path.addEventListener('click', (e) => {
+            // FRECCIA RETTA: da punto A a punto B esattamente dove ha trascinato il dito
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            line.setAttribute("x1", a.x1);
+            line.setAttribute("y1", a.y1);
+            line.setAttribute("x2", a.x2);
+            line.setAttribute("y2", a.y2);
+            line.setAttribute("stroke", "#FFD700");
+            line.setAttribute("stroke-width", "3.5");
+            line.setAttribute("stroke-linecap", "round");
+            line.setAttribute("marker-end", "url(#arrowhead)");
+            line.setAttribute("filter", "url(#glow)");
+            line.setAttribute("class", "arrow-path");
+            line.style.pointerEvents = 'stroke';
+            line.addEventListener('click', (e) => {
                 e.stopPropagation();
                 arrows.splice(idx, 1);
                 drawArrows();
             });
-            svg.appendChild(path);
+            svg.appendChild(line);
         });
     }
-    // Preview freccia mentre si trascina
+    // Preview freccia RETTA mentre si trascina il dito
     function drawArrowPreview(x1, y1, x2, y2) {
         const svg = document.getElementById('arrows-svg');
         if (!svg) return;
         svg.querySelectorAll('.arrow-preview').forEach(el => el.remove());
         if (x2 === undefined) return;
-        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        const dx = x2-x1, dy = y2-y1, len = Math.sqrt(dx*dx+dy*dy) || 1;
-        const perpX = -dy/len*len*0.18, perpY = dx/len*len*0.18;
-        const cx = (x1+x2)/2+perpX, cy = (y1+y2)/2+perpY;
-        path.setAttribute("d", `M${x1},${y1} Q${cx},${cy} ${x2},${y2}`);
-        path.setAttribute("class", "arrow-preview");
-        path.setAttribute("stroke", "rgba(255,215,0,0.45)");
-        path.setAttribute("stroke-width", "2.5");
-        path.setAttribute("stroke-dasharray", "6,4");
-        path.setAttribute("fill", "none");
-        path.setAttribute("stroke-linecap", "round");
-        path.setAttribute("marker-end", "url(#arrowhead)");
-        svg.appendChild(path);
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", x1);
+        line.setAttribute("y1", y1);
+        line.setAttribute("x2", x2);
+        line.setAttribute("y2", y2);
+        line.setAttribute("stroke", "rgba(255,215,0,0.5)");
+        line.setAttribute("stroke-width", "2.5");
+        line.setAttribute("stroke-dasharray", "7,4");
+        line.setAttribute("stroke-linecap", "round");
+        line.setAttribute("marker-end", "url(#arrowhead)");
+        line.setAttribute("class", "arrow-preview");
+        svg.appendChild(line);
     }
 
     /* Converti coordinate pixel → griglia */
