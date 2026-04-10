@@ -24,6 +24,8 @@
             background-size: 50px 50px; animation: particlesMove 20s linear infinite; opacity: 0.3; z-index: -1;
         }
         @keyframes particlesMove { from { background-position: 0 0; } to { background-position: 500px 1000px; } }
+        @keyframes fadeInDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes fadeInUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
         .intro-container { position: relative; display: flex; flex-direction: column; align-items: center; transform-style: preserve-3d; }
         .intro-logo { width: 80%; max-width: 320px; mix-blend-mode: lighten; filter: drop-shadow(0 10px 30px rgba(0,0,0,0.8)) brightness(1.1); animation: logoEntrance 1.5s ease-out, logoFloat3D 4s infinite ease-in-out; margin-bottom: 40px; transform-style: preserve-3d; position: relative; }
         .intro-shadow { width: 150px; height: 20px; background: rgba(0,0,0,0.6); border-radius: 50%; filter: blur(10px); margin-top: -30px; margin-bottom: 30px; animation: shadowPulse 4s infinite ease-in-out; }
@@ -513,52 +515,72 @@
             border-color: var(--rosso);
             color: white;
         }
-        /* PIN pad */
+        /* PIN pad — design moderno */
         .pin-display {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin-bottom: 12px;
+            gap: 14px;
+            margin-bottom: 16px;
         }
         .pin-dot {
-            width: 14px; height: 14px;
+            width: 13px; height: 13px;
             border-radius: 50%;
-            border: 2px solid #444;
+            border: 2px solid #333;
             background: transparent;
-            transition: all 0.2s;
+            transition: all 0.15s;
         }
         .pin-dot.filled {
             background: var(--oro);
             border-color: var(--oro);
-            box-shadow: 0 0 8px rgba(212,175,55,0.6);
+            box-shadow: 0 0 10px rgba(212,175,55,0.7);
+            transform: scale(1.1);
         }
         .pin-dot.error { background: var(--rosso); border-color: var(--rosso); animation: shake 0.3s ease; }
-        @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+        @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
         .pin-pad {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 7px;
+            gap: 8px;
             margin-bottom: 10px;
         }
         .pin-key {
-            aspect-ratio: 1;
-            background: #1a1a1a;
-            border: 1px solid #2a2a2a;
+            height: 62px;
+            background: rgba(255,255,255,0.06);
+            border: none;
             color: white;
-            border-radius: 10px;
+            border-radius: 14px;
             font-family: 'Oswald';
-            font-size: 20px;
+            font-size: 24px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.15s;
+            transition: all 0.12s;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 8px 0;
+            gap: 1px;
+            -webkit-tap-highlight-color: transparent;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
         }
-        .pin-key:active { background: #333; transform: scale(0.94); }
-        .pin-key.del { font-size: 16px; color: #888; }
-        .pin-key.empty { background: transparent; border: none; cursor: default; }
+        .pin-key .pin-sub {
+            font-size: 7px;
+            color: #666;
+            letter-spacing: 1.5px;
+            font-family: 'Oswald';
+            text-transform: uppercase;
+            line-height: 1;
+        }
+        .pin-key:active {
+            background: rgba(212,175,55,0.15);
+            transform: scale(0.94);
+            box-shadow: none;
+        }
+        .pin-key.del {
+            font-size: 20px;
+            color: #aaa;
+            background: rgba(255,255,255,0.04);
+        }
+        .pin-key.empty { background: transparent; border: none; cursor: default; box-shadow: none; }
         /* Input password testuale */
         .pwd-input-wrap { margin-bottom: 15px; }
         .pwd-input-wrap input {
@@ -590,6 +612,105 @@
             margin-top: 8px;
             min-height: 18px;
         }
+
+        /* ======================================================
+           FUT CARD — PREMI
+        ====================================================== */
+        .fut-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 4px 0;
+        }
+        .fut-card {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            aspect-ratio: 0.68;
+            cursor: pointer;
+            transition: transform 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .fut-card:active { transform: scale(0.97); }
+        .fut-card-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+        }
+        .fut-card-content {
+            position: relative;
+            z-index: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 10px 10px 8px;
+        }
+        .fut-overall {
+            font-family: 'Oswald';
+            font-size: 32px;
+            font-weight: 900;
+            line-height: 1;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+        }
+        .fut-pos {
+            font-family: 'Oswald';
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+        }
+        .fut-shield {
+            width: 28px;
+            height: 28px;
+            margin: 4px 0;
+            opacity: 0.9;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+        }
+        .fut-name {
+            font-family: 'Teko';
+            font-size: 22px;
+            font-weight: 700;
+            text-transform: uppercase;
+            line-height: 1;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.9);
+            text-align: center;
+            margin-top: auto;
+            padding-top: 4px;
+        }
+        .fut-stats-row {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px solid rgba(255,255,255,0.15);
+        }
+        .fut-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1px;
+        }
+        .fut-stat-val {
+            font-family: 'Oswald';
+            font-size: 14px;
+            font-weight: 900;
+            line-height: 1;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+        }
+        .fut-stat-lbl {
+            font-family: 'Oswald';
+            font-size: 7px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.75;
+        }
+        /* Colori carta in base al rating */
+        .fut-gold { background: linear-gradient(160deg,#c9a227 0%,#f5d97a 35%,#c9821a 65%,#8b5e0a 100%); color: #3a2800; }
+        .fut-silver { background: linear-gradient(160deg,#8a8a8a 0%,#d0d0d0 35%,#8a8a8a 65%,#555 100%); color: #2a2a2a; }
+        .fut-bronze { background: linear-gradient(160deg,#9c5a1d 0%,#d4895a 35%,#9c5a1d 65%,#5a2e00 100%); color: #2a1000; }
+        .fut-special { background: linear-gradient(160deg,#1a0a2e 0%,#6c3dbf 35%,#1a0a2e 65%,#0d0520 100%); color: white; }
+        .fut-toty { background: linear-gradient(160deg,#0d1f0d 0%,#2e7d32 35%,#0d1f0d 65%,#050f05 100%); color: #b9f6ca; }
 
         /* ======================================================
            STORICO VOTI — badge partita
@@ -680,13 +801,29 @@
 
 <!-- INTRO -->
 <div id="intro">
-    <div class="intro-container">
+    <!-- Erba stilizzata in basso -->
+    <div style="position:absolute;bottom:0;left:0;width:100%;height:35%;background:linear-gradient(180deg,transparent 0%,rgba(27,94,32,0.15) 50%,rgba(27,94,32,0.35) 100%);pointer-events:none;z-index:0;"></div>
+    <!-- Linee campo sfocate -->
+    <div style="position:absolute;bottom:15%;left:50%;transform:translateX(-50%);width:70%;height:1px;background:rgba(255,255,255,0.06);pointer-events:none;"></div>
+    <div style="position:absolute;bottom:15%;left:50%;transform:translateX(-50%);width:25px;height:25px;border:1px solid rgba(255,255,255,0.06);border-radius:50%;pointer-events:none;"></div>
+
+    <div class="intro-container" style="z-index:1;">
+        <!-- Stagione -->
+        <div style="font-family:Oswald;font-size:11px;color:rgba(212,175,55,0.6);letter-spacing:5px;text-transform:uppercase;margin-bottom:16px;animation:fadeInDown 1s ease 0.3s both;">STAGIONE 2025/26</div>
+
         <img src="https://i.postimg.cc/655M6n4M/copilot-image-1759429057496.png" class="intro-logo" alt="Milanac Logo">
         <div class="intro-shadow"></div>
+
+        <!-- Tagline -->
+        <div style="font-family:Teko;font-size:16px;color:rgba(255,255,255,0.35);letter-spacing:4px;text-transform:uppercase;margin-top:-10px;margin-bottom:30px;animation:fadeInUp 1s ease 0.8s both;">PRO CLUB</div>
+
         <button class="btn-entrance" onclick="
             document.getElementById('intro').classList.add('fade-out');
             setTimeout(() => { document.getElementById('intro').style.display='none'; }, 800);
-        ">ENTRA NEL CLUB</button>
+        ">⚽ ENTRA NEL CLUB</button>
+
+        <!-- Versione -->
+        <div style="position:absolute;bottom:24px;font-family:Oswald;font-size:9px;color:#222;letter-spacing:2px;text-transform:uppercase;">v2.0 · MILANAC</div>
     </div>
 </div>
 
@@ -904,7 +1041,13 @@
     </div>
 
     <!-- PREMI -->
-    <div id="p-premi" class="page"><h3 style="font-family: 'Oswald';">HALL OF FAME</h3><div id="l-premi"></div></div>
+    <div id="p-premi" class="page">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+            <h3 style="font-family:Oswald;color:var(--oro);margin:0;">🏆 HALL OF FAME</h3>
+            <div style="font-family:Oswald;font-size:10px;color:#444;text-transform:uppercase;letter-spacing:1px;">Overall calcolato</div>
+        </div>
+        <div class="fut-grid" id="l-premi"></div>
+    </div>
     
     <!-- ADMIN -->
     <div id="p-admin" class="page">
@@ -981,18 +1124,18 @@
                 <div class="pin-dot" id="pd2"></div><div class="pin-dot" id="pd3"></div>
             </div>
             <div class="pin-pad">
-                <button class="pin-key" onclick="pinPress('1')">1</button>
-                <button class="pin-key" onclick="pinPress('2')">2</button>
-                <button class="pin-key" onclick="pinPress('3')">3</button>
-                <button class="pin-key" onclick="pinPress('4')">4</button>
-                <button class="pin-key" onclick="pinPress('5')">5</button>
-                <button class="pin-key" onclick="pinPress('6')">6</button>
-                <button class="pin-key" onclick="pinPress('7')">7</button>
-                <button class="pin-key" onclick="pinPress('8')">8</button>
-                <button class="pin-key" onclick="pinPress('9')">9</button>
+                <button class="pin-key" onclick="pinPress('1')">1<span class="pin-sub"></span></button>
+                <button class="pin-key" onclick="pinPress('2')">2<span class="pin-sub">ABC</span></button>
+                <button class="pin-key" onclick="pinPress('3')">3<span class="pin-sub">DEF</span></button>
+                <button class="pin-key" onclick="pinPress('4')">4<span class="pin-sub">GHI</span></button>
+                <button class="pin-key" onclick="pinPress('5')">5<span class="pin-sub">JKL</span></button>
+                <button class="pin-key" onclick="pinPress('6')">6<span class="pin-sub">MNO</span></button>
+                <button class="pin-key" onclick="pinPress('7')">7<span class="pin-sub">PQRS</span></button>
+                <button class="pin-key" onclick="pinPress('8')">8<span class="pin-sub">TUV</span></button>
+                <button class="pin-key" onclick="pinPress('9')">9<span class="pin-sub">WXYZ</span></button>
                 <div class="pin-key empty"></div>
-                <button class="pin-key" onclick="pinPress('0')">0</button>
-                <button class="pin-key del" onclick="pinDel()">&#x232B;</button>
+                <button class="pin-key" onclick="pinPress('0')">0<span class="pin-sub">+</span></button>
+                <button class="pin-key del" onclick="pinDel()">⌫</button>
             </div>
         </div>
         <div id="pwd-section" style="display:none;">
@@ -1796,7 +1939,53 @@
                 <button class="btn-status" style="float:right; width:auto; padding:5px 15px; background:${p.convocato ? '#C61C23' : '#2e7d32'}" onclick="const i=data.ps.findIndex(x=>x.id==${p.id}); data.ps[i].convocato=!data.ps[i].convocato; sync()">${p.convocato ? 'RIMUOVI' : 'AGGIUNGI'}</button>
             </div>`;
             // hMk non più usato per mercato
-            hP += `<div class="card" style="display:flex"><b>${p.n}</b> <span style="float:right">👑 ${p.mvp || 0} | ⭐ ${p.potm || 0}</span></div>`;
+            // FUT Card render
+            {
+                // Calcola overall: media voti + bonus
+                const pgVoti = [];
+                (data.pagelle||[]).forEach(pg => {
+                    const e = pg.voti && pg.voti[p.id];
+                    if(e !== undefined) { const v = typeof e==='object'?e.voto:e; if(v) pgVoti.push(v); }
+                });
+                (data.voteHistory||[]).forEach(sess => {
+                    const pv = sess.votes && sess.votes[p.id] ? Object.values(sess.votes[p.id]) : [];
+                    if(pv.length) pgVoti.push(pv.reduce((a,b)=>a+b,0)/pv.length);
+                });
+                const avgVoto = pgVoti.length ? pgVoti.reduce((a,b)=>a+b,0)/pgVoti.length : parseFloat(media)||6;
+                const overall = Math.min(99, Math.round(avgVoto * 9.5 + (p.mvp||0)*1.5 + (p.potm||0) + (p.g||0)*0.5));
+                const cardClass = overall >= 88 ? 'fut-toty' : overall >= 84 ? 'fut-special' : overall >= 80 ? 'fut-gold' : overall >= 74 ? 'fut-silver' : 'fut-bronze';
+                const textColor = (cardClass==='fut-toty'||cardClass==='fut-special') ? 'white' : (cardClass==='fut-gold'?'#3a2800':cardClass==='fut-silver'?'#2a2a2a':'#2a1000');
+                hP += `<div class="fut-card ${cardClass}" onclick="openP(${p.id})">
+                    <div class="fut-card-content">
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                            <div>
+                                <div class="fut-overall" style="color:${textColor};">${overall}</div>
+                                <div class="fut-pos" style="color:${textColor};">${p.rs||p.r}</div>
+                                <div style="font-size:8px;font-family:Oswald;opacity:0.6;color:${textColor};margin-top:2px;">MILANAC</div>
+                            </div>
+                            <div style="text-align:right;font-size:9px;font-family:Oswald;color:${textColor};opacity:0.7;">
+                                ${p.mvp>0?'👑'.repeat(Math.min(p.mvp,3)):''}
+                                ${p.potm>0?'⭐'.repeat(Math.min(p.potm,3)):''}
+                            </div>
+                        </div>
+                        <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:6px 0;">
+                            <div style="width:60px;height:60px;border-radius:50%;
+                                background:rgba(0,0,0,0.25);
+                                border:2px solid rgba(255,255,255,0.2);
+                                display:flex;align-items:center;justify-content:center;
+                                font-family:Oswald;font-size:28px;font-weight:900;color:${textColor};
+                                text-shadow:0 2px 8px rgba(0,0,0,0.5);">${p.m}</div>
+                        </div>
+                        <div class="fut-name" style="color:${textColor};">${p.n}</div>
+                        <div class="fut-stats-row" style="color:${textColor};">
+                            <div class="fut-stat"><span class="fut-stat-val">${p.g||0}</span><span class="fut-stat-lbl">GOL</span></div>
+                            <div class="fut-stat"><span class="fut-stat-val">${p.a||0}</span><span class="fut-stat-lbl">ASS</span></div>
+                            <div class="fut-stat"><span class="fut-stat-val">${p.mvp||0}</span><span class="fut-stat-lbl">MVP</span></div>
+                            <div class="fut-stat"><span class="fut-stat-val">${overall}</span><span class="fut-stat-lbl">OVR</span></div>
+                        </div>
+                    </div>
+                </div>`;
+            }
             // Admin card con voto sessione
             if(currentAdmin) {
                 let sessionVoteHtml = '';
@@ -2159,7 +2348,7 @@
         document.getElementById('st-yl').innerText = p.yl || 0;
         document.getElementById('st-rd').innerText = p.rd || 0;
 
-        // Calcola media storica da voteHistory
+        // Calcola presenze: quante sessioni voto contengono questo giocatore
         const allSessions = (data.voteHistory || []);
         let totalVotes = 0, voteCount = 0;
         allSessions.forEach(sess => {
@@ -2171,8 +2360,29 @@
                 voteCount++;
             }
         });
-        const mediaStorica = voteCount > 0 ? (totalVotes / voteCount).toFixed(2) : '—';
-        const partiteGiocate = voteCount;
+        // Aggiungi anche voti dalle pagelle pubblicate
+        let pgTotal = 0, pgCount = 0;
+        (data.pagelle || []).forEach(pg => {
+            const entry = pg.voti && pg.voti[p.id];
+            if(entry !== undefined) {
+                const v = typeof entry === 'object' ? entry.voto : entry;
+                if(v) { pgTotal += v; pgCount++; }
+            }
+        });
+        // Media combinata: voteHistory + pagelle
+        const totaleVoti = totalVotes + pgTotal;
+        const totaleCount = voteCount + pgCount;
+        const mediaStorica = totaleCount > 0 ? (totaleVoti / totaleCount).toFixed(2) : '—';
+        // Presenze = sessioni in cui è stato votato (senza duplicati)
+        const matchIds = new Set();
+        allSessions.forEach(sess => {
+            if(sess.votes && sess.votes[p.id] && Object.values(sess.votes[p.id]).length > 0)
+                matchIds.add(sess.matchId || sess.id);
+        });
+        (data.pagelle || []).forEach(pg => {
+            if(pg.voti && pg.voti[p.id] !== undefined) matchIds.add(pg.matchId);
+        });
+        const partiteGiocate = matchIds.size;
 
         // Inserisci dati extra nel modal
         const extraEl = document.getElementById('m-extra-stats');
