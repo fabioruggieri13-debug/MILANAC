@@ -1005,7 +1005,7 @@
     </div>
 </div>
 <header>
-    <div onclick="document.getElementById('exit-modal').style.display='flex'" style="cursor:pointer;padding:7px 14px;border-radius:20px;background:linear-gradient(135deg,rgba(198,28,35,0.22),rgba(198,28,35,0.08));border:1px solid rgba(198,28,35,0.45);display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(198,28,35,0.18);transition:transform 0.15s ease;" ontouchstart="this.style.transform='scale(0.95)'" ontouchend="this.style.transform='scale(1)'">
+    <div onclick="document.getElementById('exit-modal').style.display='flex'" style="cursor:pointer;padding:7px 14px;border-radius:20px;background:linear-gradient(135deg,rgba(198,28,35,0.22),rgba(198,28,35,0.08));border:1px solid rgba(198,28,35,0.45);display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(198,28,35,0.18);" ontouchstart="this.style.transform='scale(0.95)'" ontouchend="this.style.transform='scale(1)'">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#C61C23" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         <span style="font-family:Oswald;font-size:11px;color:rgba(220,60,60,0.95);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;">Esci</span>
     </div>
@@ -1486,7 +1486,7 @@
         clearTimeout(_syncTimeout);
         _syncTimeout = setTimeout(() => {
             db.collection("milanac").doc("v84_final").set(data)
-                .then(() => { /* salvataggio silenzioso */ })
+                .then(() => { /* ok */ })
                 .catch(e => showToast("⚠ Errore salvataggio", true));
         }, 400);
     }
@@ -1966,34 +1966,10 @@
         const pitch = document.getElementById('pitch');
         showToast("📸 Generazione immagine...");
         try {
-            // Clona il pitch in un wrapper fisso fuori schermo per cattura pulita
-            const w = pitch.offsetWidth;
-            const h = pitch.offsetHeight;
-            const wrapper = document.createElement('div');
-            wrapper.style.cssText = `position:fixed;left:-9999px;top:0;width:${w}px;height:${h}px;overflow:visible;z-index:-1;`;
-            const clone = pitch.cloneNode(true);
-            clone.style.cssText = `position:relative;width:${w}px;height:${h}px;overflow:hidden;`;
-            // Rimuovi canvas heatmap dal clone (causa problemi)
-            const hc = clone.querySelector('#heatmap-canvas');
-            if(hc) hc.remove();
-            wrapper.appendChild(clone);
-            document.body.appendChild(wrapper);
-            await new Promise(r => setTimeout(r, 80));
-
-            const canvas = await html2canvas(clone, {
-                useCORS: true,
-                backgroundColor: '#2e7d32',
-                scale: 2,
-                width: w,
-                height: h,
-                windowWidth: w,
-                windowHeight: h,
-                scrollX: 0,
-                scrollY: 0,
-                x: 0,
-                y: 0,
+            const canvas = await html2canvas(pitch, {
+                useCORS: true, backgroundColor: '#2e7d32', scale: 2,
+                ignoreElements: el => el.id === 'heatmap-canvas' // evita problemi con canvas annidato
             });
-            document.body.removeChild(wrapper);
             const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
             // Conversione data URL → Blob senza fetch (più compatibile)
             const byteStr = atob(dataUrl.split(',')[1]);
@@ -2001,26 +1977,9 @@
             for(let i=0; i<byteStr.length; i++) arr[i] = byteStr.charCodeAt(i);
             const blob = new Blob([arr], { type: 'image/jpeg' });
             const file = new File([blob], 'formazione-milanac.jpg', { type: 'image/jpeg' });
-            if (navigator.share) {
-                try {
-                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                        await navigator.share({ files: [file], title: 'Formazione Milanac', text: '📋 Formazione Milanac' });
-                    } else {
-                        await navigator.share({ title: 'Formazione Milanac', text: '📋 Formazione Milanac — ' + dataUrl });
-                    }
-                    showToast("✓ Condiviso!");
-                } catch(shareErr) {
-                    if (shareErr.name !== 'AbortError') {
-                        // Fallback: download diretto
-                        const link = document.createElement('a');
-                        link.download = 'formazione-milanac.jpg';
-                        link.href = dataUrl;
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                        showToast("✓ Immagine salvata!");
-                    }
-                }
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                await navigator.share({ files: [file], title: 'Formazione Milanac', text: '📋 Formazione Milanac' });
+                showToast("✓ Condiviso!");
             } else {
                 const link = document.createElement('a');
                 link.download = 'formazione-milanac.jpg';
