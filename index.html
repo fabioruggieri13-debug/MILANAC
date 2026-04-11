@@ -794,10 +794,11 @@
         ══════════════════════════════════════════════ */
         .highlight-modal {
             position: fixed; inset: 0; z-index: 7000;
-            background: rgba(0,0,0,0.97);
+            background: #000;
             display: none; flex-direction: column;
-            align-items: center; justify-content: flex-start;
+            align-items: stretch; justify-content: flex-start;
             padding: 0; overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
         .highlight-modal.open { display: flex; }
         .hl-modal-header {
@@ -1221,6 +1222,13 @@
         <button class="hl-modal-close" onclick="closeHighlights()">✕</button>
     </div>
     <div class="hl-modal-body">
+        <!-- Login rapido se non admin -->
+        <div id="hl-login-prompt" style="display:none;margin-bottom:14px;">
+            <div style="background:#111;border:1px solid rgba(198,28,35,0.3);border-radius:14px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                <div style="font-family:Oswald;font-size:11px;color:#666;text-transform:uppercase;letter-spacing:1px;">🔒 Admin per aggiungere</div>
+                <button onclick="closeHighlights();openAdminLogin();" style="background:var(--rosso);border:none;color:white;font-family:Oswald;font-size:11px;padding:8px 16px;border-radius:8px;cursor:pointer;text-transform:uppercase;white-space:nowrap;">ACCEDI</button>
+            </div>
+        </div>
         <!-- Form aggiunta (solo admin) -->
         <div id="hl-add-form-wrap" style="display:none;">
             <div class="hl-add-form">
@@ -1350,7 +1358,12 @@
             currentAdmin = loginTarget;
             document.getElementById('modal-admin-login').style.display = 'none';
             document.getElementById('admin-logged-name').innerText = currentAdmin;
-            go('admin');
+            // Se la modal highlights era aperta, aggiorna il form
+            if(document.getElementById('highlight-modal').classList.contains('open')) {
+                updateHighlightFormVisibility();
+            } else {
+                go('admin');
+            }
         } else {
             document.getElementById('login-error').innerText = '❌ Credenziali errate';
             // Effetto shake sui pallini PIN
@@ -2088,12 +2101,17 @@
         if(!match) return;
         currentMatchId = matchId;
         document.getElementById('hl-modal-match-title').innerText = `vs ${match.avv} (${match.d})`;
-        // Mostra form solo se admin
-        const formWrap = document.getElementById('hl-add-form-wrap');
-        if(formWrap) formWrap.style.display = currentAdmin ? 'block' : 'none';
+        updateHighlightFormVisibility();
         renderHighlightVideos();
         document.getElementById('highlight-modal').classList.add('open');
         document.body.style.overflow = 'hidden';
+    }
+
+    function updateHighlightFormVisibility() {
+        const formWrap  = document.getElementById('hl-add-form-wrap');
+        const loginPrompt = document.getElementById('hl-login-prompt');
+        if(formWrap)    formWrap.style.display    = currentAdmin ? 'block' : 'none';
+        if(loginPrompt) loginPrompt.style.display = currentAdmin ? 'none'  : 'block';
     }
 
     function closeHighlights() {
