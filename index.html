@@ -974,11 +974,7 @@
 <!-- LOADING SCREEN -->
 <div id="loading-screen">
     <div class="loading-spinner"></div>
-    <div class="loading-text" id="loading-text">Caricamento...</div>
-    <div id="loading-retry" style="display:none;margin-top:24px;text-align:center;">
-        <div style="font-family:Oswald;font-size:10px;color:#444;letter-spacing:2px;margin-bottom:12px;">CONNESSIONE LENTA</div>
-        <button onclick="hideLoading();render();" style="background:linear-gradient(135deg,rgba(198,28,35,0.3),rgba(198,28,35,0.1));border:1px solid rgba(198,28,35,0.5);color:rgba(220,60,60,0.9);font-family:Oswald;font-size:12px;letter-spacing:2px;padding:10px 24px;border-radius:20px;cursor:pointer;text-transform:uppercase;">Entra comunque</button>
-    </div>
+    <div class="loading-text">Caricamento...</div>
 </div>
 
 <!-- TOAST -->
@@ -1009,7 +1005,7 @@
     </div>
 </div>
 <header>
-    <div onclick="document.getElementById('exit-modal').style.display='flex'" style="cursor:pointer;padding:7px 14px;border-radius:20px;background:linear-gradient(135deg,rgba(198,28,35,0.22),rgba(198,28,35,0.08));border:1px solid rgba(198,28,35,0.45);display:flex;align-items:center;gap:6px;backdrop-filter:blur(4px);box-shadow:0 2px 8px rgba(198,28,35,0.18);transition:transform 0.15s ease;" onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1)'" ontouchstart="this.style.transform='scale(0.95)'" ontouchend="this.style.transform='scale(1)'">
+    <div onclick="document.getElementById('exit-modal').style.display='flex'" style="cursor:pointer;padding:7px 14px;border-radius:20px;background:linear-gradient(135deg,rgba(198,28,35,0.22),rgba(198,28,35,0.08));border:1px solid rgba(198,28,35,0.45);display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(198,28,35,0.18);transition:transform 0.15s ease;" ontouchstart="this.style.transform='scale(0.95)'" ontouchend="this.style.transform='scale(1)'">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#C61C23" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         <span style="font-family:Oswald;font-size:11px;color:rgba(220,60,60,0.95);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;">Esci</span>
     </div>
@@ -1471,27 +1467,8 @@
     // Carica credenziali admin sicure da Firestore
     loadAdminCreds();
 
-    // Timeout di sicurezza: se Firebase non risponde entro 8s mostra pulsante, dopo 15s sblocca
-    let _loadingDone = false;
-    let _loadingTimeout = setTimeout(() => {
-        if(_loadingDone) return;
-        const retry = document.getElementById('loading-retry');
-        const lt = document.getElementById('loading-text');
-        if(retry) retry.style.display='block';
-        if(lt) lt.textContent = 'Problema di connessione...';
-    }, 8000);
-    let _loadingForceTimeout = setTimeout(() => {
-        if(_loadingDone) return;
-        hideLoading();
-        render();
-        showToast("⚠ Modalità offline — dati non aggiornati", true);
-    }, 15000);
-
     // Ascolta dati real-time
     db.collection("milanac").doc("v84_final").onSnapshot(doc => {
-        clearTimeout(_loadingTimeout);
-        clearTimeout(_loadingForceTimeout);
-        _loadingDone = true;
         if(doc.exists) {
             data = doc.data();
             if(!data.voteHistory) data.voteHistory=[];
@@ -1500,9 +1477,6 @@
         }
         hideLoading(); // nasconde il loader appena arrivano i dati
     }, err => {
-        clearTimeout(_loadingTimeout);
-        clearTimeout(_loadingForceTimeout);
-        _loadingDone = true;
         hideLoading();
         showToast("⚠ Connessione assente — modalità offline", true);
     });
@@ -1988,25 +1962,23 @@
     /* ============================================================
        CONDIVISIONE
     ============================================================ */
-    async async function shareSquad() {
+    async function shareSquad() {
         const pitch = document.getElementById('pitch');
         showToast("📸 Generazione immagine...");
         try {
             const canvas = await html2canvas(pitch, {
                 useCORS: true, backgroundColor: '#2e7d32', scale: 2,
-                ignoreElements: el => el.id === 'heatmap-canvas'
+                ignoreElements: el => el.id === 'heatmap-canvas' // evita problemi con canvas annidato
             });
             const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+            // Conversione data URL → Blob senza fetch (più compatibile)
             const byteStr = atob(dataUrl.split(',')[1]);
             const arr = new Uint8Array(byteStr.length);
             for(let i=0; i<byteStr.length; i++) arr[i] = byteStr.charCodeAt(i);
             const blob = new Blob([arr], { type: 'image/jpeg' });
             const file = new File([blob], 'formazione-milanac.jpg', { type: 'image/jpeg' });
-            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
                 await navigator.share({ files: [file], title: 'Formazione Milanac', text: '📋 Formazione Milanac' });
-                showToast("✓ Condiviso!");
-            } else if (navigator.share) {
-                await navigator.share({ title: 'Formazione Milanac', text: '📋 Ecco la formazione!' });
                 showToast("✓ Condiviso!");
             } else {
                 const link = document.createElement('a');
@@ -2018,10 +1990,10 @@
                 showToast("✓ Immagine salvata!");
             }
         } catch (err) {
-            if (err.name !== 'AbortError') {
-                console.error('shareSquad error:', err);
-                showToast("⚠ Impossibile condividere", true);
-            }
+            console.error('shareSquad error:', err);
+            showToast("⚠ Impossibile condividere", true);
+            const conv = data.ps.filter(p => p.convocato).map(p => `${p.m}. ${p.n}`).join('\n');
+            if(conv) alert("Formazione:\n\n" + conv);
         }
     }
     /* ============================================================
