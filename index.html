@@ -1016,9 +1016,9 @@
 <!-- SHARE PREVIEW MODAL -->
 <div id="share-preview-modal">
     <div id="share-preview-title">📋 Formazione Milanac</div>
-    <img id="share-preview-img" src="" alt="Formazione" style="max-width:100%;max-height:52vh;border-radius:12px;border:2px solid #222;box-shadow:0 8px 32px rgba(0,0,0,0.8);">
+    <img id="share-preview-img" src="" alt="Formazione" style="max-width:100%;max-height:52vh;border-radius:12px;border:2px solid #222;box-shadow:0 8px 32px rgba(0,0,0,0.8);-webkit-touch-callout:default;touch-action:auto;user-select:auto;-webkit-user-select:auto;pointer-events:auto;">
     <div style="font-family:Oswald;font-size:10px;color:#444;text-transform:uppercase;letter-spacing:1px;margin-top:10px;">
-        ☝ Tieni premuto sull'immagine per salvarla
+        ☝ Tieni premuto sull'immagine per salvarla · oppure usa il tasto Condividi
     </div>
     <div id="share-preview-btns">
         <button class="share-btn share-btn-primary" onclick="sharePreviewImage()">📲 Condividi</button>
@@ -3268,57 +3268,69 @@
     }
 
     // ── Condividi da modal anteprima ──
-    async function sharePreviewImage() {
+    async     async function sharePreviewImage() {
         const dataUrl = window._shareDataUrl;
         const file = window._shareFile;
-        if (!dataUrl) return;
+        if (!dataUrl || !file) { showToast('⚠ Nessuna immagine generata', true); return; }
 
-        // 1. Web Share API con file (Chrome browser, HTTPS)
-        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-            try {
-                await navigator.share({ files: [file], title: 'Formazione Milanac', text: '📋 Formazione Milanac' });
+        // Strategia 1: Web Share API con file
+        // Funziona su Chrome mobile e in alcune WebView
+        try {
+            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                await navigator.share({
+                    files: [file],
+                    title: 'Formazione Milanac',
+                    text: '📋 Formazione Milanac'
+                });
                 document.getElementById('share-preview-modal').classList.remove('active');
-                showToast("✓ Condiviso!");
+                showToast('✓ Condiviso!');
                 return;
-            } catch (e) {
-                if (e.name === 'AbortError') return;
             }
+        } catch (e) {
+            if (e.name === 'AbortError') return; // utente ha annullato
+            // altrimenti prova le strategie successive
         }
 
-        // 2. Apri il dataUrl direttamente come pagina — funziona in WebView/APK
-        // L'utente vede l'immagine e usa il pulsante condividi nativo Android
+        // Strategia 2: Web Share API solo testo + URL (fallback senza file)
         try {
-            const w = window.open('', '_blank');
-            if (w) {
-                w.document.write(`<!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Formazione Milanac</title>
-<style>
-  body{margin:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;}
-  img{max-width:100%;border-radius:8px;}
-  p{color:#888;font-size:13px;margin-top:12px;text-align:center;padding:0 20px;}
-</style>
-</head>
-<body>
-<img src="${dataUrl}" alt="Formazione Milanac">
-<p>Tieni premuto sull'immagine → "Condividi immagine" o "Salva immagine"</p>
-</body>
-</html>`);
-                w.document.close();
-                document.getElementById('share-preview-modal').classList.remove('active');
+            if (navigator.share) {
+                await navigator.share({
+                    title: 'Formazione Milanac',
+                    text: '📋 Formazione Milanac - MILANAC PRO CLUB'
+                });
                 return;
             }
         } catch(e) {}
 
-        // 3. Fallback finale: sostituisci la pagina corrente con l'immagine
-        document.getElementById('share-preview-modal').classList.remove('active');
-        const img = document.getElementById('share-preview-img');
-        img.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;object-fit:contain;z-index:999999;background:#000;';
-        document.body.appendChild(img);
-        showToast("Tieni premuto sull'immagine per salvarla");
+        // Strategia 3: Download diretto tramite <a download>
+        // Funziona su browser Android standard
+        try {
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = 'formazione-milanac.jpg';
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            setTimeout(() => document.body.removeChild(link), 1000);
+            showToast('✓ Immagine scaricata!');
+            document.getElementById('share-preview-modal').classList.remove('active');
+            return;
+        } catch(e) {}
+
+        // Strategia 4: Apri immagine in nuova scheda (ultima spiaggia)
+        // L'utente può tenerla premuta per salvarla
+        try {
+            const w = window.open();
+            if (w) {
+                w.document.write('<html><body style="margin:0;background:#000"><img src="' + dataUrl + '" style="max-width:100%;display:block"><p style="color:#888;font-family:sans-serif;text-align:center;font-size:13px;padding:10px">Tieni premuto → Salva/Condividi</p></body></html>');
+                w.document.close();
+                document.getElementById('share-preview-modal').classList.remove('active');
+            }
+        } catch(e) {}
+
+        showToast('Tieni premuto sull'immagine per salvarla');
     }
+
 </script>
 </body>
-                </html>
+</html>
