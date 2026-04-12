@@ -1058,7 +1058,7 @@
         <div class="exit-sub">Tornerai alla schermata home</div>
         <div class="exit-btns">
             <button class="exit-btn-cancel" onclick="document.getElementById('exit-modal').style.display='none'">Annulla</button>
-            <button class="exit-btn-confirm" onclick="window.close(); history.go(-(history.length-1));">Esci</button>
+            <button class="exit-btn-confirm" onclick="exitApp()">Esci</button>
         </div>
     </div>
 </div>
@@ -3291,6 +3291,18 @@
         // Riabilita lo scroll dell'app
         document.body.style.overflow = '';
         document.querySelector('.container') && (document.querySelector('.container').style.overflow = '');
+    }
+
+    function exitApp() {
+        document.getElementById('exit-modal').style.display = 'none';
+        // Metodo più efficace per WebView Android
+        try { window.close(); } catch(e) {}
+        setTimeout(function() {
+            try { location.replace('about:blank'); } catch(e) {}
+        }, 150);
+        setTimeout(function() {
+            try { location.href = 'about:blank'; } catch(e) {}
+        }, 300);
     }
 </script>
 </body>
