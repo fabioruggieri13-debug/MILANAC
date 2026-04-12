@@ -931,6 +931,33 @@
             margin-bottom: 16px;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
+        /* ── Share Preview Modal ── */
+        #share-preview-modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+            z-index: 99999; display: none; flex-direction: column;
+            align-items: center; justify-content: center; padding: 20px;
+            box-sizing: border-box;
+        }
+        #share-preview-modal.active { display: flex; }
+        #share-preview-title {
+            font-family: Oswald; font-size: 13px; color: #555;
+            text-transform: uppercase; letter-spacing: 3px; margin-bottom: 16px;
+        }
+        #share-preview-img {
+            max-width: 100%; max-height: 55vh;
+            border-radius: 12px; border: 2px solid #222;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.8);
+        }
+        #share-preview-btns {
+            display: flex; gap: 12px; margin-top: 20px; width: 100%;
+        }
+        .share-btn {
+            flex: 1; padding: 14px; border-radius: 12px; border: none;
+            font-family: Oswald; font-size: 13px; text-transform: uppercase;
+            letter-spacing: 1.5px; cursor: pointer; font-weight: 700;
+        }
+        .share-btn-primary { background: var(--rosso); color: white; }
+        .share-btn-secondary { background: rgba(255,255,255,0.08); color: #aaa; border: 1px solid #333; }
         /* ── Notification Bell ── */
         #notif-btn { background:none; border:none; padding:0; }
         #notif-btn:active { background:rgba(255,255,255,0.12); }
@@ -985,6 +1012,19 @@
 
 <!-- TOAST -->
 <div id="toast"></div>
+
+<!-- SHARE PREVIEW MODAL -->
+<div id="share-preview-modal">
+    <div id="share-preview-title">📋 Formazione Milanac</div>
+    <img id="share-preview-img" src="" alt="Formazione" style="max-width:100%;max-height:52vh;border-radius:12px;border:2px solid #222;box-shadow:0 8px 32px rgba(0,0,0,0.8);">
+    <div style="font-family:Oswald;font-size:10px;color:#444;text-transform:uppercase;letter-spacing:1px;margin-top:10px;">
+        ☝ Tieni premuto sull'immagine per salvarla
+    </div>
+    <div id="share-preview-btns">
+        <button class="share-btn share-btn-primary" onclick="sharePreviewImage()">📲 Condividi</button>
+        <button class="share-btn share-btn-secondary" onclick="document.getElementById('share-preview-modal').classList.remove('active')">Chiudi</button>
+    </div>
+</div>
 
 <!-- NOTIFICATION PANEL -->
 <div id="notif-panel">
@@ -2130,27 +2170,13 @@
             const blob = new Blob([arr], { type: 'image/jpeg' });
             const file = new File([blob], 'formazione-milanac.jpg', { type: 'image/jpeg' });
 
-            // Prova a condividere il file immagine
-            let shared = false;
-            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-                try {
-                    await navigator.share({ files: [file], title: 'Formazione Milanac', text: '📋 Formazione Milanac' });
-                    shared = true;
-                    showToast("✓ Condiviso!");
-                } catch (shareErr) {
-                    if (shareErr.name === 'AbortError') shared = true; // utente ha annullato, non è un errore
-                }
-            }
-            // Se non è riuscita la condivisione, salva come immagine
-            if (!shared) {
-                const link = document.createElement('a');
-                link.download = 'formazione-milanac.jpg';
-                link.href = dataUrl;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                showToast("✓ Immagine salvata!");
-            }
+            // Mostra anteprima con pulsante condividi
+            window._shareDataUrl = dataUrl;
+            window._shareFile = file;
+            window._shareCanvas = canvas;
+            const previewImg = document.getElementById('share-preview-img');
+            previewImg.src = dataUrl;
+            document.getElementById('share-preview-modal').classList.add('active');
         } catch (err) {
             console.error('shareSquad error:', err);
             showToast("⚠ Impossibile generare l'immagine", true);
@@ -3239,6 +3265,44 @@
         if (h < 24) return `${h}h fa`;
         if (d < 7) return `${d} giorni fa`;
         return new Date(ts).toLocaleDateString('it-IT');
+    }
+
+    // ── Condividi da modal anteprima ──
+    async function sharePreviewImage() {
+        const file = window._shareFile;
+        if (!file) return;
+
+        // Web Share API con file — funziona su Android Chrome se HTTPS
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+                await navigator.share({ files: [file], title: 'Formazione Milanac', text: '📋 Formazione Milanac' });
+                document.getElementById('share-preview-modal').classList.remove('active');
+                showToast("✓ Condiviso!");
+                return;
+            } catch (e) {
+                if (e.name === 'AbortError') return;
+            }
+        }
+
+        // Fallback robusto: ObjectURL → funziona su Android anche nelle webapp
+        try {
+            const url = URL.createObjectURL(file);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'formazione-milanac.jpg';
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => { URL.revokeObjectURL(url); document.body.removeChild(a); }, 1000);
+            document.getElementById('share-preview-modal').classList.remove('active');
+            showToast("✓ Salvata nei Download!");
+        } catch(e) {
+            // Ultimo fallback: apri immagine in nuova tab, da lì l'utente salva manualmente
+            const url = URL.createObjectURL(file);
+            window.open(url, '_blank');
+            document.getElementById('share-preview-modal').classList.remove('active');
+            showToast("Tieni premuto sull'immagine per salvarla");
+        }
     }
 </script>
 </body>
