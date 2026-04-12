@@ -1037,26 +1037,7 @@
     <div style="flex:1;position:relative;display:flex;align-items:center;justify-content:center;background:#000;overflow:hidden;">
         <img id="share-preview-img" src="" alt="Formazione"
             style="max-width:100%;max-height:100%;object-fit:contain;display:block;-webkit-touch-callout:default;touch-action:auto;user-select:auto;-webkit-user-select:auto;">
-        <!-- Overlay istruzione animata -->
-        <div id="screenshot-hint" style="
-            position:absolute;bottom:0;left:0;right:0;
-            background:linear-gradient(transparent,rgba(0,0,0,0.92));
-            padding:28px 20px 20px;
-            display:flex;flex-direction:column;align-items:center;gap:8px;
-            animation:hintPulse 2s ease-in-out infinite;
-        ">
-            <div style="font-size:28px;animation:bounceUp 1.2s ease-in-out infinite;">📸</div>
-            <div style="font-family:Oswald;font-size:16px;color:white;text-transform:uppercase;letter-spacing:2px;text-align:center;">
-                Fai uno screenshot
-            </div>
-            <div style="font-family:Oswald;font-size:11px;color:#888;text-align:center;letter-spacing:1px;">
-                Poi condividi l'immagine su WhatsApp
-            </div>
-            <div style="display:flex;gap:8px;margin-top:4px;">
-                <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:6px 14px;font-family:Oswald;font-size:10px;color:#666;text-transform:uppercase;">Android: Vol− + Power</div>
-                <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:6px 14px;font-family:Oswald;font-size:10px;color:#666;text-transform:uppercase;">iPhone: Power + Vol+</div>
-            </div>
-        </div>
+
     </div>
 </div>
 
@@ -1074,10 +1055,10 @@
     <div class="exit-box">
         <div class="exit-icon">👋</div>
         <div class="exit-title">Uscire dall'app?</div>
-        <div class="exit-sub">Tornerai alla schermata home</div>
+        <div class="exit-sub">L'app verrà chiusa</div>
         <div class="exit-btns">
             <button class="exit-btn-cancel" onclick="document.getElementById('exit-modal').style.display='none'">Annulla</button>
-            <button class="exit-btn-confirm" onclick="window.close(); history.go(-(history.length-1));">Esci</button>
+            <button class="exit-btn-confirm" onclick="try{window.close();}catch(e){} try{Android.closeApp();}catch(e){} try{webkit.messageHandlers.closeApp.postMessage('');}catch(e){} history.go(-(history.length-1));">Esci</button>
         </div>
     </div>
 </div>
