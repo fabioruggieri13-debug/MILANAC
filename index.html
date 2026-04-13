@@ -971,7 +971,15 @@
         /* ── Notification Bell ── */
         #notif-btn { background:none; border:none; padding:0; }
         #notif-btn:active { background:rgba(255,255,255,0.12); }
-        #notif-dot { position:absolute; top:3px; right:3px; width:8px; height:8px; background:var(--rosso); border-radius:50%; border:2px solid #000; display:none; animation:pulse-dot 1.5s infinite; }
+        #notif-dot {
+            position:absolute; top:-4px; right:-4px;
+            min-width:18px; height:18px;
+            background:var(--rosso); border-radius:50%;
+            border:2px solid #000; display:none;
+            align-items:center; justify-content:center;
+            font-family:Oswald; font-size:10px; font-weight:900; color:white;
+            animation:pulse-red 1.5s infinite;
+        }
         @keyframes pulse-dot { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.3);opacity:0.7} }
         /* ── Notification Panel ── */
         #notif-panel { position:fixed; top:60px; right:10px; width:300px; max-height:400px; background:#0d0d0d; border:1px solid rgba(198,28,35,0.4); border-radius:16px; z-index:5000; display:none; overflow:hidden; box-shadow:0 8px 32px rgba(0,0,0,0.8); }
@@ -1011,6 +1019,24 @@
         .exit-btns { display: flex; gap: 10px; }
         .exit-btn-cancel { flex:1; padding:14px; background:#1a1a1a; border:1px solid #333; color:#888; border-radius:12px; font-family:Oswald; font-size:13px; text-transform:uppercase; cursor:pointer; }
         .exit-btn-confirm { flex:1; padding:14px; background:var(--rosso); border:none; color:white; border-radius:12px; font-family:Oswald; font-size:13px; text-transform:uppercase; cursor:pointer; font-weight:700; }
+
+        /* ── Modal modifica giocatore ── */
+        #edit-player-modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.92);
+            z-index: 8000; display: none; align-items: center;
+            justify-content: center; backdrop-filter: blur(8px);
+        }
+        #edit-player-modal.open { display: flex; }
+        .edit-modal-box {
+            background: linear-gradient(160deg,#111,#050505);
+            border: 2px solid rgba(212,175,55,0.4);
+            border-radius: 22px; padding: 24px 20px;
+            width: 88%; max-width: 340px;
+        }
+        .edit-modal-title {
+            font-family: Oswald; font-size: 11px; color: var(--oro);
+            text-transform: uppercase; letter-spacing: 2px; margin-bottom: 14px;
+        }
     </style>
 </head>
 <body>
@@ -1035,7 +1061,7 @@
     </div>
     <!-- Immagine campo a schermo intero -->
     <div style="flex:1;position:relative;display:flex;align-items:center;justify-content:center;background:#000;overflow:hidden;">
-        <img id="share-preview-img" src="" alt="Formazione"
+        <img id="share-preview-img" src="" alt="Formazione" style="max-width:100%;max-height:100%;object-fit:contain;display:block;-webkit-touch-callout:default;touch-action:auto;user-select:auto;-webkit-user-select:auto;"
             style="max-width:100%;max-height:100%;object-fit:contain;display:block;-webkit-touch-callout:default;touch-action:auto;user-select:auto;-webkit-user-select:auto;">
 
     </div>
@@ -1074,23 +1100,30 @@
         ">ENTRA NEL CLUB</button>
     </div>
 </div>
-<header>
-    <!-- ESCI -->
-    <div onclick="document.getElementById('exit-modal').style.display='flex'" style="cursor:pointer;padding:7px 14px;border-radius:24px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);display:flex;align-items:center;gap:7px;" ontouchstart="this.style.opacity='0.6'" ontouchend="this.style.opacity='1'">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        <span style="font-family:Oswald;font-size:11px;color:white;text-transform:uppercase;letter-spacing:2px;font-weight:600;">Esci</span>
-    </div>
-    <!-- MILANAC centrato assoluto -->
-    <div style="position:absolute;left:50%;transform:translateX(-50%);font-weight:900;color:var(--rosso);font-size:22px;font-family:'Oswald';letter-spacing:1px;pointer-events:none;">
-        MILANAC
-    </div>
+<header style="justify-content:center;position:relative;">
+    <!-- MILANAC centrato -->
+    <div style="font-weight:900;color:var(--rosso);font-size:24px;font-family:'Oswald';letter-spacing:2px;">MILANAC</div>
     <!-- DESTRA: campanella + hamburger -->
-    <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
-        <button id="notif-btn" onclick="toggleNotifPanel()" style="position:relative;cursor:pointer;padding:8px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);color:white;display:flex;align-items:center;justify-content:center;" ontouchstart="this.style.opacity='0.6'" ontouchend="this.style.opacity='1'">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    <div style="display:flex;align-items:center;gap:8px;position:absolute;right:16px;top:50%;transform:translateY(-50%);">
+        <!-- Campanella notifiche -->
+        <button id="notif-btn" onclick="toggleNotifPanel()"
+            style="position:relative;cursor:pointer;padding:9px;border-radius:50%;
+            background:linear-gradient(135deg,rgba(212,175,55,0.2),rgba(212,175,55,0.05));
+            border:1.5px solid rgba(212,175,55,0.5);color:var(--oro);
+            display:flex;align-items:center;justify-content:center;
+            box-shadow:0 0 12px rgba(212,175,55,0.15);
+            -webkit-tap-highlight-color:transparent;"
+            ontouchstart="this.style.transform='scale(0.92)'" ontouchend="this.style.transform='scale(1)'">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
             <span id="notif-dot"></span>
         </button>
-        <div onclick="document.querySelector('.sidebar').classList.add('active')" style="display:flex;flex-direction:column;gap:5px;cursor:pointer;padding:6px;" ontouchstart="this.style.opacity='0.6'" ontouchend="this.style.opacity='1'">
+        <!-- Hamburger -->
+        <div onclick="document.querySelector('.sidebar').classList.add('active')"
+            style="display:flex;flex-direction:column;gap:5px;cursor:pointer;padding:6px;-webkit-tap-highlight-color:transparent;"
+            ontouchstart="this.style.opacity='0.6'" ontouchend="this.style.opacity='1'">
             <span style="display:block;width:22px;height:2px;background:white;border-radius:2px;"></span>
             <span style="display:block;width:22px;height:2px;background:white;border-radius:2px;"></span>
             <span style="display:block;width:22px;height:2px;background:white;border-radius:2px;"></span>
@@ -1105,8 +1138,10 @@
     <button onclick="go('mercato')">📰 Pagelle Partita</button>
     <button onclick="go('partite')">🏟️ Risultati Partite</button>
     <button onclick="go('premi')">🏆 Premi</button>
+    <button onclick="go('regolamento')">📜 Regolamento</button>
+    <button onclick="go('social')">🌐 Social</button>
     <button onclick="goAdmin()">⚙️ Area Admin</button>
-    <button onclick="document.querySelector('.sidebar').classList.remove('active')">Chiudi</button>
+    <button onclick="document.querySelector('.sidebar').classList.remove('active')">✕ Chiudi</button>
 </nav>
 <div class="container">
     <!-- NEWS -->
@@ -1127,7 +1162,7 @@
                 <div style="font-family:Oswald;font-size:10px;color:var(--oro);text-transform:uppercase;letter-spacing:2px;">✍️ Nuovo Comunicato</div>
             </div>
             <div style="padding:14px;">
-                <textarea id="news-text" placeholder="Scrivi il comunicato..." style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);color:white;border-radius:12px;padding:12px;font-size:14px;line-height:1.5;resize:none;min-height:80px;font-family:'Segoe UI',sans-serif;width:100%;box-sizing:border-box;"></textarea>
+                <textarea id="news-text" placeholder="Scrivi il comunicato..." style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);color:white;border-radius:12px;padding:12px;font-size:14px;line-height:1.5;resize:none;min-height:80px;font-family:Segoe UI,sans-serif;width:100%;box-sizing:border-box;"></textarea>
                 <button class="btn-main" onclick="addNews()" style="border-radius:10px;margin-top:10px;">📢 PUBBLICA</button>
             </div>
         </div>
@@ -1345,15 +1380,15 @@
   </optgroup>
   <optgroup label="⚙️ Centrocampisti">
     <option value="CEN|CDC">CEN — Centrocampista Centrale</option>
-    <option value="CEN|CDM">CEN — Mediano/Davanti difesa</option>
-    <option value="CEN|CAM">CEN — Trequartista</option>
+    <option value="CEN|CDC">CEN — Centrocampista Difensivo</option>
+    <option value="CEN|COC">CEN — Centrocampista Offensivo</option>
     <option value="CEN|AD">CEN — Ala Destra</option>
     <option value="CEN|AS">CEN — Ala Sinistra</option>
     <option value="CEN|MEZ">CEN — Mezzala</option>
   </optgroup>
   <optgroup label="⚽ Attaccanti">
-    <option value="ATT|CF">ATT — Centravanti</option>
-    <option value="ATT|SS">ATT — Seconda Punta</option>
+    <option value="ATT|P">ATT — Prima Punta</option>
+    <option value="ATT|SP">ATT — Seconda Punta</option>
     <option value="ATT|FP">ATT — Falso 9</option>
   </optgroup>
 </select>
@@ -1365,6 +1400,38 @@
         <div id="l-storico-voti"></div>
     </div>
 </div>
+
+    <!-- REGOLAMENTO -->
+    <div id="p-regolamento" class="page">
+        <div style="margin-bottom:20px;">
+            <div style="font-family:Oswald;font-size:10px;color:#555;text-transform:uppercase;letter-spacing:2px;margin-bottom:4px;">MILANAC PRO CLUB</div>
+            <h2 style="font-family:Oswald;color:var(--oro);margin:0;font-size:26px;">📜 REGOLAMENTO</h2>
+        </div>
+        <div id="reg-admin-form" style="display:none;margin-bottom:16px;">
+            <div style="background:linear-gradient(145deg,#111,#0a0a0a);border:1px solid rgba(212,175,55,0.25);border-radius:16px;padding:14px;">
+                <div style="font-family:Oswald;font-size:10px;color:var(--oro);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;">✍️ Aggiungi Articolo</div>
+                <input type="text" id="reg-titolo" placeholder="Titolo (es. Art. 1 — Rispetto)" style="margin-bottom:8px;font-family:Oswald;">
+                <textarea id="reg-testo" placeholder="Testo dell'articolo..." style="min-height:80px;resize:vertical;font-family:Segoe UI,sans-serif;font-size:14px;line-height:1.5;"></textarea>
+                <button class="btn-main" onclick="addRegolamento()" style="border-radius:10px;margin-top:8px;">📜 PUBBLICA ARTICOLO</button>
+            </div>
+        </div>
+        <div id="l-regolamento"></div>
+    </div>
+
+    <!-- SOCIAL -->
+    <div id="p-social" class="page">
+        <div style="margin-bottom:24px;">
+            <div style="font-family:Oswald;font-size:10px;color:#555;text-transform:uppercase;letter-spacing:2px;margin-bottom:4px;">MILANAC PRO CLUB</div>
+            <h2 style="font-family:Oswald;color:var(--oro);margin:0;font-size:26px;">🌐 SOCIAL</h2>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+            <a href="https://www.tiktok.com/@milanac.pro.club" target="_blank" style="text-decoration:none;"><div style="background:linear-gradient(135deg,#111,#0a0a0a);border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:18px 20px;display:flex;align-items:center;gap:16px;" ontouchstart="this.style.transform='scale(0.97)'" ontouchend="this.style.transform=''"><div style="width:50px;height:50px;border-radius:14px;background:#000;border:1px solid #222;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:26px;">🎵</div><div style="flex:1;"><div style="font-family:Teko;font-size:22px;color:white;">TikTok</div><div style="font-family:Oswald;font-size:11px;color:#555;">@milanac.pro.club</div></div><span style="color:#333;font-size:20px;">›</span></div></a>
+            <a href="https://youtube.com/@milanac-n4w2b" target="_blank" style="text-decoration:none;"><div style="background:linear-gradient(135deg,#111,#0a0a0a);border:1px solid rgba(255,0,0,0.15);border-radius:18px;padding:18px 20px;display:flex;align-items:center;gap:16px;" ontouchstart="this.style.transform='scale(0.97)'" ontouchend="this.style.transform=''"><div style="width:50px;height:50px;border-radius:14px;background:linear-gradient(135deg,#1a0000,#2a0000);border:1px solid rgba(255,0,0,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:26px;">▶️</div><div style="flex:1;"><div style="font-family:Teko;font-size:22px;color:white;">YouTube</div><div style="font-family:Oswald;font-size:11px;color:#555;">@milanac-n4w2b</div></div><span style="color:#333;font-size:20px;">›</span></div></a>
+            <a href="https://www.twitch.tv/milanac_proclub" target="_blank" style="text-decoration:none;"><div style="background:linear-gradient(135deg,#111,#0a0a0a);border:1px solid rgba(145,70,255,0.15);border-radius:18px;padding:18px 20px;display:flex;align-items:center;gap:16px;" ontouchstart="this.style.transform='scale(0.97)'" ontouchend="this.style.transform=''"><div style="width:50px;height:50px;border-radius:14px;background:linear-gradient(135deg,#0e0020,#1a0035);border:1px solid rgba(145,70,255,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:26px;">🟣</div><div style="flex:1;"><div style="font-family:Teko;font-size:22px;color:white;">Twitch</div><div style="font-family:Oswald;font-size:11px;color:#555;">milanac_proclub</div></div><span style="color:#333;font-size:20px;">›</span></div></a>
+            <a href="https://discord.gg/EUmxDwbSa" target="_blank" style="text-decoration:none;"><div style="background:linear-gradient(135deg,#111,#0a0a0a);border:1px solid rgba(88,101,242,0.15);border-radius:18px;padding:18px 20px;display:flex;align-items:center;gap:16px;" ontouchstart="this.style.transform='scale(0.97)'" ontouchend="this.style.transform=''"><div style="width:50px;height:50px;border-radius:14px;background:linear-gradient(135deg,#000820,#001035);border:1px solid rgba(88,101,242,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:26px;">💬</div><div style="flex:1;"><div style="font-family:Teko;font-size:22px;color:white;">Discord</div><div style="font-family:Oswald;font-size:11px;color:#555;">Entra nel server</div></div><span style="color:#333;font-size:20px;">›</span></div></a>
+        </div>
+    </div>
+
 <!-- MODAL LOGIN ADMIN -->
 <div id="modal-admin-login" style="position:fixed;inset:0;background:rgba(0,0,0,0.96);z-index:9000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(10px);">
     <div class="admin-login-box">
@@ -1466,6 +1533,22 @@
     </div>
 </div>
 
+<!-- MODAL MODIFICA GIOCATORE -->
+<div id="edit-player-modal">
+    <div class="edit-modal-box">
+        <div class="edit-modal-title">✏️ Modifica Giocatore</div>
+        <input type="hidden" id="edit-p-id">
+        <div style="font-family:Oswald;font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Nome</div>
+        <input type="text" id="edit-p-name" style="margin-bottom:10px;font-family:Oswald;font-size:16px;">
+        <div style="font-family:Oswald;font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Numero Maglia</div>
+        <input type="number" id="edit-p-num" style="margin-bottom:10px;font-family:Oswald;font-size:16px;text-align:center;">
+        <div style="display:flex;gap:10px;margin-top:6px;">
+            <button class="btn-main" onclick="savePlayerEdit()" style="border-radius:10px;flex:2;">💾 SALVA</button>
+            <button onclick="document.getElementById('edit-player-modal').classList.remove('open')" style="flex:1;background:#1a1a1a;border:1px solid #333;color:#888;border-radius:10px;font-family:Oswald;font-size:12px;text-transform:uppercase;cursor:pointer;">Annulla</button>
+        </div>
+    </div>
+</div>
+
 <script>
     /* ============================================================
        FIREBASE
@@ -1548,7 +1631,7 @@
         if(doc.exists) {
             data = doc.data();
             if(!data.voteHistory) data.voteHistory=[];
-            if(!data.pagelle) data.pagelle=[];
+            if(!data.pagelle) data.pagelle=[]; if(!data.regolamento) data.regolamento=[];
             render();
         }
         hideLoading(); // nasconde il loader appena arrivano i dati
@@ -1585,6 +1668,7 @@
         render();
         if (p === 'tattica') { setTimeout(initHeatmapCanvas, 100); }
         if (p === 'premi') { setTimeout(renderPremi, 50); }
+        if (p === 'regolamento') { setTimeout(renderRegolamento, 50); }
         // Segna come visto se apri news o pagelle
         if(p === 'news' || p === 'mercato') {
             localStorage.setItem('milanac_last_visit', Date.now().toString());
@@ -2659,6 +2743,65 @@
         }).join('');
     }
 
+    /* ── Modifica giocatore ── */
+    function openEditPlayer(id) {
+        const p = data.ps.find(x => x.id == id);
+        if(!p) return;
+        document.getElementById('edit-p-id').value = id;
+        document.getElementById('edit-p-name').value = p.n;
+        document.getElementById('edit-p-num').value = p.m;
+        document.getElementById('edit-player-modal').classList.add('open');
+    }
+    function savePlayerEdit() {
+        const id = parseInt(document.getElementById('edit-p-id').value);
+        const newName = document.getElementById('edit-p-name').value.trim();
+        const newNum = document.getElementById('edit-p-num').value;
+        if(!newName || !newNum) { showToast('⚠ Compila tutti i campi', true); return; }
+        const idx = data.ps.findIndex(x => x.id == id);
+        if(idx === -1) return;
+        data.ps[idx].n = newName;
+        data.ps[idx].m = newNum;
+        sync();
+        render();
+        document.getElementById('edit-player-modal').classList.remove('open');
+        showToast('✓ Giocatore aggiornato!');
+    }
+
+    /* ── Regolamento ── */
+    function addRegolamento() {
+        if(!currentAdmin) return;
+        const titolo = document.getElementById('reg-titolo').value.trim();
+        const testo  = document.getElementById('reg-testo').value.trim();
+        if(!titolo || !testo) { showToast('⚠ Compila titolo e testo', true); return; }
+        if(!data.regolamento) data.regolamento = [];
+        data.regolamento.push({ id: Date.now(), titolo, testo, author: currentAdmin });
+        sync();
+        document.getElementById('reg-titolo').value = '';
+        document.getElementById('reg-testo').value = '';
+        renderRegolamento();
+        showToast('📜 Articolo pubblicato!');
+    }
+
+    function renderRegolamento() {
+        const el = document.getElementById('l-regolamento');
+        if(!el) return;
+        const regForm = document.getElementById('reg-admin-form');
+        if(regForm) regForm.style.display = currentAdmin ? 'block' : 'none';
+        const reg = data.regolamento || [];
+        if(reg.length === 0) {
+            el.innerHTML = '<div style="text-align:center;padding:40px 20px;"><div style="font-size:40px;margin-bottom:12px;">📜</div><div style="font-family:Oswald;font-size:13px;color:#444;text-transform:uppercase;letter-spacing:1px;">Nessun articolo pubblicato</div></div>';
+            return;
+        }
+        el.innerHTML = reg.map((a, idx) => `
+            <div style="background:linear-gradient(145deg,#111,#0a0a0a);border:1px solid rgba(212,175,55,0.15);border-radius:16px;overflow:hidden;margin-bottom:10px;">
+                <div style="background:linear-gradient(90deg,rgba(212,175,55,0.08),transparent);padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:space-between;">
+                    <div style="font-family:Teko;font-size:20px;color:var(--oro);">${a.titolo}</div>
+                    ${currentAdmin ? `<button onclick="data.regolamento.splice(${idx},1);sync();renderRegolamento()" style="background:none;border:none;color:#444;font-size:16px;cursor:pointer;">🗑️</button>` : ''}
+                </div>
+                <div style="padding:14px 16px;font-size:14px;color:#bbb;line-height:1.7;font-family:Segoe UI,sans-serif;">${a.testo}</div>
+            </div>`).join('');
+    }
+
     function render() {
         // ── Notifiche in-app: conta novità rispetto all'ultima visita ──
         buildNotifications();
@@ -2758,7 +2901,10 @@
                 hA += `<div class="card" style="display:block">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
                         <b style="font-family:Teko;font-size:22px;">${p.n} <span style="font-size:14px;color:#666">${p.r}</span></b>
-                        <button style="color:red;border:none;background:none;font-size:18px;" onclick="if(confirm('Eliminare ' + '${p.n}'.replace(/'/g,'\\'') + '?')){data.ps=data.ps.filter(x=>x.id!==${p.id}); sync(); render()}">🗑️</button>
+                        <div style="display:flex;gap:8px;">
+                            <button style="background:rgba(212,175,55,0.1);border:1px solid rgba(212,175,55,0.3);color:var(--oro);border-radius:8px;padding:5px 10px;font-family:Oswald;font-size:11px;cursor:pointer;text-transform:uppercase;" onclick="openEditPlayer(${p.id})">✏️ Modifica</button>
+                            <button style="color:red;border:none;background:none;font-size:18px;" onclick="if(confirm('Eliminare ' + '${p.n}'.replace(/'/g,'\\'') + '?')){data.ps=data.ps.filter(x=>x.id!==${p.id}); sync(); render()}">🗑️</button>
+                        </div>
                     </div>
                     ${sessionVoteHtml}
                     <div class="stat-row" style="margin-top:8px;"><span>⚽ ${p.g||0} | 👟 ${p.a||0}</span>
@@ -3104,8 +3250,8 @@
         const fullRoles = { 'POR': 'PORTIERE', 'DIF': 'DIFENSORE', 'CEN': 'CENTROCAMPISTA', 'ATT': 'ATTACCANTE' };
         const rsFullMap = {
             'POR':'Portiere','DC':'Difensore Centrale','TD':'Terzino Destro','TS':'Terzino Sinistro','LIB':'Libero',
-            'CDC':'Centrocampista','CDM':'Mediano','CAM':'Trequartista','AD':'Ala Destra','AS':'Ala Sinistra','MEZ':'Mezzala',
-            'CF':'Centravanti','SS':'Seconda Punta','FP':'Falso 9'
+            'CDC':'Centrocampista','CDC_old':'Mediano','CDC':'Centrocampista Difensivo','COC':'Centrocampista Offensivo','CAM':'Trequartista','AD':'Ala Destra','AS':'Ala Sinistra','MEZ':'Mezzala',
+            'CF':'Centravanti','P':'Prima Punta','SP':'Seconda Punta','SS':'Seconda Punta','FP':'Falso 9'
         };
         const ruoloLabel = p.rs ? (rsFullMap[p.rs] || p.rs) : (fullRoles[p.r] || p.r);
         document.getElementById('m-ruolo-txt').innerText = ruoloLabel;
