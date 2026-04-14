@@ -3003,16 +3003,16 @@
             </div>`;
             return;
         }
-        el.innerHTML = capitoli.map((c, idx) => `
+        el.innerHTML = capitoli.map((cap, i) => `
             <div style="background:linear-gradient(145deg,#111,#0a0a0a);border:1px solid rgba(212,175,55,0.12);border-radius:18px;overflow:hidden;margin-bottom:14px;">
                 <div style="background:linear-gradient(90deg,rgba(212,175,55,0.1),transparent);padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
                     <div>
-                        <div style="font-family:Teko;font-size:22px;color:var(--oro);line-height:1;">${c.titolo}</div>
-                        <div style="font-family:Oswald;font-size:9px;color:#444;margin-top:3px;text-transform:uppercase;letter-spacing:1px;">📅 ${c.d}</div>
+                        <div style="font-family:Teko;font-size:22px;color:var(--oro);line-height:1;">${cap.titolo}</div>
+                        <div style="font-family:Oswald;font-size:9px;color:#444;margin-top:3px;text-transform:uppercase;letter-spacing:1px;">📅 ${cap.d}</div>
                     </div>
-                    ${currentAdmin ? `<button onclick="data.storia.splice(${idx},1);sync();renderStoria()" style="background:none;border:none;color:#333;font-size:16px;cursor:pointer;flex-shrink:0;padding:2px;">🗑️</button>` : ''}
+                    ${currentAdmin ? `<button onclick="data.storia.splice(${i},1);sync();renderStoria()" style="background:none;border:none;color:#333;font-size:16px;cursor:pointer;flex-shrink:0;padding:2px;">🗑️</button>` : ''}
                 </div>
-                <div style="padding:16px 18px;font-size:14px;color:#ccc;line-height:1.8;font-family:Georgia,serif;white-space:pre-wrap;">${c.testo}</div>
+                <div style="padding:16px 18px;font-size:14px;color:#ccc;line-height:1.8;font-family:Georgia,serif;white-space:pre-wrap;">${cap.testo}</div>
             </div>`).join('');
     }
 
