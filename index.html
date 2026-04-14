@@ -1579,20 +1579,66 @@
 
     <!-- CENNI STORICI -->
     <div id="p-storia" class="page">
-        <div style="margin-bottom:20px;">
-            <div style="font-family:Oswald;font-size:10px;color:#555;text-transform:uppercase;letter-spacing:2px;margin-bottom:4px;">MILANAC PRO CLUB</div>
-            <h2 style="font-family:Oswald;color:var(--oro);margin:0;font-size:26px;">📖 CENNI STORICI</h2>
+        <!-- Header sezione -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+            <div>
+                <div style="font-family:Oswald;font-size:10px;color:#555;text-transform:uppercase;letter-spacing:2px;margin-bottom:3px;">MILANAC PRO CLUB</div>
+                <h2 style="font-family:Oswald;color:var(--oro);margin:0;font-size:26px;">📖 CENNI STORICI</h2>
+            </div>
+            <!-- Badge salvataggio -->
+            <div id="storia-save-badge" style="display:none;background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);border-radius:8px;padding:4px 10px;font-family:Oswald;font-size:10px;color:#4caf50;text-transform:uppercase;letter-spacing:1px;">✓ Salvato</div>
         </div>
-        <!-- Form admin -->
-        <div id="storia-admin-form" style="display:none;margin-bottom:16px;">
-            <div style="background:linear-gradient(145deg,#111,#0a0a0a);border:1px solid rgba(212,175,55,0.25);border-radius:16px;padding:14px;">
-                <div style="font-family:Oswald;font-size:10px;color:var(--oro);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;">✍️ Scrivi la storia del club</div>
-                <input type="text" id="storia-titolo" placeholder="Titolo capitolo (es. Le origini...)" style="margin-bottom:8px;font-family:Oswald;">
-                <textarea id="storia-testo" placeholder="Racconta la storia del Milanac..." style="min-height:120px;resize:vertical;font-size:14px;line-height:1.6;"></textarea>
-                <button class="btn-main" onclick="addStoria()" style="border-radius:10px;margin-top:8px;">📖 PUBBLICA CAPITOLO</button>
+
+        <!-- Toolbar admin -->
+        <div id="storia-toolbar" style="display:none;margin-bottom:10px;">
+            <div style="display:flex;gap:8px;align-items:center;background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.15);border-radius:10px;padding:8px 12px;">
+                <span style="font-family:Oswald;font-size:10px;color:var(--oro);text-transform:uppercase;letter-spacing:1px;flex:1;">✍️ Modalità Editor</span>
+                <button onclick="storiaToggleEdit()" id="storia-edit-btn" style="background:var(--rosso);border:none;color:white;font-family:Oswald;font-size:11px;padding:6px 14px;border-radius:7px;cursor:pointer;text-transform:uppercase;letter-spacing:1px;">Modifica</button>
+                <button onclick="storiaSync()" style="background:rgba(76,175,80,0.2);border:1px solid rgba(76,175,80,0.4);color:#4caf50;font-family:Oswald;font-size:11px;padding:6px 14px;border-radius:7px;cursor:pointer;text-transform:uppercase;letter-spacing:1px;">💾 Salva</button>
             </div>
         </div>
-        <div id="l-storia"></div>
+
+        <!-- Contenuto — textarea invisibile in edit, div in lettura -->
+        <div style="position:relative;">
+            <!-- VIEW MODE: lettura elegante -->
+            <div id="storia-view"
+                style="font-family:Georgia,serif;font-size:15px;color:#d4c5a0;
+                line-height:1.9;white-space:pre-wrap;min-height:200px;
+                padding:20px 4px;letter-spacing:0.2px;">
+            </div>
+            <!-- EDIT MODE: textarea trasparente sovrapposta -->
+            <textarea id="storia-editor"
+                placeholder="Scrivi qui la storia del Milanac Pro Club..."
+                oninput="storiaOnInput(this)"
+                style="
+                    display:none;
+                    width:100%;
+                    min-height:400px;
+                    background:transparent;
+                    border:1px solid rgba(212,175,55,0.25);
+                    border-radius:12px;
+                    color:#f0e6c8;
+                    font-family:Georgia,serif;
+                    font-size:15px;
+                    line-height:1.9;
+                    padding:18px 16px;
+                    resize:vertical;
+                    outline:none;
+                    box-sizing:border-box;
+                    caret-color:var(--oro);
+                    pointer-events:auto;
+                    z-index:10;
+                    position:relative;
+                    letter-spacing:0.2px;
+                    -webkit-appearance:none;
+                "
+            ></textarea>
+        </div>
+        <!-- Placeholder vuoto -->
+        <div id="storia-empty" style="display:none;text-align:center;padding:50px 20px;">
+            <div style="font-size:48px;margin-bottom:14px;">📖</div>
+            <div style="font-family:Oswald;font-size:13px;color:#444;text-transform:uppercase;letter-spacing:1px;">La storia del club deve ancora essere scritta</div>
+        </div>
     </div>
 
 <!-- MODAL LOGIN ADMIN -->
@@ -2975,46 +3021,98 @@
     }
 
     /* ── Cenni Storici ── */
-    function addStoria() {
-        if(!currentAdmin) return;
-        const titolo = document.getElementById('storia-titolo').value.trim();
-        const testo  = document.getElementById('storia-testo').value.trim();
-        if(!titolo || !testo) { showToast('⚠ Compila titolo e testo', true); return; }
-        if(!data.storia) data.storia = [];
-        data.storia.push({ id: Date.now(), titolo, testo, author: currentAdmin, d: new Date().toLocaleDateString() });
-        sync();
-        document.getElementById('storia-titolo').value = '';
-        document.getElementById('storia-testo').value = '';
-        renderStoria();
-        showToast('📖 Capitolo pubblicato!');
-    }
+    /* ══════════════════════════════════════
+       CENNI STORICI — Editor unico
+    ══════════════════════════════════════ */
+    const STORIA_LS_KEY = 'milanac_storia_draft';
+    let storiaEditMode = false;
+    let storiaAutoSaveTimer = null;
 
     function renderStoria() {
-        const el = document.getElementById('l-storia');
-        if(!el) return;
-        const form = document.getElementById('storia-admin-form');
-        if(form) form.style.display = currentAdmin ? 'block' : 'none';
-        const capitoli = data.storia || [];
-        if(capitoli.length === 0) {
-            el.innerHTML = `<div style="text-align:center;padding:50px 20px;">
-                <div style="font-size:48px;margin-bottom:14px;">📖</div>
-                <div style="font-family:Oswald;font-size:13px;color:#444;text-transform:uppercase;letter-spacing:1px;">La storia del club deve ancora essere scritta</div>
-                ${currentAdmin ? '<div style="font-family:Oswald;font-size:11px;color:#333;margin-top:8px;">Aggiungi il primo capitolo qui sopra</div>' : ''}
-            </div>`;
-            return;
+        const toolbar  = document.getElementById('storia-toolbar');
+        const viewEl   = document.getElementById('storia-view');
+        const editor   = document.getElementById('storia-editor');
+        const emptyEl  = document.getElementById('storia-empty');
+        if(!viewEl) return;
+
+        // Mostra toolbar solo agli admin
+        if(toolbar) toolbar.style.display = currentAdmin ? 'block' : 'none';
+
+        // Carica testo: prima da Firebase, poi da localStorage come bozza
+        const savedText = data.storiaText || '';
+        const draftText = localStorage.getItem(STORIA_LS_KEY) || '';
+        // Usa la versione più recente
+        const displayText = savedText || draftText;
+
+        if(editor) editor.value = displayText;
+        if(viewEl)  viewEl.textContent = displayText;
+
+        // Mostra view o empty
+        if(displayText.trim()) {
+            if(viewEl)  viewEl.style.display = 'block';
+            if(emptyEl) emptyEl.style.display = 'none';
+        } else {
+            if(viewEl)  viewEl.style.display = 'none';
+            if(emptyEl) emptyEl.style.display = 'block';
         }
-        el.innerHTML = capitoli.map((cap, i) => `
-            <div style="background:linear-gradient(145deg,#111,#0a0a0a);border:1px solid rgba(212,175,55,0.12);border-radius:18px;overflow:hidden;margin-bottom:14px;">
-                <div style="background:linear-gradient(90deg,rgba(212,175,55,0.1),transparent);padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
-                    <div>
-                        <div style="font-family:Teko;font-size:22px;color:var(--oro);line-height:1;">${cap.titolo}</div>
-                        <div style="font-family:Oswald;font-size:9px;color:#444;margin-top:3px;text-transform:uppercase;letter-spacing:1px;">📅 ${cap.d}</div>
-                    </div>
-                    ${currentAdmin ? `<button onclick="data.storia.splice(${i},1);sync();renderStoria()" style="background:none;border:none;color:#333;font-size:16px;cursor:pointer;flex-shrink:0;padding:2px;">🗑️</button>` : ''}
-                </div>
-                <div style="padding:16px 18px;font-size:14px;color:#ccc;line-height:1.8;font-family:Georgia,serif;white-space:pre-wrap;">${cap.testo}</div>
-            </div>`).join('');
+
+        // Se in edit mode, mostra editor
+        if(storiaEditMode && currentAdmin) {
+            if(editor) editor.style.display = 'block';
+            if(viewEl) viewEl.style.display = 'none';
+            if(emptyEl) emptyEl.style.display = 'none';
+        }
     }
+
+    function storiaToggleEdit() {
+        if(!currentAdmin) return;
+        storiaEditMode = !storiaEditMode;
+        const btn    = document.getElementById('storia-edit-btn');
+        const editor = document.getElementById('storia-editor');
+        const viewEl = document.getElementById('storia-view');
+        const emptyEl = document.getElementById('storia-empty');
+        if(storiaEditMode) {
+            if(btn) { btn.textContent = 'Chiudi Editor'; btn.style.background = '#333'; }
+            if(editor) { editor.style.display = 'block'; editor.focus(); }
+            if(viewEl)  viewEl.style.display  = 'none';
+            if(emptyEl) emptyEl.style.display = 'none';
+        } else {
+            if(btn) { btn.textContent = 'Modifica'; btn.style.background = 'var(--rosso)'; }
+            if(editor) editor.style.display = 'none';
+            const txt = editor ? editor.value : '';
+            if(viewEl) { viewEl.textContent = txt; viewEl.style.display = txt.trim() ? 'block' : 'none'; }
+            if(emptyEl) emptyEl.style.display = txt.trim() ? 'none' : 'block';
+        }
+    }
+
+    function storiaOnInput(textarea) {
+        const txt = textarea.value;
+        // Salva subito in localStorage
+        localStorage.setItem(STORIA_LS_KEY, txt);
+        // Auto-save su Firebase con debounce 2 secondi
+        clearTimeout(storiaAutoSaveTimer);
+        const badge = document.getElementById('storia-save-badge');
+        if(badge) { badge.style.display = 'none'; }
+        storiaAutoSaveTimer = setTimeout(() => {
+            storiaSync(true);
+        }, 2000);
+    }
+
+    function storiaSync(silent) {
+        if(!currentAdmin) return;
+        const editor = document.getElementById('storia-editor');
+        if(!editor) return;
+        const txt = editor.value;
+        localStorage.setItem(STORIA_LS_KEY, txt);
+        data.storiaText = txt;
+        sync();
+        const badge = document.getElementById('storia-save-badge');
+        if(badge) { badge.style.display = 'flex'; setTimeout(() => badge.style.display = 'none', 2500); }
+        if(!silent) showToast('📖 Storia salvata!');
+    }
+
+    // addStoria mantenuta per compatibilità ma non usata
+    function addStoria() { storiaSync(); }
 
     function render() {
         // ── Notifiche in-app: conta novità rispetto all'ultima visita ──
