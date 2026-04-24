@@ -2619,17 +2619,9 @@
                             <div style="font-family:Oswald;font-size:9px;color:#444;margin-top:1px;">${r.d} · ${r.autore || 'Admin'}</div>
                         </div>
                     </div>
-                    ${currentAdmin ? `<button onclick="deleteRegolamento(${r.id})" style="flex-shrink:0;background:rgba(198,28,35,0.1);border:1px solid rgba(198,28,35,0.2);color:#c62828;border-radius:8px;padding:4px 10px;font-family:Oswald;font-size:10px;text-transform:uppercase;cursor:pointer;">✕</button>
-                        <button onclick="editReg(${i})" style="background:rgba(212,175,55,0.12);border:1px solid rgba(212,175,55,0.35);color:#d4b86a;border-radius:8px;padding:4px 10px;font-family:Oswald;font-size:10px;text-transform:uppercase;cursor:pointer;">✏️ Modifica</button>` : ''}
+                    ${currentAdmin ? `<div style="display:flex;gap:6px;flex-shrink:0;"><button onclick="deleteRegolamento(${r.id})" style="background:rgba(198,28,35,0.1);border:1px solid rgba(198,28,35,0.2);color:#c62828;border-radius:8px;padding:4px 10px;font-family:Oswald;font-size:10px;text-transform:uppercase;cursor:pointer;">✕</button><button onclick="editRegolamento(${r.id})" style="background:rgba(212,175,55,0.1);border:1px solid rgba(212,175,55,0.3);color:#d4b86a;border-radius:8px;padding:4px 10px;font-family:Oswald;font-size:10px;text-transform:uppercase;cursor:pointer;">✏️</button></div>` : ''}
                 </div>
-                <div id="reg-view-${i}" style="padding:14px 16px;font-size:18px;color:#d4b86a;line-height:1.75;font-family:'Cormorant Garamond',Georgia,serif;white-space:pre-wrap;letter-spacing:0.3px;">${r.testo}</div>
-                ${currentAdmin ? `<div id="reg-edit-${i}" style="display:none;padding:0 14px 14px;">
-                    <textarea id="reg-ta-${i}" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(212,175,55,0.3);color:#d4b86a;font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;line-height:1.75;border-radius:8px;padding:10px;min-height:80px;box-sizing:border-box;resize:vertical;">${r.testo}</textarea>
-                    <div style="display:flex;gap:8px;margin-top:8px;">
-                        <button onclick="saveReg(${i})" style="flex:1;padding:10px;background:#2e7d32;border:none;color:white;font-family:Oswald;font-size:12px;text-transform:uppercase;letter-spacing:1px;border-radius:8px;cursor:pointer;">✓ Salva</button>
-                        <button onclick="cancelReg(${i})" style="padding:10px 16px;background:#1a1a1a;border:1px solid #333;color:#888;font-family:Oswald;font-size:12px;border-radius:8px;cursor:pointer;">Annulla</button>
-                    </div>
-                </div>` : ''}
+                <div style="padding:14px 16px;font-size:18px;color:#d4b86a;line-height:1.75;font-family:'Cormorant Garamond',Georgia,serif;white-space:pre-wrap;letter-spacing:0.3px;">${r.testo}</div>
             </div>`).join('');
     }
 
@@ -3890,22 +3882,16 @@
         }, 300);
     }
 
-    function editReg(i) {
-        document.getElementById('reg-view-' + i).style.display = 'none';
-        document.getElementById('reg-edit-' + i).style.display = 'block';
-    }
-    function cancelReg(i) {
-        document.getElementById('reg-view-' + i).style.display = 'block';
-        document.getElementById('reg-edit-' + i).style.display = 'none';
-    }
-    function saveReg(i) {
-        const ta = document.getElementById('reg-ta-' + i);
-        if (!ta || !data.regolamento || !data.regolamento[i]) return;
-        data.regolamento[i].testo = ta.value.trim();
+    function editRegolamento(id) {
+        const r = (data.regolamento || []).find(x => x.id === id);
+        if (!r) return;
+        const nuovoTesto = prompt('Modifica articolo:', r.testo);
+        if (nuovoTesto === null) return;
+        r.testo = nuovoTesto.trim();
         sync();
         renderRegolamento();
         showToast('✓ Articolo aggiornato!');
     }
 </script>
 </body>
-</html>
+    </html>
