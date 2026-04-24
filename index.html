@@ -2621,7 +2621,15 @@
                     </div>
                     ${currentAdmin ? `<div style="display:flex;gap:6px;flex-shrink:0;"><button onclick="deleteRegolamento(${r.id})" style="background:rgba(198,28,35,0.1);border:1px solid rgba(198,28,35,0.2);color:#c62828;border-radius:8px;padding:4px 10px;font-family:Oswald;font-size:10px;text-transform:uppercase;cursor:pointer;">✕</button><button onclick="editRegolamento(${r.id})" style="background:rgba(212,175,55,0.1);border:1px solid rgba(212,175,55,0.3);color:#d4b86a;border-radius:8px;padding:4px 10px;font-family:Oswald;font-size:10px;text-transform:uppercase;cursor:pointer;">✏️</button></div>` : ''}
                 </div>
-                <div style="padding:14px 16px;font-size:18px;color:#d4b86a;line-height:1.75;font-family:'Cormorant Garamond',Georgia,serif;white-space:pre-wrap;letter-spacing:0.3px;">${r.testo}</div>
+                <div id="reg-testo-${r.id}" style="padding:14px 16px;font-size:18px;color:#d4b86a;line-height:1.75;font-family:'Cormorant Garamond',Georgia,serif;white-space:pre-wrap;letter-spacing:0.3px;">${r.testo}</div>
+                ${currentAdmin ? `
+                <div id="reg-editor-${r.id}" style="display:none;padding:0 14px 14px;">
+                    <textarea id="reg-textarea-${r.id}" style="width:100%;min-height:120px;background:rgba(212,175,55,0.05);border:1.5px solid rgba(212,175,55,0.4);color:#d4b86a;font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;line-height:1.75;border-radius:10px;padding:12px;box-sizing:border-box;resize:vertical;-webkit-user-select:text!important;user-select:text!important;">${r.testo}</textarea>
+                    <div style="display:flex;gap:8px;margin-top:10px;">
+                        <button onclick="saveRegolamento(${r.id})" style="flex:1;padding:12px;background:#2e7d32;border:none;color:white;font-family:Oswald;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;border-radius:10px;cursor:pointer;">✓ Salva</button>
+                        <button onclick="cancelRegolamento(${r.id})" style="padding:12px 18px;background:#1a1a1a;border:1px solid #333;color:#888;font-family:Oswald;font-size:13px;border-radius:10px;cursor:pointer;">Annulla</button>
+                    </div>
+                </div>` : ''}
             </div>`).join('');
     }
 
@@ -3883,15 +3891,26 @@
     }
 
     function editRegolamento(id) {
-        const r = (data.regolamento || []).find(x => x.id === id);
+        document.getElementById('reg-testo-' + id).style.display = 'none';
+        document.getElementById('reg-editor-' + id).style.display = 'block';
+        // Forza user-select sulla textarea
+        const ta = document.getElementById('reg-textarea-' + id);
+        if (ta) { ta.style.webkitUserSelect = 'text'; ta.style.userSelect = 'text'; ta.focus(); }
+    }
+    function cancelRegolamento(id) {
+        document.getElementById('reg-testo-' + id).style.display = 'block';
+        document.getElementById('reg-editor-' + id).style.display = 'none';
+    }
+    function saveRegolamento(id) {
+        const ta = document.getElementById('reg-textarea-' + id);
+        if (!ta) return;
+        const r = (data.regolamento || []).find(x => x.id == id);
         if (!r) return;
-        const nuovoTesto = prompt('Modifica articolo:', r.testo);
-        if (nuovoTesto === null) return;
-        r.testo = nuovoTesto.trim();
+        r.testo = ta.value.trim();
         sync();
         renderRegolamento();
         showToast('✓ Articolo aggiornato!');
     }
 </script>
 </body>
-            </html>
+</html>
