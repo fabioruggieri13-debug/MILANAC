@@ -3480,13 +3480,17 @@
         if (evs.length === 0) html += `<p style="font-size:14px; color:#888; text-align:center;">Nessun impegno ufficiale.</p>`;
         evs.forEach(e => {
             const oraFormattata = new Date(e.dt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            html += `<div class="card" style="flex-direction:row; justify-content:space-between; align-items:center; min-height:auto; padding:15px; margin-bottom:8px; border-left: 4px solid var(--rosso);">
+            const isPast = new Date(e.dt).getTime() < Date.now();
+            html += `<div class="card" style="flex-direction:row; justify-content:space-between; align-items:center; min-height:auto; padding:15px; margin-bottom:8px; border-left: 4px solid ${isPast ? '#444' : 'var(--rosso)'};">
                 <div>
-                    <div style="color:var(--oro); font-weight:bold; font-size:14px;">${oraFormattata}</div>
-                    <div style="font-size:16px; font-weight:900; text-transform:uppercase;">${e.tipo}</div>
-                    <div style="color:#bbb; font-size:14px;">vs ${e.avv}</div>
+                    <div style="color:${isPast ? '#666' : 'var(--oro)'}; font-weight:bold; font-size:14px;">${oraFormattata}</div>
+                    <div style="font-size:16px; font-weight:900; text-transform:uppercase; color:${isPast ? '#888' : 'white'};">${e.tipo}</div>
+                    <div style="color:${isPast ? '#555' : '#bbb'}; font-size:14px;">vs ${e.avv}</div>
                 </div>
-                <div style="background:rgba(198,28,35,0.2); padding:10px; border-radius:10px; cursor:pointer" onclick="if(confirm('Eliminare evento?')){data.calendar = data.calendar.filter(x=>x.id != ${e.id}); sync()}">🗑️</div>
+                ${isPast
+                    ? `<div style="padding:10px; font-family:Oswald; font-size:10px; color:#444; text-transform:uppercase; letter-spacing:1px;">Storico</div>`
+                    : `<div style="background:rgba(198,28,35,0.2); padding:10px; border-radius:10px; cursor:pointer" onclick="if(confirm('Eliminare evento?')){data.calendar = data.calendar.filter(x=>x.id != ${e.id}); sync()}">🗑️</div>`
+                }
             </div>`;
         });
         document.getElementById('selected-day-info').innerHTML = html;
