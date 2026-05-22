@@ -376,10 +376,10 @@
         /* ======================================================
            GIOCATORI SUL CAMPO
         ====================================================== */
-        .player { position: absolute; width: 54px; text-align: center; cursor: move; z-index: 100; touch-action: none; pointer-events: auto; }
-        .jersey { width: 44px; height: 44px; background: #000; border: 3px solid var(--rosso); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; margin: 0 auto; color: var(--oro); font-size: 18px; position: relative; font-family: 'Oswald'; }
-        .badge-icon { position: absolute; top: -8px; right: -8px; font-size: 16px; background: rgba(0,0,0,0.8); border-radius: 50%; padding: 2px; }
-        .p-name { background: rgba(0,0,0,0.85); font-size: 11px; padding: 2px 6px; border-radius: 10px; margin-top: 4px; display: inline-block; font-weight: bold; text-transform: uppercase; color: white; font-family: 'Teko'; }
+        .player { position: absolute; width: 36px; text-align: center; cursor: move; z-index: 100; touch-action: none; pointer-events: auto; }
+        .jersey { width: 30px; height: 30px; background: #000; border: 2px solid var(--rosso); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; margin: 0 auto; color: var(--oro); font-size: 11px; position: relative; font-family: 'Oswald'; }
+        .badge-icon { position: absolute; top: -5px; right: -5px; font-size: 10px; background: rgba(0,0,0,0.8); border-radius: 50%; padding: 1px; line-height: 1; }
+        .p-name { background: rgba(0,0,0,0.85); font-size: 7.5px; padding: 1px 4px; border-radius: 7px; margin-top: 2px; display: inline-block; font-weight: bold; text-transform: uppercase; color: white; font-family: 'Teko'; letter-spacing: 0.2px; max-width: 46px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         /* ======================================================
            CARD GIOCATORI ROSA
         ====================================================== */
@@ -430,7 +430,26 @@
         /* ======================================================
            CONVOCATI MODAL
         ====================================================== */
-        .convocati-list { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 6000; display: none; padding: 20px; overflow-y: auto; }
+        .convocati-list { position: fixed; inset: 0; background: rgba(0,0,0,0.97); z-index: 6000; display: none; padding: 16px 14px 24px; overflow-y: auto; }
+        .conv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+        .conv-card { border-radius: 14px; padding: 10px 10px 8px; display: flex; flex-direction: column; gap: 6px; transition: all 0.2s; border: 1.5px solid; }
+        .conv-card.conv-in  { background: linear-gradient(135deg,#0d1f0d,#102210); border-color: #2e7d32; }
+        .conv-card.conv-out { background: #0f0f0f; border-color: #1e1e1e; }
+        .conv-card-top { display: flex; align-items: center; gap: 7px; }
+        .conv-num { width: 28px; height: 28px; border-radius: 50%; background: #000; display: flex; align-items: center; justify-content: center; font-family: 'Oswald'; font-size: 13px; font-weight: 900; flex-shrink: 0; }
+        .conv-card.conv-in  .conv-num { color: var(--oro); border: 1.5px solid var(--rosso); }
+        .conv-card.conv-out .conv-num { color: #3a3a3a; border: 1.5px solid #252525; }
+        .conv-info { flex: 1; min-width: 0; }
+        .conv-name { font-family: 'Teko'; font-size: 17px; font-weight: 700; text-transform: uppercase; line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .conv-card.conv-in  .conv-name { color: #fff; }
+        .conv-card.conv-out .conv-name { color: #555; }
+        .conv-role { font-family: 'Oswald'; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; margin-top: 1px; }
+        .conv-card.conv-in  .conv-role { color: #4caf50; }
+        .conv-card.conv-out .conv-role { color: #333; }
+        .conv-btn { width: 100%; padding: 7px 0; border-radius: 8px; border: none; font-family: 'Oswald'; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; }
+        .conv-btn:active { opacity: 0.7; transform: scale(0.97); }
+        .conv-btn.btn-remove { background: #C61C23; color: white; }
+        .conv-btn.btn-add    { background: #111; color: #3a3a3a; border: 1px solid #252525; }
         /* Bottoni azione tattica */
         .tactic-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
         .btn-tactic-action { padding: 10px; background: #222; border: 1px solid var(--rosso); color: white; border-radius: 8px; font-family: 'Oswald'; font-size: 12px; text-transform: uppercase; cursor: pointer; }
@@ -1310,9 +1329,18 @@
     </div>
     <!-- CONVOCATI -->
     <div id="convocati-modal" class="convocati-list">
-        <h3 style="color:var(--oro); font-family:'Oswald'">CONVOCATI PER LA PARTITA</h3>
-        <div id="list-convocabili"></div>
-        <button class="btn-main" style="margin-top:20px" onclick="document.getElementById('convocati-modal').style.display='none'">SALVA E CHIUDI</button>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;">
+            <div>
+                <div style="font-family:'Oswald';font-size:9px;color:#3a3a3a;text-transform:uppercase;letter-spacing:2px;">Formazione</div>
+                <div style="color:var(--oro);font-family:'Oswald';font-size:22px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Convocati</div>
+            </div>
+            <button onclick="document.getElementById('convocati-modal').style.display='none'"
+                style="background:#1a1a1a;border:1px solid #2a2a2a;color:#666;font-family:'Oswald';font-size:11px;padding:9px 16px;border-radius:10px;cursor:pointer;text-transform:uppercase;letter-spacing:1px;">
+                ✓ Chiudi
+            </button>
+        </div>
+        <div id="conv-count-bar" style="font-family:'Oswald';font-size:10px;color:#3a3a3a;letter-spacing:1px;margin-bottom:4px;"></div>
+        <div class="conv-grid" id="list-convocabili"></div>
     </div>
     <!-- CALENDARIO -->
     <div id="p-calendario" class="page">
@@ -3124,9 +3152,18 @@
             if (window.viewMode === 'all') { listaSemplice += playerCard; }
             else if (window.viewMode === 'roles') { if (gruppi[p.r] !== undefined) gruppi[p.r] += playerCard; else gruppi['ATT'] += playerCard; }
             else if (window.viewMode === p.r) { listaSemplice += playerCard; }
-            hConv += `<div class="card" style="min-height:auto; padding:10px; margin-bottom:5px; border-left:5px solid ${p.convocato ? '#2e7d32' : '#222'}">
-                <b>${p.n}</b> (${p.r})
-                <button class="btn-status" style="float:right; width:auto; padding:5px 15px; background:${p.convocato ? '#C61C23' : '#2e7d32'}" onclick="const i=data.ps.findIndex(x=>x.id==${p.id}); data.ps[i].convocato=!data.ps[i].convocato; render(); sync()">${p.convocato ? 'RIMUOVI' : 'AGGIUNGI'}</button>
+            hConv += `<div class="conv-card ${p.convocato ? 'conv-in' : 'conv-out'}">
+                <div class="conv-card-top">
+                    <div class="conv-num">${p.m}</div>
+                    <div class="conv-info">
+                        <div class="conv-name">${p.n}</div>
+                        <div class="conv-role">${p.rs || p.r}</div>
+                    </div>
+                </div>
+                <button class="conv-btn ${p.convocato ? 'btn-remove' : 'btn-add'}"
+                    onclick="const i=data.ps.findIndex(x=>x.id==${p.id}); data.ps[i].convocato=!data.ps[i].convocato; data._lastConvTs=Date.now(); render(); sync()">
+                    ${p.convocato ? '✕ Rimuovi' : '+ Aggiungi'}
+                </button>
             </div>`;
             // hMk non più usato per mercato
             // hP: dati aggregati in premiData, renderati da renderPremi()
@@ -3435,6 +3472,9 @@
         if(document.getElementById('p-premi').classList.contains('active')) renderPremi();
         document.getElementById('l-calendario').innerHTML = hCal;
         document.getElementById('list-convocabili').innerHTML = hConv;
+        const nConv = data.ps.filter(p => p.convocato === true || p.convocato === 'true').length;
+        const countBar = document.getElementById('conv-count-bar');
+        if (countBar) countBar.textContent = `${nConv} convocati · ${data.ps.length - nConv} non convocati`;
         // Giocatori sul campo
         const pl = document.getElementById('pitch-players');
         pl.innerHTML = "";
