@@ -1240,7 +1240,27 @@
         <div id="l-news"></div>
     </div>
     <!-- ROSA -->
-    <div id="p-rosa" class="page active"><div id="l-rosa"></div></div>
+    <div id="p-rosa" class="page active">
+        <!-- Bottone salva disponibilità (appare solo dopo modifiche) -->
+        <div id="btn-salva-disp" style="display:none;position:sticky;top:0;z-index:500;
+            padding:10px 16px;background:linear-gradient(135deg,#0a1f0a,#1b5e20);
+            border-bottom:1px solid #2e7d32;align-items:center;justify-content:space-between;gap:10px;">
+            <span style="font-family:'Oswald';font-size:11px;color:#4caf50;letter-spacing:1px;">
+                ✏️ Modifiche non salvate
+            </span>
+            <div style="display:flex;gap:8px;">
+                <button onclick="data.ps=JSON.parse(JSON.stringify(_dispBackup)); window._dispUnsaved=false; document.getElementById('btn-salva-disp').style.display='none'; render();"
+                    style="background:#1a1a1a;border:1px solid #333;color:#888;font-family:'Oswald';font-size:11px;padding:7px 14px;border-radius:8px;cursor:pointer;text-transform:uppercase;">
+                    Annulla
+                </button>
+                <button onclick="data._lastConvTs=Date.now(); sync(['ps','_lastConvTs']); window._dispUnsaved=false; document.getElementById('btn-salva-disp').style.display='none'; showToast('✅ Disponibilità salvata');"
+                    style="background:#2e7d32;border:none;color:white;font-family:'Oswald';font-size:11px;font-weight:700;padding:7px 18px;border-radius:8px;cursor:pointer;text-transform:uppercase;letter-spacing:1px;">
+                    💾 Salva
+                </button>
+            </div>
+        </div>
+        <div id="l-rosa"></div>
+    </div>
     
     <!-- ======================================================
          SEZIONE TATTICA CON HEATMAP PROFESSIONALE
@@ -3144,7 +3164,7 @@
                         color:${p.convocato ? '#4caf50' : '#555'};
                         font-family:Oswald;font-size:10px;font-weight:700;cursor:pointer;
                         text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;"
-                        onclick="event.stopPropagation(); const i=data.ps.findIndex(x=>x.id==${p.id}); data.ps[i].convocato=!data.ps[i].convocato; data._lastConvTs=Date.now(); render(); sync()">
+                        onclick="event.stopPropagation(); if(!window._dispUnsaved){ window._dispBackup=JSON.parse(JSON.stringify(data.ps)); } const i=data.ps.findIndex(x=>x.id==${p.id}); data.ps[i].convocato=!data.ps[i].convocato; render(); window._dispUnsaved=true; document.getElementById('btn-salva-disp').style.display='flex';">
                         ${p.convocato ? 'DISPONIBILE' : 'NON DISP.'}
                     </button>
                 </div>
@@ -3152,19 +3172,7 @@
             if (window.viewMode === 'all') { listaSemplice += playerCard; }
             else if (window.viewMode === 'roles') { if (gruppi[p.r] !== undefined) gruppi[p.r] += playerCard; else gruppi['ATT'] += playerCard; }
             else if (window.viewMode === p.r) { listaSemplice += playerCard; }
-            hConv += `<div class="conv-card ${p.convocato ? 'conv-in' : 'conv-out'}">
-                <div class="conv-card-top">
-                    <div class="conv-num">${p.m}</div>
-                    <div class="conv-info">
-                        <div class="conv-name">${p.n}</div>
-                        <div class="conv-role">${p.rs || p.r}</div>
-                    </div>
-                </div>
-                <button class="conv-btn ${p.convocato ? 'btn-remove' : 'btn-add'}"
-                    onclick="const i=data.ps.findIndex(x=>x.id==${p.id}); data.ps[i].convocato=!data.ps[i].convocato; data._lastConvTs=Date.now(); render(); sync()">
-                    ${p.convocato ? '✕ Rimuovi' : '+ Aggiungi'}
-                </button>
-            </div>`;
+            // hConv aggiornato sotto, fuori dal forEach, raggruppato per ruolo
             // hMk non più usato per mercato
             // hP: dati aggregati in premiData, renderati da renderPremi()
             // Admin card con voto sessione
@@ -3471,6 +3479,35 @@
         document.getElementById('l-news').innerHTML = hNews;
         if(document.getElementById('p-premi').classList.contains('active')) renderPremi();
         document.getElementById('l-calendario').innerHTML = hCal;
+        // ── hConv raggruppato per ruolo ──
+        const _convRuoli = ['POR','DIF','CEN','ATT'];
+        const _convLabel  = { POR:'🧤 Portieri', DIF:'🛡 Difensori', CEN:'⚙️ Centrocampisti', ATT:'⚡ Attaccanti' };
+        const _convGruppi = { POR:[], DIF:[], CEN:[], ATT:[] };
+        data.ps.forEach(p => { (_convGruppi[p.r] !== undefined ? _convGruppi[p.r] : _convGruppi['ATT']).push(p); });
+        _convRuoli.forEach(ruolo => {
+            const lista = _convGruppi[ruolo];
+            if (!lista.length) return;
+            hConv += `<div style="grid-column:1/-1;font-family:'Oswald';font-size:10px;font-weight:700;
+                color:rgba(212,175,55,0.5);text-transform:uppercase;letter-spacing:2px;
+                padding:8px 2px 4px;border-bottom:1px solid rgba(212,175,55,0.1);margin-bottom:2px;">
+                ${_convLabel[ruolo]}
+            </div>`;
+            lista.forEach(p => {
+                hConv += `<div class="conv-card ${p.convocato ? 'conv-in' : 'conv-out'}">
+                    <div class="conv-card-top">
+                        <div class="conv-num">${p.m}</div>
+                        <div class="conv-info">
+                            <div class="conv-name">${p.n}</div>
+                            <div class="conv-role">${p.rs || p.r}</div>
+                        </div>
+                    </div>
+                    <button class="conv-btn ${p.convocato ? 'btn-remove' : 'btn-add'}"
+                        onclick="const i=data.ps.findIndex(x=>x.id==${p.id}); data.ps[i].convocato=!data.ps[i].convocato; data._lastConvTs=Date.now(); render(); sync()">
+                        ${p.convocato ? '✕ Rimuovi' : '+ Aggiungi'}
+                    </button>
+                </div>`;
+            });
+        });
         document.getElementById('list-convocabili').innerHTML = hConv;
         const nConv = data.ps.filter(p => p.convocato === true || p.convocato === 'true').length;
         const countBar = document.getElementById('conv-count-bar');
