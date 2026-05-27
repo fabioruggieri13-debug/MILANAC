@@ -1666,21 +1666,45 @@
 </div>
 <!-- MODAL MODIFICA GIOCATORE -->
 <div id="modal-edit-player" style="position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px);">
-    <div style="background:linear-gradient(145deg,#111,#0a0a0a);border:1px solid rgba(212,175,55,0.4);border-radius:20px;padding:24px;width:85%;max-width:320px;box-shadow:0 20px 60px rgba(0,0,0,0.8);">
-        <div style="font-family:'Oswald';font-size:11px;color:var(--oro);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;">✏️ Modifica Giocatore</div>
-        <div style="font-family:'Teko';font-size:22px;color:white;margin-bottom:16px;">Nome e Numero</div>
+    <div style="background:linear-gradient(145deg,#111,#0a0a0a);border:1px solid rgba(212,175,55,0.4);border-radius:20px;padding:24px;width:88%;max-width:340px;box-shadow:0 20px 60px rgba(0,0,0,0.8);">
+        <div style="font-family:'Oswald';font-size:11px;color:var(--oro);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px;">✏️ Modifica Giocatore</div>
+        <div style="font-family:'Teko';font-size:22px;color:white;margin-bottom:16px;">Nome, Numero e Ruolo</div>
         <input type="hidden" id="edit-player-id">
+        <!-- Nome -->
         <div style="margin-bottom:10px;">
             <div style="font-family:'Oswald';font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Nome</div>
-            <input type="text" id="edit-player-nome" placeholder="Nome giocatore" style="width:100%;padding:12px;background:#1a1a1a;border:1px solid rgba(212,175,55,0.3);color:white;border-radius:10px;font-family:'Oswald';font-size:16px;box-sizing:border-box;" onkeydown="if(event.key==='Enter')savePlayerEdit()">
+            <input type="text" id="edit-player-nome" placeholder="Nome giocatore"
+                style="width:100%;padding:12px;background:#1a1a1a;border:1px solid rgba(212,175,55,0.3);color:white;border-radius:10px;font-family:'Oswald';font-size:16px;box-sizing:border-box;">
         </div>
+        <!-- Numero -->
+        <div style="margin-bottom:10px;">
+            <div style="font-family:'Oswald';font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Numero maglia</div>
+            <input type="number" id="edit-player-numero" placeholder="Numero" min="1" max="99"
+                style="width:100%;padding:12px;background:#1a1a1a;border:1px solid rgba(212,175,55,0.3);color:white;border-radius:10px;font-family:'Oswald';font-size:16px;box-sizing:border-box;">
+        </div>
+        <!-- Ruolo macro -->
+        <div style="margin-bottom:10px;">
+            <div style="font-family:'Oswald';font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Ruolo</div>
+            <select id="edit-player-ruolo" onchange="aggiornaRuoliSotto()"
+                style="width:100%;padding:12px;background:#1a1a1a;border:1px solid rgba(212,175,55,0.3);color:white;border-radius:10px;font-family:'Oswald';font-size:15px;box-sizing:border-box;appearance:none;-webkit-appearance:none;">
+                <option value="POR">🧤 Portiere</option>
+                <option value="DIF">🛡 Difensore</option>
+                <option value="CEN">⚙️ Centrocampista</option>
+                <option value="ATT">⚡ Attaccante</option>
+            </select>
+        </div>
+        <!-- Sottoruolo -->
         <div style="margin-bottom:20px;">
-            <div style="font-family:'Oswald';font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Numero</div>
-            <input type="number" id="edit-player-numero" placeholder="Numero maglia" min="1" max="99" style="width:100%;padding:12px;background:#1a1a1a;border:1px solid rgba(212,175,55,0.3);color:white;border-radius:10px;font-family:'Oswald';font-size:16px;box-sizing:border-box;" onkeydown="if(event.key==='Enter')savePlayerEdit()">
+            <div style="font-family:'Oswald';font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Sottoruolo specifico</div>
+            <select id="edit-player-rs"
+                style="width:100%;padding:12px;background:#1a1a1a;border:1px solid rgba(212,175,55,0.3);color:white;border-radius:10px;font-family:'Oswald';font-size:15px;box-sizing:border-box;appearance:none;-webkit-appearance:none;">
+            </select>
         </div>
         <div style="display:flex;gap:10px;">
-            <button onclick="document.getElementById('modal-edit-player').style.display='none'" style="flex:1;padding:13px;background:#1a1a1a;border:1px solid #333;color:#888;font-family:'Oswald';font-size:13px;border-radius:10px;cursor:pointer;text-transform:uppercase;">Annulla</button>
-            <button onclick="savePlayerEdit()" style="flex:2;padding:13px;background:linear-gradient(180deg,#e3262e,#a01115);border:1px solid var(--oro);color:white;font-family:'Oswald';font-size:13px;font-weight:bold;border-radius:10px;cursor:pointer;text-transform:uppercase;letter-spacing:1px;">💾 Salva</button>
+            <button onclick="document.getElementById('modal-edit-player').style.display='none'"
+                style="flex:1;padding:13px;background:#1a1a1a;border:1px solid #333;color:#888;font-family:'Oswald';font-size:13px;border-radius:10px;cursor:pointer;text-transform:uppercase;">Annulla</button>
+            <button onclick="savePlayerEdit()"
+                style="flex:2;padding:13px;background:linear-gradient(180deg,#e3262e,#a01115);border:1px solid var(--oro);color:white;font-family:'Oswald';font-size:13px;font-weight:bold;border-radius:10px;cursor:pointer;text-transform:uppercase;letter-spacing:1px;">💾 Salva</button>
         </div>
     </div>
 </div>
@@ -2509,6 +2533,19 @@
             document.getElementById('in-m').value = '';
         }
     }
+    const _sottoruoli = {
+        POR: [{ v:'POR', l:'Portiere' }],
+        DIF: [{ v:'DC', l:'DC – Difensore Centrale' }, { v:'TD', l:'TD – Terzino Destro' }, { v:'TS', l:'TS – Terzino Sinistro' }, { v:'LIB', l:'LIB – Libero' }],
+        CEN: [{ v:'CDC', l:'CDC – Mediano / CDM' }, { v:'COC', l:'COC – Trequartista / CAM' }, { v:'MEZ', l:'MEZ – Mezzala' }, { v:'CC', l:'CC – Centrocampista' }],
+        ATT: [{ v:'AD', l:'AD – Ala Destra' }, { v:'AS', l:'AS – Ala Sinistra' }, { v:'SP', l:'SP – Prima Punta / ST' }, { v:'FP', l:'FP – Seconda Punta' }]
+    };
+    function aggiornaRuoliSotto(preselect) {
+        const ruolo = document.getElementById('edit-player-ruolo').value;
+        const sel = document.getElementById('edit-player-rs');
+        sel.innerHTML = _sottoruoli[ruolo].map(o =>
+            `<option value="${o.v}" ${preselect === o.v ? 'selected' : ''}>${o.l}</option>`
+        ).join('');
+    }
     function editPlayer(id) {
         if(!currentAdmin){ alert('Devi essere loggato come admin.'); return; }
         const p = data.ps.find(x => x.id == id);
@@ -2516,20 +2553,31 @@
         document.getElementById('edit-player-id').value = id;
         document.getElementById('edit-player-nome').value = p.n;
         document.getElementById('edit-player-numero').value = p.m;
+        // Imposta ruolo macro
+        const ruoloSel = document.getElementById('edit-player-ruolo');
+        ruoloSel.value = p.r || 'ATT';
+        // Popola sottoruoli e preseleziona
+        aggiornaRuoliSotto(p.rs || '');
         document.getElementById('modal-edit-player').style.display = 'flex';
         setTimeout(() => document.getElementById('edit-player-nome').focus(), 100);
     }
     function savePlayerEdit() {
         const id = parseInt(document.getElementById('edit-player-id').value);
-        const nuovoNome = document.getElementById('edit-player-nome').value.trim();
+        const nuovoNome   = document.getElementById('edit-player-nome').value.trim();
         const nuovoNumero = document.getElementById('edit-player-numero').value.trim();
+        const nuovoRuolo  = document.getElementById('edit-player-ruolo').value;
+        const nuovoRs     = document.getElementById('edit-player-rs').value;
         if(!nuovoNome || !nuovoNumero){ alert('Nome e numero sono obbligatori.'); return; }
         const idx = data.ps.findIndex(x => x.id == id);
         if(idx === -1) return;
-        data.ps[idx].n = nuovoNome;
-        data.ps[idx].m = nuovoNumero;
+        data.ps[idx].n  = nuovoNome;
+        data.ps[idx].m  = nuovoNumero;
+        data.ps[idx].r  = nuovoRuolo;
+        data.ps[idx].rs = nuovoRs;
         sync();
+        render();
         document.getElementById('modal-edit-player').style.display = 'none';
+        showToast(`✅ ${nuovoNome} aggiornato`);
     }
     function updateStat(id, key, val) {
         const i = data.ps.findIndex(x => x.id == id);
