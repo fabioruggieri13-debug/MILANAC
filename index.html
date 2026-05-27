@@ -1883,6 +1883,9 @@
             data = doc.data();
             if(!data.voteHistory) data.voteHistory=[];
             if(!data.pagelle) data.pagelle=[];
+            // Migrazione sottoruoli vecchi → nuovi nomi
+            const _rsMigra = { 'LIB':'DC', 'MEZ':'CC', 'FP':'SP', 'CAM':'COC', 'CDM':'CDC', 'CF':'P', 'ST':'P', 'SS':'SP' };
+            (data.ps || []).forEach(p => { if(p.rs && _rsMigra[p.rs]) p.rs = _rsMigra[p.rs]; });
             render();
         }
         hideLoading(); // nasconde il loader appena arrivano i dati
@@ -2534,10 +2537,10 @@
         }
     }
     const _sottoruoli = {
-        POR: [{ v:'POR', l:'Portiere' }],
-        DIF: [{ v:'DC', l:'DC – Difensore Centrale' }, { v:'TD', l:'TD – Terzino Destro' }, { v:'TS', l:'TS – Terzino Sinistro' }, { v:'LIB', l:'LIB – Libero' }],
-        CEN: [{ v:'CDC', l:'CDC – Mediano / CDM' }, { v:'COC', l:'COC – Trequartista / CAM' }, { v:'MEZ', l:'MEZ – Mezzala' }, { v:'CC', l:'CC – Centrocampista' }],
-        ATT: [{ v:'AD', l:'AD – Ala Destra' }, { v:'AS', l:'AS – Ala Sinistra' }, { v:'SP', l:'SP – Prima Punta / ST' }, { v:'FP', l:'FP – Seconda Punta' }]
+        POR: [{ v:'POR', l:'POR – Portiere' }],
+        DIF: [{ v:'DC', l:'DC – Difensore Centrale' }, { v:'TD', l:'TD – Terzino Destro' }, { v:'TS', l:'TS – Terzino Sinistro' }],
+        CEN: [{ v:'CDC', l:'CDC – Mediano' }, { v:'COC', l:'COC – Trequartista' }, { v:'CC', l:'CC – Centrocampista' }, { v:'ED', l:'ED – Esterno Destro' }, { v:'ES', l:'ES – Esterno Sinistro' }],
+        ATT: [{ v:'AD', l:'AD – Ala Destra' }, { v:'AS', l:'AS – Ala Sinistra' }, { v:'SP', l:'SP – Seconda Punta' }, { v:'P', l:'P – Punta' }]
     };
     function aggiornaRuoliSotto(preselect) {
         const ruolo = document.getElementById('edit-player-ruolo').value;
