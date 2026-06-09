@@ -850,6 +850,170 @@
         }
         .section-label::after { content: ''; flex: 1; height: 1px; background: #1a1a1a; }
         /* ══════════════════════════════════════════════
+           ALBO D'ORO
+        ══════════════════════════════════════════════ */
+        .albo-hero {
+            background: linear-gradient(145deg, #0a0a00 0%, #1a1400 50%, #0a0a00 100%);
+            border: 1px solid rgba(212,175,55,0.35);
+            border-radius: 22px;
+            padding: 22px 18px 18px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+        .albo-hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 50% 0%, rgba(212,175,55,0.14) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .albo-hero-title {
+            font-family: 'Teko'; font-size: 34px; font-weight: 700;
+            color: var(--oro); text-transform: uppercase; letter-spacing: 2px;
+            line-height: 1; margin-bottom: 4px;
+            text-shadow: 0 2px 12px rgba(212,175,55,0.4);
+        }
+        .albo-hero-sub {
+            font-family: 'Oswald'; font-size: 10px; color: #666;
+            text-transform: uppercase; letter-spacing: 3px;
+        }
+        .albo-stats-row {
+            display: flex; gap: 10px; margin-top: 14px; justify-content: center;
+        }
+        .albo-stat-chip {
+            background: rgba(212,175,55,0.08); border: 1px solid rgba(212,175,55,0.25);
+            border-radius: 12px; padding: 8px 16px; text-align: center;
+        }
+        .albo-stat-chip-val { font-family: 'Oswald'; font-size: 24px; font-weight: 900; color: var(--oro); line-height: 1; }
+        .albo-stat-chip-lbl { font-family: 'Oswald'; font-size: 9px; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+        /* Filtro tipo competizione */
+        .albo-filter-row {
+            display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px;
+        }
+        .albo-filter-btn {
+            padding: 7px 14px; border: 1px solid #222; border-radius: 20px;
+            background: transparent; color: #555; font-family: 'Oswald';
+            font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+            cursor: pointer; transition: all 0.2s; -webkit-tap-highlight-color: transparent;
+        }
+        .albo-filter-btn.active {
+            background: rgba(212,175,55,0.15); border-color: rgba(212,175,55,0.5); color: var(--oro);
+        }
+        /* Linea anno */
+        .albo-year-divider {
+            display: flex; align-items: center; gap: 10px;
+            margin: 18px 0 10px;
+        }
+        .albo-year-label {
+            font-family: 'Oswald'; font-size: 12px; font-weight: 700;
+            color: #333; text-transform: uppercase; letter-spacing: 2px; white-space: nowrap;
+        }
+        .albo-year-line { flex: 1; height: 1px; background: #1a1a1a; }
+        /* Card trofeo */
+        .albo-trophy-card {
+            background: linear-gradient(135deg, #0d0d00 0%, #0a0900 100%);
+            border-radius: 20px; overflow: hidden;
+            margin-bottom: 12px;
+            position: relative;
+            border: 1px solid rgba(212,175,55,0.2);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .albo-trophy-card.coppa-mondo {
+            border-color: rgba(212,175,55,0.6);
+            box-shadow: 0 4px 28px rgba(212,175,55,0.18), inset 0 1px 0 rgba(212,175,55,0.12);
+        }
+        .albo-trophy-card.campionato {
+            border-color: rgba(198,28,35,0.5);
+            box-shadow: 0 4px 20px rgba(198,28,35,0.15);
+        }
+        .albo-trophy-card.coppa-club {
+            border-color: rgba(100,160,255,0.4);
+            box-shadow: 0 4px 20px rgba(100,160,255,0.1);
+        }
+        .albo-trophy-card.torneo {
+            border-color: rgba(130,80,200,0.4);
+            box-shadow: 0 4px 20px rgba(130,80,200,0.1);
+        }
+        /* Sfondo glow specifico per tipo */
+        .albo-trophy-card::before {
+            content: ''; position: absolute; inset: 0;
+            opacity: 0.07; pointer-events: none; border-radius: 20px;
+        }
+        .albo-trophy-card.coppa-mondo::before  { background: radial-gradient(ellipse at 20% 50%, #D4AF37 0%, transparent 60%); }
+        .albo-trophy-card.campionato::before   { background: radial-gradient(ellipse at 20% 50%, #C61C23 0%, transparent 60%); }
+        .albo-trophy-card.coppa-club::before   { background: radial-gradient(ellipse at 20% 50%, #64a0ff 0%, transparent 60%); }
+        .albo-trophy-card.torneo::before       { background: radial-gradient(ellipse at 20% 50%, #8250c8 0%, transparent 60%); }
+        .albo-trophy-inner {
+            display: flex; align-items: center; gap: 14px;
+            padding: 16px;
+        }
+        /* Icona trofeo grande */
+        .albo-trophy-icon-wrap {
+            width: 64px; height: 64px; border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; position: relative; overflow: hidden;
+        }
+        .albo-trophy-icon-wrap.coppa-mondo  { background: linear-gradient(145deg, #1a1500, #2a2200); border: 2px solid rgba(212,175,55,0.5); }
+        .albo-trophy-icon-wrap.campionato   { background: linear-gradient(145deg, #1a0505, #2a0808); border: 2px solid rgba(198,28,35,0.5); }
+        .albo-trophy-icon-wrap.coppa-club   { background: linear-gradient(145deg, #050d1a, #0a1525); border: 2px solid rgba(100,160,255,0.4); }
+        .albo-trophy-icon-wrap.torneo       { background: linear-gradient(145deg, #0d0516, #170825); border: 2px solid rgba(130,80,200,0.4); }
+        .albo-trophy-emoji { font-size: 34px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.8)); }
+        .albo-trophy-info { flex: 1; min-width: 0; }
+        .albo-trophy-tipo {
+            font-family: 'Oswald'; font-size: 9px; text-transform: uppercase;
+            letter-spacing: 2px; margin-bottom: 3px; opacity: 0.7;
+        }
+        .albo-trophy-card.coppa-mondo  .albo-trophy-tipo { color: var(--oro); }
+        .albo-trophy-card.campionato   .albo-trophy-tipo { color: #ff6b6b; }
+        .albo-trophy-card.coppa-club   .albo-trophy-tipo { color: #90c0ff; }
+        .albo-trophy-card.torneo       .albo-trophy-tipo { color: #b080e0; }
+        .albo-trophy-name {
+            font-family: 'Teko'; font-size: 26px; color: white;
+            text-transform: uppercase; line-height: 1; margin-bottom: 4px;
+        }
+        .albo-trophy-meta {
+            font-family: 'Oswald'; font-size: 10px; color: #555;
+            letter-spacing: 0.5px;
+        }
+        .albo-trophy-edition {
+            font-family: 'Oswald'; font-size: 20px; font-weight: 900;
+            text-align: right; flex-shrink: 0;
+        }
+        .albo-trophy-card.coppa-mondo  .albo-trophy-edition { color: var(--oro); }
+        .albo-trophy-card.campionato   .albo-trophy-edition { color: #ff6b6b; }
+        .albo-trophy-card.coppa-club   .albo-trophy-edition { color: #90c0ff; }
+        .albo-trophy-card.torneo       .albo-trophy-edition { color: #b080e0; }
+        /* Bandierina edizione in alto a destra */
+        .albo-trophy-badge {
+            position: absolute; top: 10px; right: 12px;
+            font-family: 'Oswald'; font-size: 9px; text-transform: uppercase;
+            letter-spacing: 1px; padding: 3px 8px; border-radius: 20px;
+        }
+        .albo-trophy-card.coppa-mondo  .albo-trophy-badge { background: rgba(212,175,55,0.15); color: var(--oro); border: 1px solid rgba(212,175,55,0.3); }
+        .albo-trophy-card.campionato   .albo-trophy-badge { background: rgba(198,28,35,0.15); color: #ff6b6b; border: 1px solid rgba(198,28,35,0.3); }
+        .albo-trophy-card.coppa-club   .albo-trophy-badge { background: rgba(100,160,255,0.12); color: #90c0ff; border: 1px solid rgba(100,160,255,0.3); }
+        .albo-trophy-card.torneo       .albo-trophy-badge { background: rgba(130,80,200,0.15); color: #b080e0; border: 1px solid rgba(130,80,200,0.3); }
+        /* Form admin aggiungi trofeo */
+        .albo-admin-form {
+            background: linear-gradient(145deg, #0d0d00, #0a0900);
+            border: 1px solid rgba(212,175,55,0.2);
+            border-radius: 18px; padding: 16px; margin-bottom: 18px;
+            display: none;
+        }
+        .albo-admin-form.open { display: block; }
+        .albo-empty-state {
+            text-align: center; padding: 50px 20px;
+        }
+        .albo-empty-icon { font-size: 52px; margin-bottom: 12px; }
+        .albo-empty-txt { font-family: 'Oswald'; font-size: 12px; color: #333; text-transform: uppercase; letter-spacing: 2px; }
+        /* Animazione ingresso card */
+        @keyframes alboCardIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .albo-trophy-card { animation: alboCardIn 0.4s ease-out both; }
+        /* ══════════════════════════════════════════════
            HIGHLIGHTS VIDEO
         ══════════════════════════════════════════════ */
         .highlight-modal {
@@ -1209,6 +1373,7 @@
     <button onclick="go('partite')">🏟️ Risultati Partite</button>
     <button onclick="go('premi')">🏆 Premi</button>
     <button onclick="go('social')">📲 Social</button>
+    <button onclick="go('albo')">🏆 Albo d'Oro</button>
     <button onclick="go('storia')">📖 Cenni Storici</button>
     <button onclick="go('regolamento')">📜 Regolamento</button>
     <button onclick="goAdmin()">⚙️ Area Admin</button>
@@ -1600,6 +1765,61 @@
             </div>
         </div>
     </div>
+    <!-- ALBO D'ORO -->
+    <div id="p-albo" class="page">
+        <!-- Hero -->
+        <div class="albo-hero">
+            <div style="font-size:40px;margin-bottom:6px;filter:drop-shadow(0 2px 10px rgba(212,175,55,0.5));">🏆</div>
+            <div class="albo-hero-title">Albo d'Oro</div>
+            <div class="albo-hero-sub">Milanac Pro Club · Palmarès Ufficiale</div>
+            <div class="albo-stats-row">
+                <div class="albo-stat-chip">
+                    <div class="albo-stat-chip-val" id="albo-count-total">0</div>
+                    <div class="albo-stat-chip-lbl">Trofei</div>
+                </div>
+                <div class="albo-stat-chip">
+                    <div class="albo-stat-chip-val" id="albo-count-mondo" style="color:#D4AF37;">0</div>
+                    <div class="albo-stat-chip-lbl">Coppe Mondo</div>
+                </div>
+                <div class="albo-stat-chip">
+                    <div class="albo-stat-chip-val" id="albo-count-camp" style="color:#ff6b6b;">0</div>
+                    <div class="albo-stat-chip-lbl">Campionati</div>
+                </div>
+            </div>
+        </div>
+        <!-- Form admin (visibile solo admin) -->
+        <div id="albo-admin-wrap" style="display:none;margin-bottom:14px;">
+            <button onclick="document.getElementById('albo-admin-form').classList.toggle('open')"
+                style="width:100%;padding:11px;background:rgba(212,175,55,0.08);border:1px solid rgba(212,175,55,0.25);
+                color:var(--oro);font-family:'Oswald';font-size:11px;text-transform:uppercase;letter-spacing:1.5px;
+                border-radius:12px;cursor:pointer;">
+                ➕ Aggiungi Trofeo
+            </button>
+            <div class="albo-admin-form" id="albo-admin-form">
+                <div style="font-family:'Oswald';font-size:10px;color:var(--oro);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;">✍️ Nuovo Trofeo</div>
+                <select id="albo-tipo" style="margin-bottom:8px;background:#1a1a1a;border:1px solid rgba(212,175,55,0.3);color:white;border-radius:10px;padding:10px;font-family:'Oswald';font-size:14px;width:100%;box-sizing:border-box;appearance:none;">
+                    <option value="coppa-mondo">🌍 Coppa del Mondo</option>
+                    <option value="campionato">🥇 Campionato</option>
+                    <option value="coppa-club">🏅 Coppa Club</option>
+                    <option value="torneo">🎖 Torneo</option>
+                </select>
+                <input type="text" id="albo-nome" placeholder="Nome trofeo (es. Coppa del Mondo)" style="margin-bottom:8px;">
+                <input type="number" id="albo-anno" placeholder="Anno (es. 2025)" min="2020" max="2099" style="margin-bottom:8px;">
+                <input type="text" id="albo-edizione" placeholder="Edizione / Note (es. Stagione 24/25)" style="margin-bottom:10px;">
+                <button class="btn-main" onclick="aggiungiTrofeo()" style="border-radius:10px;background:linear-gradient(180deg,#c8a020,#8a6e10);">🏆 AGGIUNGI TROFEO</button>
+            </div>
+        </div>
+        <!-- Filtri -->
+        <div class="albo-filter-row" id="albo-filters">
+            <button class="albo-filter-btn active" onclick="filtraAlbo('tutti',this)">Tutti</button>
+            <button class="albo-filter-btn" onclick="filtraAlbo('coppa-mondo',this)">🌍 Coppa Mondo</button>
+            <button class="albo-filter-btn" onclick="filtraAlbo('campionato',this)">🥇 Campionato</button>
+            <button class="albo-filter-btn" onclick="filtraAlbo('coppa-club',this)">🏅 Coppa Club</button>
+            <button class="albo-filter-btn" onclick="filtraAlbo('torneo',this)">🎖 Torneo</button>
+        </div>
+        <!-- Lista trofei -->
+        <div id="l-albo"></div>
+    </div>
     <!-- CENNI STORICI -->
     <div id="p-storia" class="page">
         <!-- Header sezione -->
@@ -1819,7 +2039,7 @@
             console.warn('Persistence error:', err.code);
         }
     });
-    let data = { ps: [], mod: '4-4-2', matches: [], news: [], calendar: [], voteHistory: [], pagelle: [] };
+    let data = { ps: [], mod: '4-4-2', matches: [], news: [], calendar: [], voteHistory: [], pagelle: [], alboDoro: [] };
     let viewDate = new Date();
     // ---- ADMIN AUTH — credenziali su Firestore (non più in chiaro nel JS) ----
     // Le credenziali vengono caricate da Firebase al primo avvio
@@ -1883,6 +2103,7 @@
             data = doc.data();
             if(!data.voteHistory) data.voteHistory=[];
             if(!data.pagelle) data.pagelle=[];
+            if(!data.alboDoro) data.alboDoro=[];
             // Migrazione sottoruoli vecchi → nuovi nomi
             const _rsMigra = { 'LIB':'DC', 'MEZ':'CC', 'FP':'SP', 'CAM':'COC', 'CDM':'CDC', 'CF':'P', 'ST':'P', 'SS':'SP' };
             (data.ps || []).forEach(p => { if(p.rs && _rsMigra[p.rs]) p.rs = _rsMigra[p.rs]; });
@@ -1924,6 +2145,7 @@
         if (p === 'premi') { setTimeout(renderPremi, 50); }
         if (p === 'regolamento') { setTimeout(renderRegolamento, 50); }
         if (p === 'storia') { setTimeout(renderStoria, 50); }
+        if (p === 'albo') { setTimeout(renderAlbo, 50); }
         // Segna come visto se apri news o pagelle
         if(p === 'news' || p === 'mercato') {
             localStorage.setItem('milanac_last_visit', Date.now().toString());
@@ -3529,6 +3751,7 @@
         document.getElementById('l-partite').innerHTML = hMatch;
         document.getElementById('l-news').innerHTML = hNews;
         if(document.getElementById('p-premi').classList.contains('active')) renderPremi();
+        if(document.getElementById('p-albo') && document.getElementById('p-albo').classList.contains('active')) renderAlbo();
         document.getElementById('l-calendario').innerHTML = hCal;
         // ── hConv raggruppato per ruolo ──
         const _convRuoli = ['POR','DIF','CEN','ATT'];
@@ -3968,6 +4191,209 @@
             showToast('⚠ Errore salvataggio su Firestore.', true);
         }
     }
+    /* ============================================================
+       ALBO D'ORO
+    ============================================================ */
+    const _ALBO_SEED = [
+        {
+            id: 1,
+            tipo: 'coppa-mondo',
+            nome: 'Coppa del Mondo',
+            anno: 2026,
+            edizione: 'Stagione 25/26',
+            addedBy: 'Fabio'
+        }
+    ];
+    let _alboFilter = 'tutti';
+    const _SVG_COPPA_MONDO = `<svg width="40" height="44" viewBox="0 0 40 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- base -->
+        <rect x="13" y="38" width="14" height="4" rx="2" fill="#b8922a"/>
+        <rect x="10" y="36" width="20" height="4" rx="2" fill="#D4AF37"/>
+        <!-- stelo -->
+        <rect x="18" y="28" width="4" height="10" rx="1.5" fill="#c8991e"/>
+        <!-- corpo coppa -->
+        <path d="M8 8 Q8 26 20 26 Q32 26 32 8 Z" fill="url(#gCoppa)"/>
+        <!-- lucido corpo -->
+        <path d="M11 9 Q11 20 20 23" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        <!-- manici -->
+        <path d="M8 10 Q2 10 2 16 Q2 22 8 20" stroke="#D4AF37" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <path d="M32 10 Q38 10 38 16 Q38 22 32 20" stroke="#D4AF37" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <!-- bordo top -->
+        <rect x="7" y="6" width="26" height="4" rx="2" fill="#e8c040"/>
+        <!-- stelle decorative -->
+        <text x="20" y="19" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.5)">★★★</text>
+        <defs>
+            <linearGradient id="gCoppa" x1="8" y1="8" x2="32" y2="26" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#f0d060"/>
+                <stop offset="50%" stop-color="#D4AF37"/>
+                <stop offset="100%" stop-color="#8a6e10"/>
+            </linearGradient>
+        </defs>
+    </svg>`;
+
+    const _SVG_CAMPIONATO = `<svg width="40" height="48" viewBox="0 0 40 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Scudetto tricolore Italia -->
+        <!-- Forma scudetto -->
+        <path d="M4 4 L36 4 L36 28 Q36 40 20 46 Q4 40 4 28 Z" fill="#1a1a1a"/>
+        <!-- Tre fasce verticali: verde, bianco, rosso -->
+        <clipPath id="scudClip">
+            <path d="M4 4 L36 4 L36 28 Q36 40 20 46 Q4 40 4 28 Z"/>
+        </clipPath>
+        <rect x="4" y="4" width="10.67" height="42" fill="#009246" clip-path="url(#scudClip)"/>
+        <rect x="14.67" y="4" width="10.67" height="42" fill="#ffffff" clip-path="url(#scudClip)"/>
+        <rect x="25.33" y="4" width="14.67" height="42" fill="#CE2B37" clip-path="url(#scudClip)"/>
+        <!-- Bordo scudetto oro -->
+        <path d="M4 4 L36 4 L36 28 Q36 40 20 46 Q4 40 4 28 Z" stroke="#D4AF37" stroke-width="2.5" fill="none"/>
+        <!-- Stellina al centro -->
+        <text x="20" y="22" text-anchor="middle" font-size="14" fill="#D4AF37" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,0.8))">★</text>
+    </svg>`;
+
+    const _SVG_COPPA_CLUB = `<svg width="38" height="44" viewBox="0 0 38 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="12" y="38" width="14" height="4" rx="2" fill="#3a6080"/>
+        <rect x="9" y="35" width="20" height="4" rx="2" fill="#64a0ff"/>
+        <rect x="17" y="27" width="4" height="10" rx="1.5" fill="#4880cc"/>
+        <path d="M7 7 Q7 24 19 24 Q31 24 31 7 Z" fill="url(#gClub)"/>
+        <path d="M10 8 Q10 18 19 21" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        <path d="M7 9 Q2 9 2 15 Q2 20 7 18" stroke="#64a0ff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <path d="M31 9 Q36 9 36 15 Q36 20 31 18" stroke="#64a0ff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <rect x="6" y="5" width="26" height="4" rx="2" fill="#90c0ff"/>
+        <text x="19" y="17" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.4)">★★★</text>
+        <defs>
+            <linearGradient id="gClub" x1="7" y1="7" x2="31" y2="24" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#90c0ff"/>
+                <stop offset="50%" stop-color="#4880dd"/>
+                <stop offset="100%" stop-color="#1a3a80"/>
+            </linearGradient>
+        </defs>
+    </svg>`;
+
+    const _SVG_TORNEO = `<svg width="36" height="42" viewBox="0 0 36 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="11" y="36" width="14" height="4" rx="2" fill="#6030a0"/>
+        <rect x="8" y="33" width="20" height="4" rx="2" fill="#9050e0"/>
+        <rect x="16" y="25" width="4" height="10" rx="1.5" fill="#7040b0"/>
+        <path d="M6 6 Q6 22 18 22 Q30 22 30 6 Z" fill="url(#gTorn)"/>
+        <path d="M9 7 Q9 17 18 19" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        <path d="M6 8 Q1 8 1 14 Q1 19 6 17" stroke="#9050e0" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <path d="M30 8 Q35 8 35 14 Q35 19 30 17" stroke="#9050e0" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <rect x="5" y="4" width="26" height="4" rx="2" fill="#b080f0"/>
+        <text x="18" y="16" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.35)">★★★</text>
+        <defs>
+            <linearGradient id="gTorn" x1="6" y1="6" x2="30" y2="22" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#c090ff"/>
+                <stop offset="50%" stop-color="#8050c8"/>
+                <stop offset="100%" stop-color="#3a1060"/>
+            </linearGradient>
+        </defs>
+    </svg>`;
+
+    const _ALBO_CONFIG = {
+        'coppa-mondo': { label: '🌍 Coppa del Mondo', svgIcon: _SVG_COPPA_MONDO, cssClass: 'coppa-mondo', badgeTxt: 'Trofeo Mondiale' },
+        'campionato':  { label: '🥇 Campionato',      svgIcon: _SVG_CAMPIONATO,  cssClass: 'campionato',  badgeTxt: 'Campioni' },
+        'coppa-club':  { label: '🏅 Coppa Club',      svgIcon: _SVG_COPPA_CLUB,  cssClass: 'coppa-club',  badgeTxt: 'Coppa' },
+        'torneo':      { label: '🎖 Torneo',           svgIcon: _SVG_TORNEO,      cssClass: 'torneo',      badgeTxt: 'Torneo' }
+    };
+    function getAlboList() {
+        // Unisce seed hardcoded (non editabili) con quelli salvati su Firestore
+        const saved = (data.alboDoro || []);
+        // evita duplicati se il seed fosse già finito su Firestore
+        const seedIds = new Set(saved.map(t => t.id));
+        const merged = [..._ALBO_SEED.filter(s => !seedIds.has(s.id)), ...saved];
+        return merged.sort((a, b) => b.anno - a.anno);
+    }
+    function filtraAlbo(tipo, btn) {
+        _alboFilter = tipo;
+        document.querySelectorAll('.albo-filter-btn').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+        renderAlbo();
+    }
+    function renderAlbo() {
+        // Mostra form admin se loggato
+        const wrap = document.getElementById('albo-admin-wrap');
+        if (wrap) wrap.style.display = currentAdmin ? 'block' : 'none';
+        const el = document.getElementById('l-albo');
+        if (!el) return;
+        const tutti = getAlboList();
+        const filtrati = _alboFilter === 'tutti' ? tutti : tutti.filter(t => t.tipo === _alboFilter);
+        // Aggiorna contatori hero
+        const totalEl = document.getElementById('albo-count-total');
+        const mondoEl = document.getElementById('albo-count-mondo');
+        const campEl  = document.getElementById('albo-count-camp');
+        if (totalEl) totalEl.textContent = tutti.length;
+        if (mondoEl) mondoEl.textContent = tutti.filter(t => t.tipo === 'coppa-mondo').length;
+        if (campEl)  campEl.textContent  = tutti.filter(t => t.tipo === 'campionato').length;
+        if (filtrati.length === 0) {
+            el.innerHTML = `<div class="albo-empty-state">
+                <div class="albo-empty-icon">🏆</div>
+                <div class="albo-empty-txt">Nessun trofeo in questa categoria</div>
+            </div>`;
+            return;
+        }
+        // Raggruppa per anno
+        const perAnno = {};
+        filtrati.forEach(t => {
+            if (!perAnno[t.anno]) perAnno[t.anno] = [];
+            perAnno[t.anno].push(t);
+        });
+        const anni = Object.keys(perAnno).sort((a, b) => b - a);
+        let html = '';
+        let delay = 0;
+        anni.forEach(anno => {
+            html += `<div class="albo-year-divider">
+                <div class="albo-year-label">⭐ ${anno}</div>
+                <div class="albo-year-line"></div>
+            </div>`;
+            perAnno[anno].forEach(t => {
+                const cfg = _ALBO_CONFIG[t.tipo] || _ALBO_CONFIG['torneo'];
+                const isFromFirestore = (data.alboDoro || []).some(x => x.id === t.id);
+                const canDelete = currentAdmin && isFromFirestore;
+                delay += 0.06;
+                html += `<div class="albo-trophy-card ${cfg.cssClass}" style="animation-delay:${delay.toFixed(2)}s">
+                    <div class="albo-trophy-badge">${cfg.badgeTxt}</div>
+                    <div class="albo-trophy-inner">
+                        <div class="albo-trophy-icon-wrap ${cfg.cssClass}">
+                            ${cfg.svgIcon}
+                        </div>
+                        <div class="albo-trophy-info">
+                            <div class="albo-trophy-tipo">${cfg.label}</div>
+                            <div class="albo-trophy-name">${t.nome}</div>
+                            <div class="albo-trophy-meta">${t.edizione || ''}${t.addedBy ? ' · ' + t.addedBy : ''}</div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;">
+                            <div class="albo-trophy-edition">${t.anno}</div>
+                            ${canDelete ? `<button onclick="eliminaTrofeo(${t.id})"
+                                style="background:none;border:none;color:#333;font-size:15px;cursor:pointer;padding:2px;">🗑️</button>` : ''}
+                        </div>
+                    </div>
+                </div>`;
+            });
+        });
+        el.innerHTML = html;
+    }
+    function aggiungiTrofeo() {
+        if (!currentAdmin) { showToast('⚠ Devi essere loggato come admin.', true); return; }
+        const tipo     = document.getElementById('albo-tipo').value;
+        const nome     = document.getElementById('albo-nome').value.trim();
+        const anno     = parseInt(document.getElementById('albo-anno').value);
+        const edizione = document.getElementById('albo-edizione').value.trim();
+        if (!nome || !anno) { showToast('⚠ Compila nome e anno.', true); return; }
+        if (!data.alboDoro) data.alboDoro = [];
+        data.alboDoro.push({ id: Date.now(), tipo, nome, anno, edizione, addedBy: currentAdmin });
+        sync(['alboDoro']);
+        document.getElementById('albo-nome').value = '';
+        document.getElementById('albo-anno').value = '';
+        document.getElementById('albo-edizione').value = '';
+        document.getElementById('albo-admin-form').classList.remove('open');
+        renderAlbo();
+        showToast('🏆 Trofeo aggiunto!');
+    }
+    function eliminaTrofeo(id) {
+        if (!currentAdmin) return;
+        if (!confirm('Eliminare questo trofeo dall\'albo?')) return;
+        data.alboDoro = (data.alboDoro || []).filter(t => t.id !== id);
+        sync(['alboDoro']);
+        renderAlbo();
+        showToast('✓ Trofeo rimosso.');
+    }
     function editRegolamento(id) {
         document.getElementById('reg-testo-' + id).style.display = 'none';
         document.getElementById('reg-editor-' + id).style.display = 'block';
@@ -3992,3 +4418,4 @@
 </script>
 </body>
 </html>
+Visualizzazione di index.html.
