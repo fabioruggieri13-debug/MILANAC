@@ -2056,7 +2056,7 @@
                 const defaults = {
                     'Fabio':    { pin: btoa('1111'), pwd: btoa('fabio123') },
                     'Beppe':    { pin: btoa('2222'), pwd: btoa('beppe123') },
-                    'Christian':{ pin: btoa('3333'), pwd: btoa('christian123') },
+                    'Giovanni': { pin: btoa('3333'), pwd: btoa('giovanni123') },
                     'Vicio':    { pin: btoa('4444'), pwd: btoa('vicio123') },
                     'Fabiano':  { pin: btoa('5555'), pwd: btoa('fabiano123') }
                 };
@@ -2068,7 +2068,7 @@
             ADMIN_CREDS = {
                 'Fabio':    { pin: btoa('1111'), pwd: btoa('fabio123') },
                 'Beppe':    { pin: btoa('2222'), pwd: btoa('beppe123') },
-                'Christian':{ pin: btoa('3333'), pwd: btoa('christian123') },
+                'Giovanni': { pin: btoa('3333'), pwd: btoa('giovanni123') },
                 'Vicio':    { pin: btoa('4444'), pwd: btoa('vicio123') },
                 'Fabiano':  { pin: btoa('5555'), pwd: btoa('fabiano123') }
             };
@@ -2752,7 +2752,7 @@
         const r = parts[0];   // categoria: POR DIF CEN ATT
         const rs = parts[1] || r; // ruolo specifico: DC TD etc.
         if (n && m) {
-            data.ps.push({ id: Date.now(), n, m, r, rs, g: 0, a: 0, mvp: 0, yl: 0, rd: 0, potm: 0, convocato: false, x: 43, y: 80, v_adm: { "Fabio": 6, "Beppe": 6, "Christian": 6, "Vicio": 6, "Fabiano": 6 } });
+            data.ps.push({ id: Date.now(), n, m, r, rs, g: 0, a: 0, mvp: 0, yl: 0, rd: 0, potm: 0, convocato: false, x: 43, y: 80, v_adm: { "Fabio": 6, "Beppe": 6, "Giovanni": 6, "Vicio": 6, "Fabiano": 6 } });
             sync();
             document.getElementById('in-n').value = '';
             document.getElementById('in-m').value = '';
@@ -4418,4 +4418,4 @@
 </script>
 </body>
 </html>
-Visualizzazione di index.html.
+Visualizzazione di index-4.html.
